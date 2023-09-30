@@ -1,15 +1,17 @@
 import { BASE_URL as baseUrl } from "@/utils/config";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "./store";
 
 export const EthAbujaApi = createApi({
-  reducerPath: "ethAbujaApi",
+  reducerPath: "thAbujaApi",
   baseQuery: fetchBaseQuery({
     baseUrl,
     prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).authReducer.token;
+      //@ts-ignore
+      const token = (getState() as RootState).authReducer.app_jwt;
+     
       if (token) {
-        headers.set("Bearer", `${token}`);
+        headers.set("Authorization", `Bearer ${token}`);
       }
       return headers;
     },

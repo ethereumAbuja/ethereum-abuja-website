@@ -22,7 +22,7 @@ const guideUI = ({ pipelineData }: any) => {
         <Text fontSize="1.125rem" lineHeight="1.75rem"
             color="#787579"
             >
-             "Building a Legacy, Together"
+             Building a Legacy, Together
             </Text>
             <Text fontSize="1.125rem" 
             lineHeight="1.7rem"
@@ -33,7 +33,7 @@ const guideUI = ({ pipelineData }: any) => {
             >
             Every contribution, big or small, propels our community forward.
             Learn how you can contribute to web3abuja.eth and be a part of a 
-            movement that's fostering innovation and growth in the blockchain sphere.
+            movement thats fostering innovation and growth in the blockchain sphere.
             </Text>
 
             <Flex w={"100%"} flexDir="column" px="5%">

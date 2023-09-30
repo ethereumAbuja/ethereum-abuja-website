@@ -22,7 +22,7 @@ const showcaseUI = ({ pipelineData }: any) => {
         <Text fontSize="1.125rem" lineHeight="1.75rem"
             color="#787579"
             >
-             "Showcasing Ingenuity"
+             Showcasing Ingenuity
             </Text>
             <Text fontSize="1.125rem" 
             lineHeight="1.7rem"
@@ -33,7 +33,7 @@ const showcaseUI = ({ pipelineData }: any) => {
             >
                Be a part of our project showcases where members get a 
                platform to present their innovative solutions, receive feedback,
-                and connect with potential collaborators and investors.
+               and connect with potential collaborators and investors.
             </Text>
 
             <Flex w={"100%"} flexDir="column" px="5%">

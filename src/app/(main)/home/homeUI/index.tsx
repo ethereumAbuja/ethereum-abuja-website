@@ -22,12 +22,13 @@ import { useAppSelector } from '@/hooks/rtkHooks';
 import ContainerWrapper from '@/components/ContainerWrapper';
 import dynamic from 'next/dynamic';
 import { useMediaQuery } from "@chakra-ui/react"; 
+import { nanoid } from '@reduxjs/toolkit';
 
 const WorkshopsTalksSlide = dynamic(() => import("@/components/WorkshopTalksSlide"));
 
 type Props = {};
 
-const homeUI = ({ pipelineData }: any) => {
+const HomeUI = ({ pipelineData }: any) => {
 
   const { appTheme } = useAppSelector((state) => state.themeReducer);
 
@@ -96,7 +97,7 @@ const homeUI = ({ pipelineData }: any) => {
                   <chakra.p mt="10px" opacity={0.5} lineHeight="1.25rem"
                   maxWidth="700px"
                   >
-                  "Connect, Collaborate, and Create"
+                  Connect, Collaborate, and Create
                   <br/>
                    Join our regular meetups to network with like-minded individuals, share insights, and foster collaborations that can redefine the digital landscape.
                   </chakra.p>
@@ -139,7 +140,7 @@ const homeUI = ({ pipelineData }: any) => {
              mt="40px"
             >
               {partners.map((e) => (
-              <Link href={e.partnerwebsite} isExternal>
+              <Link href={e.partnerwebsite} isExternal  key={nanoid()}>
               <Box
               as="button"
               width="200px"
@@ -168,4 +169,4 @@ const homeUI = ({ pipelineData }: any) => {
     );
 }
 
-export default homeUI
+export default HomeUI

@@ -15,7 +15,7 @@ const AboutSlider = dynamic(() => import("../components/AboutSlider"));
 
 type Props = {};
 
-const aboutUI = ({ pipelineData }: any) => {
+const AboutUI = ({ pipelineData }: any) => {
 
     const { appTheme } = useAppSelector((state) => state.themeReducer);
 
@@ -28,7 +28,7 @@ const aboutUI = ({ pipelineData }: any) => {
             <Text fontSize="1.125rem" lineHeight="1.75rem"
             color="#787579"
             >
-             "Building the Future, Together"
+             Building the Future, Together
             </Text>
             <Text fontSize="1.125rem" 
             lineHeight="1.7rem"
@@ -52,4 +52,4 @@ const aboutUI = ({ pipelineData }: any) => {
   )
 }
 
-export default aboutUI
+export default AboutUI

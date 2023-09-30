@@ -22,7 +22,7 @@ const talkUI = ({ pipelineData }: any) => {
         <Text fontSize="1.125rem" lineHeight="1.75rem"
             color="#787579"
             >
-             "Learning Today, Leading Tomorrow"
+            Learning Today, Leading Tomorrow
             </Text>
             <Text fontSize="1.125rem" 
             lineHeight="1.7rem"
@@ -34,7 +34,7 @@ const talkUI = ({ pipelineData }: any) => {
                Immerse yourself in our interactive workshops where experts
                and novices alike come together to learn, share, and grow. 
                From coding bootcamps to deep dives into the world of decentralized finance,
-                there’s something for everyone.
+              there’s something for everyone.
             </Text>
 
             <Flex w={"100%"} flexDir="column" px="5%">
