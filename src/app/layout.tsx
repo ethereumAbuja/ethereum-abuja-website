@@ -42,7 +42,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <RootProvider>
           <main>
-            {widthSizeRef.current < 850 ? (
+            {widthSizeRef.current < 830 ? (
               <div>
                 <Flex w={"100%"} flexDir="column" px="5%">
                 <Lottie animationData={mobile} style={{ height: 400 }} />
