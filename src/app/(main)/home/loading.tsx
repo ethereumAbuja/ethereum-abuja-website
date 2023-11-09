@@ -37,8 +37,8 @@ export default function Loading() {
         borderRadius="10vw"
         align={"center"}
         justify="center"
-        borderWidth={1}
-        borderColor={appTheme.textColor}
+        // borderWidth={2}
+        // borderColor={"#314D53"}
         animation={`${pulse} 2s infinite`}
       >
         {ETHABJ_SVG().logo2()}

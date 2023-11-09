@@ -1,11 +1,11 @@
+"use client";
+
 import ContainerWrapper from "../ContainerWrapper";
 import {
   Box,
   Text,
   HStack,
-  Center,
-  Tooltip,
-  useDisclosure
+  Button
 } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "@/hooks/rtkHooks";
 import { darkTheme, lightTheme } from "@/constants/theme/lightDarkTheme";
@@ -13,12 +13,9 @@ import { chooseTheme } from "@/store/themeSlice";
 import { ETHABJ_SVG } from "@/assets/svg/index"
 import { Link } from "@chakra-ui/next-js";
 import { usePathname } from "next/navigation";
-import { nanoid } from "@reduxjs/toolkit";
-import { DarkModeSwitch } from "react-toggle-dark-mode";
-import { BiChevronDown, BiMenu } from "react-icons/bi";
+import { COLORS } from "@/constants/theme/lightDarkTheme";
 import { TabsProps } from "@/lib/components/types";
 import { For, block } from "million/react";
-import { FaTelegram, FaTwitter, FaDiscord} from "react-icons/fa";
 
 const NavBar = () => {
   const { appTheme } = useAppSelector((state) => state.themeReducer);
@@ -28,31 +25,37 @@ const NavBar = () => {
 
   const tabs: TabsProps[] = [
     {
+      name: "Home",
+      link: "/home",
+    },
+    {
+      name: "About Us",
+      link: "/about",
+    },
+    {
       name: "Events",
       link: "/events",
     },
     {
-      name: "Showcase",
-      link: "/showcase",
-    },
-    {
-      name: "Talks",
-      link: "/talks",
-    },
-    {
-      name: "Guides", 
+      name: "Resources", 
       link: "/guides",
     },
-    {
-      name: "About",
-      link: "/about",
-    },
+  
   ];
 
   return (
-    <Box backgroundColor="none" pos={"relative"} w="100%" zIndex={10} p="10px">
+    <Box 
+    boxShadow="0px 4px 64px 0px rgba(108, 108, 108, 0.05)"
+    backdropFilter="blur(20px)"
+    backgroundColor="none" 
+    pos={"relative"} 
+    w="100%" 
+    zIndex={10} 
+    p="10px"
+    border="0px solid #314D53"
+    >
       <ContainerWrapper>
-        <HStack h={"60px"} justify={"space-between"}>
+        <HStack h={"80px"} justify={"space-between"}>
           <Link href={"/home"} role="logo_link">
             {ETHABJ_SVG().logo()}
           </Link>
@@ -60,14 +63,11 @@ const NavBar = () => {
           <HStack spacing={4}>
             <For each={tabs}>
               {(e) => (
-                <Link href={e.link}>
+                <Link href={e.link}
+                 style={{ textTransform: "none" }}
+                >
                   <HStack
-                    _hover={{
-                      bg: appTheme.textColor,
-                      color: appTheme.backgroundColor,
-                    }}
                     p="10px"
-                    borderRadius={"20px"}
                     color={
                       pathname?.includes(e.link)
                         ? appTheme.backgroundColorReverse
@@ -75,71 +75,44 @@ const NavBar = () => {
                         ? appTheme.backgroundColorReverse
                         : appTheme.backgroundColorReverse
                     }
+                    bgClip={
+                      pathname?.includes(e.link)
+                      ? "text"
+                      : pathname === "/" && e.link === "/home"
+                      ? "none"
+                      : "none"
+                    }
+                    bgGradient={
+                      pathname?.includes(e.link)
+                      ? COLORS.navHoverLinkColor
+                      : pathname === "/" && e.link === "/home"
+                      ? "none"
+                      : "none"
+                    }
                   >
                     {/* {e.icon} */}
-                    <Text fontSize="16px" fontWeight={500}>{e.name}</Text>
+                    <Text fontWeight={500}>{e.name}</Text>
                   </HStack>
                 </Link>
               )}
             </For>
           </HStack>
 
-          {/* <HStack>
-            <DarkModeSwitch
-              role="toggleSwitcher"
-              style={{ width: "30px", height: "30px", marginRight: "10px" }}
-              checked={appTheme.name === "dark"}
-              onChange={() => {
-                if (appTheme.name === "light") {
-                  dispatch(chooseTheme(darkTheme));
-                } else {
-                  dispatch(chooseTheme(lightTheme));
-                }
-              }}
-              size={120}
-            />
-          </HStack> */}
-
             <HStack spacing={4}>
-            <Tooltip label="link dropping soon"
-              placement="top"
-              display={"flex"}
-              alignItems={"center"}
-              borderRadius="5px"
-              color={appTheme.textColor}
-              bg={appTheme.backgroundColor2}
-            >
-            <Link href="#">
-              <FaTelegram size={24} color={appTheme.backgroundColorReverse} />
-            </Link>
-            </Tooltip>
-
-            <Tooltip label="link dropping soon"
-              placement="top"
-              display={"flex"}
-              alignItems={"center"}
-              borderRadius="5px"
-              color={appTheme.textColor}
-              bg={appTheme.backgroundColor2}
-            >
-            <Link href="#">
-              <FaTwitter size={24} color={appTheme.backgroundColorReverse} />
-            </Link>
-            </Tooltip>
-
-            <Tooltip label="link dropping soon"
-              placement="top"
-              display={"flex"}
-              alignItems={"center"}
-              borderRadius="5px"
-              color={appTheme.textColor}
-              bg={appTheme.backgroundColor2}
-            >
-            <Link href="#">
-              <FaDiscord size={24} color={appTheme.backgroundColorReverse} />
-            </Link>
-            </Tooltip>
-          </HStack>
+              <Button
+               bg={COLORS.black}
+               color={appTheme.backgroundColor}
+               p="11px 0px"
+               w="160px"
+               borderRadius="8px"
+               _hover={{
+                bg: COLORS.joinComColorBTN,
+                borderColor: "1px solid black"
+               }}
+               >
+                <Text fontSize="14px" fontWeight={500}>Join Community</Text>
+              </Button>
+            </HStack>
         </HStack>
       </ContainerWrapper>
     </Box>
