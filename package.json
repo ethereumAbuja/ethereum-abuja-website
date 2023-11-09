@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/next-js": "^2.1.5",
     "@chakra-ui/react": "^2.8.1",
     "@emotion/react": "^11.11.1",
@@ -35,7 +36,7 @@
     "redux-persist": "^6.0.0",
     "rooks": "^7.14.1",
     "swiper": "^10.3.0",
-    "uuid": "^9.0.0",
-    "typescript": "5.2.2"
+    "typescript": "5.2.2",
+    "uuid": "^9.0.0"
   }
 }
