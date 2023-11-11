@@ -3,12 +3,11 @@ import { SvgProps } from "@/lib/components/types";
 import { SVGProps } from "react";
 
 export function ETHABJ_SVG() {
+  const { appTheme } = useAppSelector((state: any) => state.themeReducer);
 
-    const { appTheme } = useAppSelector((state: any) => state.themeReducer);
-
-    return {
-     // =================================================================APP LOGO =================================================================
-     logo: (props?: SvgProps) => {
+  return {
+    // =================================================================APP LOGO =================================================================
+    logo: (props?: SvgProps) => {
       return (
         <svg
           width={169}
@@ -155,9 +154,9 @@ export function ETHABJ_SVG() {
             </linearGradient>
           </defs>
         </svg>
-      )
-      },
-     logo2: (props?: SvgProps) => {
+      );
+    },
+    logo2: (props?: SvgProps) => {
       return (
         <svg
           width={110}
@@ -296,9 +295,9 @@ export function ETHABJ_SVG() {
             </linearGradient>
           </defs>
         </svg>
-      )
-     },
-     footerLogo: (props?: SvgProps) => {
+      );
+    },
+    footerLogo: (props?: SvgProps) => {
       return (
         <svg
           width={66}
@@ -437,9 +436,9 @@ export function ETHABJ_SVG() {
             </linearGradient>
           </defs>
         </svg>
-      )
-     },
-     homeBackground: (props?: SvgProps) => {
+      );
+    },
+    homeBackground: (props?: SvgProps) => {
       return (
         <svg
           width={867}
@@ -598,12 +597,19 @@ export function ETHABJ_SVG() {
             </linearGradient>
           </defs>
         </svg>
-      )
-     },
-     // =================================================================NAVBAR ICONS =================================================================
+      );
+    },
+    // =================================================================NAVBAR ICONS =================================================================
     homeIcon: (props?: SvgProps) => {
       return (
-        <svg width={20} height={19} viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <svg
+          width={20}
+          height={19}
+          viewBox="0 0 20 19"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          {...props}
+        >
           <path
             fillRule="evenodd"
             clipRule="evenodd"
@@ -615,7 +621,14 @@ export function ETHABJ_SVG() {
     },
     storeIcon: (props?: SvgProps) => {
       return (
-        <svg width={20} height={17} viewBox="0 0 20 17" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <svg
+          width={20}
+          height={17}
+          viewBox="0 0 20 17"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          {...props}
+        >
           <path
             fillRule="evenodd"
             clipRule="evenodd"
@@ -627,7 +640,14 @@ export function ETHABJ_SVG() {
     },
     rewardsIcon: (props?: SvgProps) => {
       return (
-        <svg width={16} height={20} viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <svg
+          width={16}
+          height={20}
+          viewBox="0 0 16 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          {...props}
+        >
           <path
             fillRule="evenodd"
             clipRule="evenodd"
@@ -639,7 +659,14 @@ export function ETHABJ_SVG() {
     },
     customersIcon: (props?: SvgProps) => {
       return (
-        <svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <svg
+          width={20}
+          height={20}
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          {...props}
+        >
           <path
             fillRule="evenodd"
             clipRule="evenodd"
@@ -651,7 +678,14 @@ export function ETHABJ_SVG() {
     },
     analyticsIcon: (props?: SvgProps) => {
       return (
-        <svg width={18} height={16} viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <svg
+          width={18}
+          height={16}
+          viewBox="0 0 18 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          {...props}
+        >
           <path
             d="M12 0v2.286H8v4.571H6V4.571H0V16h18V0h-6zM4 13.714H2V6.857h2v6.857zm4 0H6V9.143h2v4.571zm4 0h-2V4.571h2v9.143zm4 0h-2V2.286h2v11.428z"
             fill="currentColor"
@@ -674,7 +708,7 @@ export function ETHABJ_SVG() {
             fill="#fff"
           />
         </svg>
-      )
+      );
     },
     twitterIcon: (props?: SvgProps) => {
       return (
@@ -691,7 +725,7 @@ export function ETHABJ_SVG() {
             fill="#060606"
           />
         </svg>
-      )
+      );
     },
     mediumIcon: (props?: SvgProps) => {
       return (
@@ -708,7 +742,7 @@ export function ETHABJ_SVG() {
             fill="#000"
           />
         </svg>
-      )
+      );
     },
     githubIcon: (props?: SvgProps) => {
       return (
@@ -725,7 +759,7 @@ export function ETHABJ_SVG() {
             fill="#000"
           />
         </svg>
-      )
+      );
     },
     discordIcon: (props?: SvgProps) => {
       return (
@@ -742,8 +776,116 @@ export function ETHABJ_SVG() {
             fill="#000"
           />
         </svg>
-      )
-    }
-    
-    }
+      );
+    },
+    footerethicon: (props?: SvgProps) => {
+      return (
+        <svg
+          width={"130px"}
+          height={"130px"}
+          viewBox="0 0 83 69"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          {...props}
+        >
+          <path
+            d="M41.962 23.734l12.894 21.122V31.114l-12.894-7.38z"
+            fill="#04002F"
+          />
+          <path
+            d="M54.856 44.856l12.979-21.122-12.98 7.38v13.742z"
+            fill="#7DEAF9"
+          />
+          <path
+            d="M41.962 23.734l12.894 7.38 12.979-7.38-12.894-7.38-12.98 7.38z"
+            fill="#5F37FF"
+          />
+          <path
+            d="M54.856 44.856l12.979-21.122m-12.98 21.122L41.963 23.734m12.894 21.122V31.114m12.979-7.38l-12.98 7.38m12.98-7.38l-12.894-7.38-12.98 7.38m0 0l12.895 7.38"
+            stroke="#000"
+            strokeWidth={0.169658}
+          />
+          <g
+            style={{
+              mixBlendMode: "multiply",
+            }}
+            filter="url(#filter0_f_584_3967)"
+          >
+            <path
+              d="M53.668 30.435l13.234-7.804-20.105-1.866-4.835 2.884 11.706 6.786z"
+              fill="#000"
+              fillOpacity={0.5}
+            />
+          </g>
+          <path
+            d="M42.044 22.038l12.81 7.464V1l-12.81 21.038z"
+            fill="#393562"
+          />
+          <path
+            d="M67.832 22.038L54.853 1v28.502l12.979-7.464z"
+            fill="#53CADB"
+          />
+          <path
+            d="M54.853 1l12.979 21.038-12.979 7.464m0-28.502l-12.81 21.038 12.81 7.464m0-28.502v28.502"
+            stroke="#000"
+            strokeWidth={0.169658}
+          />
+          <g
+            style={{
+              mixBlendMode: "multiply",
+            }}
+            filter="url(#filter1_f_584_3967)"
+          >
+            <path
+              d="M38.135 39.403l7.043 9.924-21.77-2.241-15.365-8.964L1 27.878l21.449 2.24 15.686 9.285z"
+              fill="#000"
+              fillOpacity={0.5}
+            />
+          </g>
+          <defs>
+            <filter
+              id="filter0_f_584_3967"
+              x={41.6226}
+              y={20.4253}
+              width={25.6186}
+              height={10.3495}
+              filterUnits="userSpaceOnUse"
+              colorInterpolationFilters="sRGB"
+            >
+              <feFlood floodOpacity={0} result="BackgroundImageFix" />
+              <feBlend
+                in="SourceGraphic"
+                in2="BackgroundImageFix"
+                result="shape"
+              />
+              <feGaussianBlur
+                stdDeviation={0.169658}
+                result="effect1_foregroundBlur_584_3967"
+              />
+            </filter>
+            <filter
+              id="filter1_f_584_3967"
+              x={0.359745}
+              y={27.2377}
+              width={45.4582}
+              height={22.7288}
+              filterUnits="userSpaceOnUse"
+              colorInterpolationFilters="sRGB"
+            >
+              <feFlood floodOpacity={0} result="BackgroundImageFix" />
+              <feBlend
+                in="SourceGraphic"
+                in2="BackgroundImageFix"
+                result="shape"
+              />
+              <feGaussianBlur
+                stdDeviation={0.320128}
+                result="effect1_foregroundBlur_584_3967"
+              />
+            </filter>
+          </defs>
+        </svg>
+      );
+    },
+  };
 }
