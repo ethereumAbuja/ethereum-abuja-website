@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -15,13 +16,13 @@ import ContainerWrapper from "@/components/ContainerWrapper";
 import { useAppSelector } from "@/hooks/rtkHooks";
 import Image from "next/image";
 import Events from "./Events";
-type Props = {};
 
-const eventUI = ({ pipelineData }: any) => {
-  // const { appTheme } = useAppSelector((state) => state.themeReducer);
-  // const theme = useTheme();
+
+import React from 'react'
+
+export default function Header() {
   return (
-    <Box>
+    <div>
       <Grid
         border="2px"
         width="100%"
@@ -74,12 +75,6 @@ const eventUI = ({ pipelineData }: any) => {
           </Text>
         </VStack>
       </Grid>
-
-      <Box minHeight="10vh" px="2rem">
-        <Events />
-      </Box>
-    </Box>
-  );
-};
-
-export default eventUI;
+    </div>
+  )
+}

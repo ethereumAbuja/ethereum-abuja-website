@@ -23,32 +23,13 @@ import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { useState } from "react";
 import { nanoid } from "@reduxjs/toolkit";
-
+import { NavBarLinks as tabs } from "@/config/site";
 const NavBar = () => {
   const [mobileNav, setMobileNav] = useState<boolean>(false);
   const { appTheme } = useAppSelector((state) => state.themeReducer);
   const dispatch = useAppDispatch();
 
   const pathname = usePathname();
-
-  const tabs: TabsProps[] = [
-    {
-      name: "Home",
-      link: "/home",
-    },
-    {
-      name: "About Us",
-      link: "/about",
-    },
-    {
-      name: "Events",
-      link: "/events",
-    },
-    {
-      name: "Resources",
-      link: "/guides",
-    },
-  ];
 
   return (
     <Box
@@ -181,7 +162,7 @@ const NavBar = () => {
             >
               {/* <For each={tabs}> */}
               {tabs.map((e) => (
-                <Box>
+                <Box key={e.link}>
                   <Link
                     href={e.link}
                     style={{ textTransform: "none" }}

@@ -1,10 +1,21 @@
+"use client";
+
 import React from "react";
-import EventUI from './eventUI'
+import EventUI from "./eventUI";
 
-export const metadata = {
-  title: "ETHAbuja | Events",
-};
+import Header from "./eventUI/Header";
+import Events from "./eventUI/Events";
 
-export default async function Event() {
-  return <EventUI pipelineData={null} />;
+export default function Event({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  console.log("this is search params", searchParams);
+  return (
+    <>
+      <Header />
+      <Events searchParams={searchParams} />
+    </>
+  );
 }
