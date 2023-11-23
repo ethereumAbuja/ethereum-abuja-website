@@ -23,7 +23,10 @@ import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { useState } from "react";
 import { nanoid } from "@reduxjs/toolkit";
-import { NavBarLinks as tabs } from "@/config/site";
+import { NavBarLinks as tabs } from "@/lib/config/site";
+
+
+
 const NavBar = () => {
   const [mobileNav, setMobileNav] = useState<boolean>(false);
   const { appTheme } = useAppSelector((state) => state.themeReducer);
@@ -33,13 +36,14 @@ const NavBar = () => {
 
   return (
     <Box
-      boxShadow="0px 4px 64px 0px rgba(108, 108, 108, 0.05)"
+      boxShadow={COLORS.navBoxShadow}
       backdropFilter="blur(20px)"
-      backgroundColor="none"
+      backgroundColor={COLORS.navBg}
       pos={"relative"}
       w="100%"
       zIndex={10}
-      p="10px"
+      // p="10px"
+      h="80px"
       border="0px solid #314D53"
     >
       <ContainerWrapper>

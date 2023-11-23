@@ -29,6 +29,8 @@ export const COLORS = {
   green: "#08BF08CC",
   pink: "#FCCDCD",
   
+  navBg: "linear-gradient(90deg, rgba(255, 255, 255, 0.60) 0%, rgba(255, 255, 255, 0.40) 100%",
+  navBoxShadow: "0px 4px 64px 0px rgba(108, 108, 108, 0.05)",
   navHoverLinkColor: "linear-gradient(90deg, #4662AA 0%, rgba(154, 57, 229, 0.90) 102.94%)",
 
   
