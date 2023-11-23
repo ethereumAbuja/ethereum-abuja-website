@@ -1,10 +1,11 @@
 "use client";
 
 import { FC } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import { Box, Button, Flex } from "@chakra-ui/react";
-import { eventsList } from "@/lib/Events";
+import { eventsList } from "@/utils/Events";
 import Link from "next/link";
+
+
 interface PaginationControlsProps {
   currPage: number;
   totalPages: number;
@@ -26,6 +27,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
       mt={4}
       display="flex"
       justifyContent={["center", "center", "space-between"]}
+      mb="40px"
     >
       <Button
         display={["hidden", "hidden", "inline-flex"]}

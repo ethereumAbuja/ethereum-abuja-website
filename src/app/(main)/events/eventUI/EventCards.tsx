@@ -1,9 +1,10 @@
 import { Box, Flex, HStack, Text, GridItem, VStack } from "@chakra-ui/react";
 import React from "react";
 import Image from "next/image";
-import { LocationType, EventType } from "./Events";
+import { LocationType, EventType } from ".";
 import moment from "moment";
 import { ETHABJ_SVG } from "@/assets/svg";
+
 type CardImgUrl = Record<string, string>;
 
 const cardImgUrl: CardImgUrl = {
@@ -11,7 +12,7 @@ const cardImgUrl: CardImgUrl = {
   inPerson: "/image/eventsPage/inPersonCity.svg",
 };
 
-type Props = {
+interface eventProps {
   location: LocationType;
   eventType: EventType;
   theme: string;
@@ -26,7 +27,7 @@ export default function EventCard({
   dateUnix,
   duration,
   ...props
-}: Props) {
+}: eventProps) {
   return (
     <VStack justifyContent="space-between"  {...props} border="2px" borderRadius="md">
       <Box p="1rem">

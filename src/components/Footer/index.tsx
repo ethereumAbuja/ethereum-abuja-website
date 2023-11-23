@@ -24,6 +24,7 @@ import { BiRightArrowAlt } from "react-icons/bi";
 import ContainerWrapper from "../ContainerWrapper";
 import { useAppSelector } from "@/hooks/rtkHooks";
 import { ETHABJ_SVG } from "@/assets/svg";
+import { COLORS } from "@/constants/theme/lightDarkTheme";
 
 export default function Footer() {
   const { appTheme } = useAppSelector((state) => state.themeReducer);
@@ -33,7 +34,7 @@ export default function Footer() {
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   return (
-    <Box bg={appTheme.backgroundColor}>
+    <Box bg={COLORS.white}>
       <ContainerWrapper padding={5} py={10}>
         <Flex
           justifyContent="center"

@@ -1,5 +1,6 @@
 "use client";
 import { ETHABJ_SVG } from "@/assets/svg";
+import { COLORS } from "@/constants/theme/lightDarkTheme";
 import { useAppSelector } from "@/hooks/rtkHooks";
 import { Flex, keyframes } from "@chakra-ui/react";
 
@@ -23,7 +24,7 @@ export default function Loading() {
   return (
     <Flex
       pos="absolute"
-      bg={appTheme.backgroundColor}
+      bg={COLORS.white}
       h="100vh"
       w="100%"
       align={"center"}

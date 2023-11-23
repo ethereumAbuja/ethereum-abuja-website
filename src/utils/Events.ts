@@ -1,4 +1,6 @@
-type GetEventsOptions = {
+
+
+export interface GetEventsOptions {
   query?: string;
   page: number;
   limit: number;
@@ -35,6 +37,7 @@ export type EventType =
   | "Product Demo Day"
   | "Technical Workshop"
   | "Virtual Hackathon";
+  
 export type LocationType = "VIRTUAL" | "IN-PERSON";
 
 type EventList = {

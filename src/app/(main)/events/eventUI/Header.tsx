@@ -1,30 +1,25 @@
 
 "use client";
 
+import React from 'react'
 import {
-  Stack,
-  Flex,
   Grid,
   Box,
   Text,
   HStack,
   VStack,
   Heading,
-  useTheme,
+  Flex
 } from "@chakra-ui/react";
-import ContainerWrapper from "@/components/ContainerWrapper";
-import { useAppSelector } from "@/hooks/rtkHooks";
 import Image from "next/image";
-import Events from "./Events";
+import { COLORS } from '@/constants/theme/lightDarkTheme';
 
-
-import React from 'react'
 
 export default function Header() {
   return (
     <div>
       <Grid
-        border="2px"
+        border="1px"
         width="100%"
         px="2rem"
         py="2rem"
@@ -34,7 +29,8 @@ export default function Header() {
           "/image/eventspage/headBannerDesktop.svg",
         ]}
         backgroundRepeat="no-repeat"
-        backgroundPosition="center"
+        backgroundPosition="center center"
+        backgroundSize="cover"
         templateColumns={["repeat(1, 1fr)", "repeat(1, 1fr)", "repeat(2, 1fr)"]}
       >
         <Box
@@ -56,9 +52,28 @@ export default function Header() {
             width="100%"
             alignItems="center"
           >
-            <Heading as="h3" color="white" fontWeight={600} noOfLines={1}>
-              Events
-            </Heading>
+            <Flex flexDir="column">
+              <Heading as="h3"
+                color={COLORS.white}
+                fontFamily="Space Grotesk"
+                fontWeight={600}
+                fontSize="40px"
+                noOfLines={1}
+              >
+                Events
+              </Heading>
+              <Text
+                color={COLORS.white}
+                fontSize="18px"
+                lineHeight="165%"
+                mt="20px"
+              >
+                Keep track of our upcoming events, workshops, and meetups. Stay
+                tuned for a vibrant schedule filled with opportunities for learning,
+                networking and collaboration.
+              </Text>
+            </Flex>
+
             <Box pos="relative" width="68px" height="64px">
               <Image
                 src="/image/eventspage/cubeImage.svg"
@@ -68,11 +83,6 @@ export default function Header() {
               />
             </Box>
           </HStack>
-          <Text color="white">
-            Keep track of our upcoming events, workshops, and meetups. Stay
-            tuned for a vibrant schedule filled with opportunities for learning,
-            networking and collaboration.
-          </Text>
         </VStack>
       </Grid>
     </div>
