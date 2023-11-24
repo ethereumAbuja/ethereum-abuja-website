@@ -38,6 +38,12 @@ export type ResourceList = {
   dateUnix: number;
 };
 
+export const getMedia = ({
+  query,
+  page = 1,
+  limit = 10,
+}: GetResourcesOptions) => ({ media: [], totalPages: 0 });
+
 export const getResources = ({
   query,
   page = 1,

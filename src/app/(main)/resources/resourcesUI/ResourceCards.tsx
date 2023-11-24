@@ -13,7 +13,7 @@ const cardImgUrl: CardImgUrl = {
   blogs: "/image/resourcePage/blogs.svg",
 };
 
-export default function EventCard({
+export default function ResourceCard({
   resourceType,
   title,
   dateUnix,
