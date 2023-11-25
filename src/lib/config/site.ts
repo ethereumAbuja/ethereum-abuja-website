@@ -15,6 +15,6 @@ export const NavBarLinks: TabsProps[] = [
   },
   {
     name: "Resources",
-    link: "/guides",
+    link: "/resources",
   },
 ];
