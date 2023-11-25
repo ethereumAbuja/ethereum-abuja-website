@@ -11,8 +11,6 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "@/hooks/rtkHooks";
-import { darkTheme, lightTheme } from "@/constants/theme/lightDarkTheme";
-import { chooseTheme } from "@/store/themeSlice";
 import { ETHABJ_SVG } from "@/assets/svg/index";
 import { Link } from "@chakra-ui/next-js";
 import { usePathname } from "next/navigation";

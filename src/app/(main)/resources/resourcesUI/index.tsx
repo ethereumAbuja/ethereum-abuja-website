@@ -11,11 +11,38 @@ import {
   MenuList,
   Button,
   HStack,
+  Spinner,
 } from "@chakra-ui/react";
 import ContainerWrapper from "@/components/ContainerWrapper";
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import GuidesResources from "./Guides";
-import Media from "./Media";
+import dynamic from "next/dynamic";
+
+const NoGuideMedia = dynamic(() => import("./components/NoGuideMedia"), {
+  ssr: false,
+  loading: () => (
+    <Box>
+      <Spinner size={"sm"} />
+    </Box>
+  ),
+});
+
+const GuidesResources = dynamic(() => import("./components/Guides"), {
+  ssr: false,
+  loading: () => (
+    <Box>
+      <Spinner size={"sm"} />
+    </Box>
+  ),
+});
+
+const Media = dynamic(() => import("./components/Media"), {
+  ssr: false,
+  loading: () => (
+    <Box>
+      <Spinner size={"sm"} />
+    </Box>
+  ),
+});
 
 const Resources = ({
   searchParams,
@@ -25,6 +52,8 @@ const Resources = ({
   const [route, setRoute] = useState(
     searchParams.route ? searchParams.route : "guides"
   );
+
+  const [hasResources, setHasResources] = useState<boolean>(false);
 
   return (
     <Box mx={["1.5rem", "1.5rem", "6rem"]}>
@@ -66,7 +95,7 @@ const Resources = ({
               Media
             </Heading>
           </HStack>
-          {route === "guides" && (
+          {route === "guides" && hasResources && (
             <Menu matchWidth>
               <MenuButton
                 width={["100%", "410px", " "]}
@@ -87,10 +116,14 @@ const Resources = ({
             </Menu>
           )}
         </Flex>
-        {route === "guides" ? (
-          <GuidesResources searchParams={searchParams} />
+        {hasResources ? (
+          route === "guides" ? (
+            <GuidesResources searchParams={searchParams} />
+          ) : (
+            <Media searchParams={searchParams} />
+          )
         ) : (
-          <Media searchParams={searchParams} />
+          <NoGuideMedia />
         )}
       </ContainerWrapper>
     </Box>

@@ -1,9 +1,10 @@
 "use client";
 
 import { FC } from "react";
-import { Box, Button, Flex } from "@chakra-ui/react";
+import { Box, Button, Flex, HStack } from "@chakra-ui/react";
 import Link from "next/link";
-import path from "path";
+import { COLORS } from "@/constants/theme/lightDarkTheme";
+import { ETHABJ_SVG } from "@/assets/svg";
 
 interface PaginationControlsProps {
   currPage: number;
@@ -25,7 +26,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
 
   return (
     <Box
-      mt={4}
+      mt="60px"
       display="flex"
       justifyContent={["center", "center", "space-between"]}
       mb="40px"
@@ -34,25 +35,33 @@ const PaginationControls: FC<PaginationControlsProps> = ({
         display={["hidden", "hidden", "inline-flex"]}
         mx={1}
         disabled={currPage == 1}
+        border="1.5px solid black"
+        bg={COLORS.white}
+        p="8px 14px"
       >
-        <Link
-          href={{
-            pathname: pathName,
-            query: {
-              ...(search ? { search } : {}),
-              page: currPage - 1,
-            },
-          }}
-        >
-          Previous
-        </Link>
+        <HStack>
+          {ETHABJ_SVG().arrowPagLeftIcon()}
+          <Link
+            href={{
+              pathname: pathName,
+              query: {
+                ...(search ? { search } : {}),
+                page: currPage - 1,
+              },
+            }}
+          >
+            Previous
+          </Link>
+        </HStack>
       </Button>
       <Flex justifyContent="center" gap="9px">
         {paginationButtons.map((pageNumber) => (
           <Button
             key={pageNumber}
             mx={1}
-            background={pageNumber == currPage || null ? "#BBB5DF" : ""}
+            // background={pageNumber == currPage || null ? "#BBB5DF" : ""}
+            background={pageNumber === currPage ? "#BBB5DF" : ""}
+            disabled={pageNumber === currPage} // Set disabled bas
           >
             <Link
               href={{
@@ -72,18 +81,25 @@ const PaginationControls: FC<PaginationControlsProps> = ({
         display={["hidden", "hidden", "inline-flex"]}
         mx={1}
         disabled={currPage == totalPages}
+        border="1.5px solid black"
+        bg={COLORS.white}
+        p="8px 14px"
+        borderRadius="8px"
       >
-        <Link
-          href={{
-            pathname: pathName,
-            query: {
-              ...(search ? { search } : {}),
-              page: currPage + 1,
-            },
-          }}
-        >
-          Next
-        </Link>
+        <HStack>
+          <Link
+            href={{
+              pathname: pathName,
+              query: {
+                ...(search ? { search } : {}),
+                page: currPage + 1,
+              },
+            }}
+          >
+            Next
+          </Link>
+          {ETHABJ_SVG().arrowPagRightIcon()}
+        </HStack>
       </Button>
     </Box>
   );

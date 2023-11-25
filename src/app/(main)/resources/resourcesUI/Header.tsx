@@ -1,22 +1,15 @@
 "use client";
 
 import React from "react";
-import {
-  Grid,
-  Box,
-  Text,
-  HStack,
-  VStack,
-  Heading,
-  Flex,
-} from "@chakra-ui/react";
+import { Box, Text, Heading, Flex } from "@chakra-ui/react";
 import Image from "next/image";
 import { COLORS } from "@/constants/theme/lightDarkTheme";
+import ContainerWrapper from "@/components/ContainerWrapper";
 
 export default function Header() {
   return (
     <div>
-      <Grid
+      <Box
         border="1px"
         width="100%"
         px="2rem"
@@ -28,26 +21,36 @@ export default function Header() {
         backgroundRepeat="no-repeat"
         backgroundPosition="center center"
         backgroundSize="cover"
-        templateColumns={["repeat(1, 1fr)", "repeat(1, 1fr)", "repeat(2, 1fr)"]}
         alignItems="center"
       >
-        <VStack width="100%">
-          <HStack
-            justifyContent="space-between"
-            width="100%"
-            alignItems="center"
-          >
+        <ContainerWrapper>
+          <Flex justifyContent="space-between" width="100%" alignItems="center">
             <Flex flexDir="column">
-              <Heading
-                as="h3"
-                color={COLORS.white}
-                fontFamily="Space Grotesk"
-                fontWeight={600}
-                fontSize="40px"
-                noOfLines={1}
-              >
-                Media, Guides & Resources
-              </Heading>
+              <Flex justify="space-between" alignItems="center">
+                <Heading
+                  as="h3"
+                  color={COLORS.white}
+                  fontFamily="Space Grotesk"
+                  fontWeight={600}
+                  fontSize={["25px", "25px", "30px", "40px"]}
+                >
+                  Media, Guides & Resources
+                </Heading>
+                <Box
+                  pos="relative"
+                  width="68px"
+                  height="64px"
+                  display={["block", "block", "none"]}
+                >
+                  <Image
+                    src="/image/resourcepage/blocks_mobile.svg"
+                    alt="A cube set illustration"
+                    fill
+                    style={{ objectFit: "contain" }}
+                  />
+                </Box>
+              </Flex>
+
               <Text
                 color={COLORS.white}
                 fontSize="18px"
@@ -59,47 +62,35 @@ export default function Header() {
                 and developments in the Ethereum ecosystem.
               </Text>
             </Flex>
+
             <Box
               pos="relative"
-              width="68px"
-              height="64px"
-              display={["block", "block", "none"]}
+              display={["none", "none", "inline-flex"]}
+              width="100%"
+              height="270px"
             >
               <Image
-                src="/image/resourcepage/blocks_mobile.svg"
-                alt="A cube set illustration"
+                src="/image/resourcepage/blocks.svg"
+                alt="blocks illustration"
                 fill
-                style={{ objectFit: "contain" }}
+                style={{ objectFit: "contain", zIndex: 3, scale: 1.3 }}
+              />
+              <Image
+                src="/image/resourcepage/fudgy.svg"
+                alt="blocks illustration"
+                fill
+                style={{ objectFit: "contain", zIndex: 2 }}
+              />
+              <Image
+                src="/image/resourcepage/triangle.svg"
+                alt="blocks illustration"
+                fill
+                style={{ objectFit: "contain", zIndex: 1 }}
               />
             </Box>
-          </HStack>
-        </VStack>
-        <Box
-          pos="relative"
-          display={["none", "none", "inline-flex"]}
-          width="100%"
-          height="270px"
-        >
-          <Image
-            src="/image/resourcepage/blocks.svg"
-            alt="blocks illustration"
-            fill
-            style={{ objectFit: "contain", zIndex: 3, scale: 1.3 }}
-          />
-          <Image
-            src="/image/resourcepage/fudgy.svg"
-            alt="blocks illustration"
-            fill
-            style={{ objectFit: "contain", zIndex: 2 }}
-          />
-          <Image
-            src="/image/resourcepage/triangle.svg"
-            alt="blocks illustration"
-            fill
-            style={{ objectFit: "contain", zIndex: 1 }}
-          />
-        </Box>
-      </Grid>
+          </Flex>
+        </ContainerWrapper>
+      </Box>
     </div>
   );
 }

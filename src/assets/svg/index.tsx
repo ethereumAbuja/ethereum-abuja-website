@@ -976,6 +976,41 @@ export function ETHABJ_SVG() {
           </defs>
         </svg>
       );
+    },
+    arrowPagLeftIcon: (props?: SvgProps) => {
+      return (
+        <svg
+          width={20}
+          height={20}
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          {...props}
+        >
+          <path
+            d="M6.523 9.167l4.47-4.47-1.178-1.179L3.333 10l6.482 6.482 1.178-1.179-4.47-4.47h10.143V9.167H6.523z"
+            fill="#000"
+          />
+        </svg>
+      );
+    },
+    arrowPagRightIcon: (props?: SvgProps) => {
+      return (
+        <svg
+          width={20}
+          height={20}
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          {...props}
+        >
+          <path
+            d="M13.477 9.167l-4.47-4.47 1.178-1.179L16.668 10l-6.482 6.482-1.178-1.179 4.47-4.47H3.334V9.167h10.143z"
+            fill="#000"
+          />
+        </svg>
+      );
+    },
     }, 
   };
 }
