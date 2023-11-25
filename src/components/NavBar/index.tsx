@@ -25,8 +25,6 @@ import { useState } from "react";
 import { nanoid } from "@reduxjs/toolkit";
 import { NavBarLinks as tabs } from "@/lib/config/site";
 
-
-
 const NavBar = () => {
   const [mobileNav, setMobileNav] = useState<boolean>(false);
   const { appTheme } = useAppSelector((state) => state.themeReducer);
@@ -38,15 +36,12 @@ const NavBar = () => {
     <Box
       boxShadow={COLORS.navBoxShadow}
       backdropFilter="blur(20px)"
-      backgroundColor={COLORS.navBg}
-      pos={"relative"}
-      w="100%"
-      zIndex={10}
-      // p="10px"
+      backgroundColor={"whiteAlpha.700"}
+      zIndex={1000}
       h="80px"
       border="0px solid #314D53"
     >
-      <ContainerWrapper>
+      <ContainerWrapper maxW={"1100px"} mx={"auto"} px={"1rem"}>
         <Flex h={"80px"} justify={"space-between"} align="center">
           <Link href={"/home"} role="logo_link">
             {ETHABJ_SVG().logo()}
@@ -88,23 +83,32 @@ const NavBar = () => {
             </For>
           </Flex>
 
-          <HStack spacing={4} display={["none", "none", "flex", "flex"]}>
-            <Button
-              bg={COLORS.black}
-              color={appTheme.backgroundColor}
-              p="11px 0px"
-              w="160px"
-              borderRadius="8px"
-              _hover={{
-                bg: COLORS.joinComColorBTN,
-                borderColor: "1px solid black",
-              }}
+          <Box display={["none", "none", "flex", "flex"]}>
+            <Link
+              href="#"
+              display={"flex"}
+              w={"160px"}
+              py={"12px"}
+              px={"0"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              gap={"10px"}
+              borderRadius={"8px"}
+              border={"1px solid #000"}
+              bgGradient={
+                "linear(90deg, #4662AA 0%, rgba(154, 57, 229, 0.90) 102.94%)"
+              }
             >
-              <Text fontSize="14px" fontWeight={500}>
+              <Text
+                color={"#FDFDFF"}
+                fontSize={"16px"}
+                fontWeight={"500"}
+                lineHeight={"26.4px"}
+              >
                 Join Community
               </Text>
-            </Button>
-          </HStack>
+            </Link>
+          </Box>
 
           <Button
             aria-label="Open Menu"
@@ -207,24 +211,30 @@ const NavBar = () => {
               ))}
               {/* </For> */}
             </Flex>
-            <HStack spacing={4} display={["flex", "flex", "none", "none"]}>
-              <Button
-                bg={COLORS.black}
-                color={appTheme.backgroundColor}
-                p="11px 0px"
-                w="350px"
-                borderRadius="8px"
-                _hover={{
-                  bg: COLORS.joinComColorBTN,
-                  borderColor: "1px solid black",
-                }}
-                onClick={() => setMobileNav(false)}
+            <Box display={["flex", "flex", "none", "none"]}>
+              <Link
+                href="#"
+                display={"flex"}
+                w={"350px"}
+                py={"12px"}
+                px={"0"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                gap={"10px"}
+                borderRadius={"8px"}
+                border={"1px solid #000"}
+                bg={"black"}
               >
-                <Text fontSize="14px" fontWeight={500}>
+                <Text
+                  color={"#FDFDFF"}
+                  fontSize={"16px"}
+                  fontWeight={"500"}
+                  lineHeight={"26.4px"}
+                >
                   Join Community
                 </Text>
-              </Button>
-            </HStack>
+              </Link>
+            </Box>
           </Flex>
         </Flex>
       </ContainerWrapper>
