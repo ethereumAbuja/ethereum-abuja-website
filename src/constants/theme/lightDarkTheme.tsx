@@ -15,8 +15,7 @@ export const COLORS = {
   tabBg: "#757575",
   softWhite: "#FFFFFF1A",
   softDark: "#00000010",
-  bgLinear:
-    "linear-gradient(270deg, #B09DF2 0%, #AF97EE 11.41%, #AF96EB 26.66%, #CE9EE2 49.42%, #D599CD 59.59%, #E5A8C2 72.62%, #E0B1A9 86.99%, #ECC3A2 100%)",
+  bgLinear: "linear-gradient(270deg, #B09DF2 0%, #AF97EE 11.41%, #AF96EB 26.66%, #CE9EE2 49.42%, #D599CD 59.59%, #E5A8C2 72.62%, #E0B1A9 86.99%, #ECC3A2 100%)",
   grey: "#0000004D",
   grey1: "rgba(0, 0, 0, 0.1)",
   lightWhite: "#FFFFFF80",
@@ -29,6 +28,17 @@ export const COLORS = {
   lightOrange: "#FFE9D0",
   green: "#08BF08CC",
   pink: "#FCCDCD",
+  
+  navBg: "linear-gradient(90deg, rgba(255, 255, 255, 0.60) 0%, rgba(255, 255, 255, 0.40) 100%",
+  navBoxShadow: "0px 4px 64px 0px rgba(108, 108, 108, 0.05)",
+  navHoverLinkColor: "linear-gradient(90deg, #4662AA 0%, rgba(154, 57, 229, 0.90) 102.94%)",
+
+  
+  joinComColorBTN: "linear-gradient(90deg, #4662AA 0%, rgba(154, 57, 229, 0.90) 102.94%)",
+
+  eventgeneralColorBTN: "#BBB5DE",
+
+
   colorBG: "#1C1B1F",
   colorBG2: "#FFFF",
   color1: "#F4EFF4",

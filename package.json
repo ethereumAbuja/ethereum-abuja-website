@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/next-js": "^2.1.5",
     "@chakra-ui/react": "^2.8.1",
     "@emotion/react": "^11.11.1",
@@ -17,17 +18,21 @@
     "@types/node": "20.6.3",
     "@types/react": "18.2.22",
     "@types/react-dom": "18.2.7",
+    "@types/react-scroll": "^1.8.10",
     "@types/react-simple-maps": "^3.0.0",
+    "clsx": "^2.0.0",
     "eslint": "8.49.0",
     "eslint-config-next": "13.5.2",
     "framer-motion": "^10.16.4",
     "lottie-react": "^2.4.0",
     "million": "^2.6.0",
+    "moment": "^2.29.4",
     "next": "13.5.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.11.0",
     "react-redux": "^8.1.2",
+    "react-scroll": "^1.9.0",
     "react-simple-map": "^3.0.2",
     "react-simple-maps": "^3.0.0",
     "react-toggle-dark-mode": "^1.1.1",
@@ -35,7 +40,7 @@
     "redux-persist": "^6.0.0",
     "rooks": "^7.14.1",
     "swiper": "^10.3.0",
-    "uuid": "^9.0.0",
-    "typescript": "5.2.2"
+    "typescript": "5.2.2",
+    "uuid": "^9.0.0"
   }
 }

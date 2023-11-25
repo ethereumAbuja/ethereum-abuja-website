@@ -1,0 +1,82 @@
+import { partners } from "@/utils/dummyJSON";
+import { Box, Flex, Text } from "@chakra-ui/react";
+import Image from "next/image";
+import { nanoid } from "@reduxjs/toolkit";
+import React from "react";
+
+const SectionFive = () => {
+  return (
+    <Box py={"45px"}>
+      <Flex maxW={"1100px"} mx={"auto"} px={"1rem"} flexDir="column">
+        <Flex
+          flexDir={"column"}
+          alignItems={"flex-start"}
+          gap={"8px"}
+          mb={"32px"}
+          textAlign={["center", "center", "left"]}
+        >
+          <Text
+            color={"#1D2E32"}
+            fontSize={"20px"}
+            fontWeight={"600"}
+            lineHeight={"24px"}
+          >
+            Partners
+          </Text>
+          <Text
+            color={"#060606"}
+            fontSize={"40px"}
+            fontWeight={"600"}
+            lineHeight={"64px"}
+          >
+            Our Ecosystem Partners
+          </Text>
+        </Flex>
+        <Flex
+          gap={"24px"}
+          justifyContent={"center"}
+          flexDir={["column", "column", "row"]}
+          alignItems="center"
+        >
+          {partners.map((e) => (
+            <Flex
+              key={nanoid()}
+              w={"298px"}
+              h="280px"
+              flexDir={"column"}
+              alignItems={"center"}
+              gap={"32px"}
+              pt={"70px"}
+              pb={"71px"}
+              pr={"66px"}
+              pl={"67px"}
+              borderRadius={"8px"}
+              border={"1.5px solid #C6C6C6"}
+              as="a"
+              href={e.partnerwebsite}
+              cursor="pointer"
+              target="_blank"
+            >
+              <Image
+                width={400}
+                height={400}
+                src={e.partnerimage}
+                alt="image"
+              />
+              <Text
+                color={"#1D2E32"}
+                fontSize={"16px"}
+                fontWeight={"600"}
+                lineHeight={"120%"}
+              >
+                {e.partnername}
+              </Text>
+            </Flex>
+          ))}
+        </Flex>
+      </Flex>
+    </Box>
+  );
+};
+
+export default SectionFive;

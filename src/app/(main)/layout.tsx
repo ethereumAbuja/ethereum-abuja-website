@@ -6,7 +6,7 @@ import { ReactNode } from "react";
 export default function MainAppLayout({ children }: { children: ReactNode }) {
   return (
     <>
-      <nav>
+      <nav style={{ position: "fixed", zIndex: "10000", width: "100%" }}>
         <NavBar />
       </nav>
       {children}
