@@ -4,8 +4,6 @@ import {
   Flex,
   Box,
   Text,
-  Grid,
-  VStack,
   Spacer,
   Link,
   useBreakpointValue,
@@ -18,7 +16,7 @@ import cube from "../../../../../public/image/aboutpage/stack-cube.png";
 import blackCube from "../../../../../public/image/aboutpage/black-cube.svg";
 import greenCube from "../.././../../../public/image/aboutpage/green-stack-cube.png";
 import greenCubeStyle from "../../../../../public/image/aboutpage/cube-box-style.png";
-import { ETHABJ_SVG } from "@/assets/svg";
+import { COLORS } from "@/constants/theme/lightDarkTheme";
 
 type Props = {};
 
@@ -178,6 +176,10 @@ const AboutUI = ({ pipelineData }: any) => {
             target="_blank"
             rel="noopener noreferrer"
             position="relative"
+            _hover={{
+              bg: COLORS.joinComColorBTN,
+              borderColor: "1px solid black",
+            }}
           >
             Join Community
           </Link>

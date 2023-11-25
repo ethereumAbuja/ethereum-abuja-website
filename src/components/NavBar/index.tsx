@@ -11,8 +11,6 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "@/hooks/rtkHooks";
-import { darkTheme, lightTheme } from "@/constants/theme/lightDarkTheme";
-import { chooseTheme } from "@/store/themeSlice";
 import { ETHABJ_SVG } from "@/assets/svg/index";
 import { Link } from "@chakra-ui/next-js";
 import { usePathname } from "next/navigation";
@@ -24,8 +22,6 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { useState } from "react";
 import { nanoid } from "@reduxjs/toolkit";
 import { NavBarLinks as tabs } from "@/lib/config/site";
-
-
 
 const NavBar = () => {
   const [mobileNav, setMobileNav] = useState<boolean>(false);

@@ -1,7 +1,9 @@
-"use client";
-
 import React from "react";
-import Events from "./resourcesUI";
+import Resources from "./resourcesUI";
+
+export const metadata = {
+  title: "ETHAbuja | Guides & Resources",
+};
 
 export default function Event({
   searchParams,
@@ -11,7 +13,7 @@ export default function Event({
   console.log("this is search params", searchParams);
   return (
     <>
-      <Events searchParams={searchParams} />
+      <Resources searchParams={searchParams} />
     </>
   );
 }

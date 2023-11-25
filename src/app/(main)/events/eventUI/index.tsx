@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import { useState } from "react";
 import {
   Box,
   Heading,
@@ -11,14 +11,44 @@ import {
   MenuList,
   Button,
   Grid,
+  Spinner,
 } from "@chakra-ui/react";
 import ContainerWrapper from "@/components/ContainerWrapper";
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import EventCard from "./EventCards";
-
-import { useRouter, useSearchParams } from "next/navigation";
+import { nanoid } from "@reduxjs/toolkit";
 import { getEvents } from "@/utils/Events";
-import PaginationControls from "@/components/PaginationControl";
+import { EventType } from "@/utils/Events";
+import dynamic from "next/dynamic";
+
+const NoEvents = dynamic(() => import("./components/NoEvents"), {
+  ssr: false,
+  loading: () => (
+    <Box>
+      <Spinner size={"sm"} />
+    </Box>
+  ),
+});
+
+const PaginationControls = dynamic(
+  () => import("@/components/PaginationControl"),
+  {
+    ssr: false,
+    loading: () => (
+      <Box>
+        <Spinner size={"sm"} />
+      </Box>
+    ),
+  }
+);
+
+const EventCard = dynamic(() => import("./components/EventCards"), {
+  ssr: false,
+  loading: () => (
+    <Box>
+      <Spinner size={"sm"} />
+    </Box>
+  ),
+});
 
 const Events = ({
   searchParams,
@@ -35,10 +65,18 @@ const Events = ({
 
   const { events, totalPages } = getEvents({ page, limit, query: search });
 
-  const paginationButtons = Array.from(
-    { length: totalPages },
-    (_, index) => index + 1
+  const [selectedEventType, setSelectedEventType] = useState<EventType | null>(
+    null
   );
+
+  const handleMenuItemClick = (menuItem: EventType | null) => {
+    setSelectedEventType(menuItem === selectedEventType ? null : menuItem);
+  };
+
+  // filter events based on selected event type
+  const filteredEvents = selectedEventType
+    ? events.filter((event) => event.eventType === selectedEventType)
+    : events;
 
   return (
     <Box mx={["1.5rem", "1.5rem", "6rem"]}>
@@ -67,55 +105,69 @@ const Events = ({
               as={Button}
               rightIcon={<ChevronDownIcon />}
             >
-              All Events
+              {selectedEventType
+                ? `Filter: ${selectedEventType}`
+                : "All Events"}
             </MenuButton>
             <MenuList>
-              <MenuItem>Download</MenuItem>
-              <MenuItem>Create a Copy</MenuItem>
-              <MenuItem>Mark as Draft</MenuItem>
-              <MenuItem>Delete</MenuItem>
-              <MenuItem>Attend a Workshop</MenuItem>
+              {[
+                "Physical Meetup",
+                "Product Demo Day",
+                "Technical Workshop",
+                "Virtual Hackathon",
+              ].map((eventType) => (
+                <MenuItem
+                  key={eventType}
+                  onClick={() => handleMenuItemClick(eventType as EventType)}
+                >
+                  {eventType}
+                </MenuItem>
+              ))}
+              <MenuItem onClick={() => handleMenuItemClick(null)}>
+                Clear Filter
+              </MenuItem>
             </MenuList>
           </Menu>
         </Flex>
 
-        <Grid
-          templateColumns={[
-            "repeat(1, 1fr)",
-            "repeat(2, 1fr)",
-            "repeat(3, 1fr)",
-          ]}
-          gap={["1rem", "1.5rem", "1rem"]}
-        >
-          {events.map((item, index) => {
-            return (
-              <EventCard
-                key={index}
-                location={item.location}
-                eventType={item.eventType}
-                theme={item.theme}
-                dateUnix={item.dateUnix}
-                duration={item.duration}
-              />
-            );
-          })}
-        </Grid>
-        <PaginationControls
-          currPage={page}
-          totalPages={totalPages}
-          search={search ? search : ""}
-          pathName="/events"
-        />
+        {filteredEvents.length === 0 ? (
+          <NoEvents />
+        ) : (
+          <>
+            <Grid
+              templateColumns={[
+                "repeat(1, 1fr)",
+                "repeat(2, 1fr)",
+                "repeat(3, 1fr)",
+              ]}
+              gap={["1rem", "1.5rem", "1rem"]}
+            >
+              {filteredEvents.map((item) => (
+                // return (
+                <EventCard
+                  key={nanoid()}
+                  location={item.location}
+                  eventType={item.eventType}
+                  theme={item.theme}
+                  date={item.date}
+                  monthYear={item.monthYear}
+                  link={item.link}
+                />
+                // );
+              ))}
+            </Grid>
+
+            <PaginationControls
+              currPage={page}
+              totalPages={totalPages}
+              search={search ? search : ""}
+              pathName="/events"
+            />
+          </>
+        )}
       </ContainerWrapper>
     </Box>
   );
 };
 
 export default Events;
-
-export type EventType =
-  | "Physical Meetup"
-  | "Product Demo Day"
-  | "Technical Workshop"
-  | "Virtual Hackathon";
-export type LocationType = "VIRTUAL" | "IN-PERSON";
