@@ -887,19 +887,6 @@ export function ETHABJ_SVG() {
         </svg>
       );
     },
-    rightArrow: (props?: SvgProps) => {
-      return (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="21"
-          viewBox="0 0 20 21"
-          fill="none"
-          {...props}
-        >
-          <path
-            d="M13.476 9.66658L9.00601 5.19657L10.1845 4.01807L16.6663 10.4999L10.1845 16.9817L9.00601 15.8032L13.476 11.3332H3.33301V9.66658H13.476Z"
-            fill="black"
     arrowRightIcon2: (props?: SvgProps) => {
       return (
         <svg
@@ -1011,6 +998,5 @@ export function ETHABJ_SVG() {
         </svg>
       );
     },
-    }, 
   };
 }

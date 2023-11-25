@@ -83,7 +83,8 @@ const NavBar = () => {
 
           <Box display={["none", "none", "flex", "flex"]}>
             <Link
-              href="#"
+              href="https://chat.whatsapp.com/FcsSrUumLY0IdBUcsXqcQi"
+              target="_blank"
               display={"flex"}
               w={"160px"}
               py={"12px"}
@@ -211,9 +212,11 @@ const NavBar = () => {
             </Flex>
             <Box display={["flex", "flex", "none", "none"]}>
               <Link
-                href="#"
+                as="a"
+                href="https://chat.whatsapp.com/FcsSrUumLY0IdBUcsXqcQi"
+                target="_blank"
                 display={"flex"}
-                w={"350px"}
+                w={["300px", "", "350px"]}
                 py={"12px"}
                 px={"0"}
                 justifyContent={"center"}
@@ -221,7 +224,11 @@ const NavBar = () => {
                 gap={"10px"}
                 borderRadius={"8px"}
                 border={"1px solid #000"}
-                bg={"black"}
+                bg={COLORS.joinComColorBTN}
+                _hover={{
+                  bg: COLORS.joinComColorBTN,
+                  borderColor: "1px solid black",
+                }}
               >
                 <Text
                   color={"#FDFDFF"}
