@@ -18,7 +18,7 @@ interface eventProps {
   theme: string;
   dateUnix: number;
   duration: number;
-};
+}
 
 export default function EventCard({
   location,
@@ -29,7 +29,12 @@ export default function EventCard({
   ...props
 }: eventProps) {
   return (
-    <VStack justifyContent="space-between"  {...props} border="2px" borderRadius="md">
+    <VStack
+      justifyContent="space-between"
+      {...props}
+      border="2px"
+      borderRadius="md"
+    >
       <Box p="1rem">
         <HStack width="100%" my="1rem" justifyContent="space-between">
           <Box
@@ -75,18 +80,7 @@ export default function EventCard({
 
       <HStack width="100%" p="1rem" bg="#F6E6C7" justifyContent="space-between">
         <Text>Open</Text>
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M13.477 9.16609L9.00698 4.69609L10.1855 3.51758L16.6673 9.99943L10.1855 16.4812L9.00698 15.3027L13.477 10.8328H3.33398V9.16609H13.477Z"
-            fill="#060606"
-          />
-        </svg>
+        {ETHABJ_SVG().arrowRightIcon2()}
       </HStack>
     </VStack>
   );

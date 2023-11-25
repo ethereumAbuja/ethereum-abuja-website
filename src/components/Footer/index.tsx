@@ -25,6 +25,7 @@ import ContainerWrapper from "../ContainerWrapper";
 import { useAppSelector } from "@/hooks/rtkHooks";
 import { ETHABJ_SVG } from "@/assets/svg";
 import { COLORS } from "@/constants/theme/lightDarkTheme";
+import { useState } from "react";
 
 export default function Footer() {
   const { appTheme } = useAppSelector((state) => state.themeReducer);
@@ -33,8 +34,26 @@ export default function Footer() {
 
   const isMobile = useBreakpointValue({ base: true, md: false });
 
+  const [email, setEmail] = useState<string>("");
+  const [subscribed, setSubscribed] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  // Function to handle subscription
+  const handleSubscribe = () => {
+    setLoading(true);
+
+    setTimeout(() => {
+      console.log("Subscribed email:", email);
+
+      // Update state to indicate successful subscription
+      setSubscribed(true);
+
+      setLoading(false);
+    }, 2000);
+  };
+
   return (
-    <Box bg={COLORS.white}>
+    <Box bg={COLORS.white} pt="70px">
       <ContainerWrapper padding={5} py={10}>
         <Flex
           justifyContent="center"
@@ -48,42 +67,54 @@ export default function Footer() {
                 {ETHABJ_SVG().footerethicon()}
               </Box>
               <Text fontSize="18px" fontWeight={600} m="16px">
-                Subscribe to our newsletter
+                {loading
+                  ? "Subscribing..."
+                  : subscribed
+                  ? "Thank you for subscribing!"
+                  : "Subscribe to our newsletter"}
               </Text>
-              <InputGroup
-                h="49px"
-                border="1px solid #4662AA"
-                borderRadius="8px"
-                boxShadow="-2px 2px 14px 0px rgba(82, 82, 82, 0.06)"
-              >
-                <Input
-                  placeholder="example@yourmail.com"
-                  _focus={{
-                    outline: "1px solid transparent",
-                    outlineOffset: "2px",
-                    boxShadow: "none",
-                    border: "1.5px solid #4662AA",
-                  }}
-                  w={["100%", "100%", "400px", "400px"]}
-                  _placeholder={{
-                    color: "#C6C6C6",
-                  }}
-                  height="100%"
-                />
-                <InputRightElement h="48px">
-                  <IconButton
-                    bg={appTheme.backgroundColorReverse}
-                    borderRadius="0px 5px 5px 0px"
-                    color="white"
-                    _hover={{
-                      bg: `${appTheme.backgroundColorReverse}`,
+              {!subscribed && (
+                <InputGroup
+                  h="49px"
+                  border="1px solid #4662AA"
+                  borderRadius="8px"
+                  boxShadow="-2px 2px 14px 0px rgba(82, 82, 82, 0.06)"
+                >
+                  <Input
+                    placeholder="example@yourmail.com"
+                    _focus={{
+                      outline: "1px solid transparent",
+                      outlineOffset: "2px",
+                      boxShadow: "none",
+                      border: "1.5px solid #4662AA",
                     }}
-                    aria-label="Subscribe"
-                    icon={<BiRightArrowAlt />}
+                    w={["100%", "100%", "400px", "400px"]}
+                    _placeholder={{
+                      color: "#C6C6C6",
+                    }}
                     height="100%"
+                    value={email}
+                    onChange={({ target }: { target: { value: string } }) => {
+                      setEmail(target.value);
+                    }}
                   />
-                </InputRightElement>
-              </InputGroup>
+                  <InputRightElement h="48px">
+                    <IconButton
+                      as="button"
+                      bg={appTheme.backgroundColorReverse}
+                      borderRadius="0px 5px 5px 0px"
+                      color="white"
+                      _hover={{
+                        bg: `${appTheme.backgroundColorReverse}`,
+                      }}
+                      aria-label="Subscribe"
+                      icon={<BiRightArrowAlt />}
+                      height="100%"
+                      onClick={handleSubscribe}
+                    />
+                  </InputRightElement>
+                </InputGroup>
+              )}
             </Flex>
           </Stack>
 
@@ -107,16 +138,36 @@ export default function Footer() {
               </HStack>
 
               <HStack mt="24px" spacing={["20px", "20px", "0", "0"]}>
-                <Box as="a" href={"/#"}>
+                <Box
+                  as="a"
+                  href={"https://twitter.com/EthAbuja_"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   {ETHABJ_SVG().twitterIcon()}
                 </Box>
-                <Box as="a" href={"/#"}>
+                <Box
+                  as="a"
+                  href={"https://medium.com/@ethabuja"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   {ETHABJ_SVG().mediumIcon()}
                 </Box>
-                <Box as="a" href={"/#"}>
+                <Box
+                  as="a"
+                  href={"https://github.com/ethAbuja"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   {ETHABJ_SVG().githubIcon()}
                 </Box>
-                <Box as="a" href={"/#"}>
+                <Box
+                  as="a"
+                  href={"/#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   {ETHABJ_SVG().discordIcon()}
                 </Box>
               </HStack>
