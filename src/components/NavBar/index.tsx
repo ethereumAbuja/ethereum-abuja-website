@@ -39,7 +39,7 @@ const NavBar = () => {
       h="80px"
       border="0px solid #314D53"
     >
-      <ContainerWrapper maxW={"1100px"} mx={"auto"} px={"1rem"}>
+      <ContainerWrapper maxW={"1150px"} mx={"auto"}>
         <Flex h={"80px"} justify={"space-between"} align="center">
           <Link href={"/home"} role="logo_link">
             {ETHABJ_SVG().logo()}
@@ -94,6 +94,7 @@ const NavBar = () => {
               gap={"10px"}
               borderRadius={"8px"}
               border={"1px solid #000"}
+              _hover={{ textDecor: "none" }}
               bgGradient={
                 "linear(90deg, #4662AA 0%, rgba(154, 57, 229, 0.90) 102.94%)"
               }

@@ -70,7 +70,8 @@ const Resources = ({
             <Heading
               width={["100%", "", ""]}
               fontFamily="Space Grotesk"
-              fontSize="32px"
+              fontSize={["25px", "25px", "32px"]}
+              fontWeight={"600"}
               whiteSpace="nowrap"
               color={route === "guides" ? "black" : "#C7C7C7"}
               onClick={() => setRoute("guides")}
@@ -80,14 +81,15 @@ const Resources = ({
             <Heading
               width={["100%", "", ""]}
               fontFamily="Space Grotesk"
-              fontSize="32px"
+              fontSize={["25px", "25px", "32px"]}
             >
               |
             </Heading>
             <Heading
               width={["100%", "", ""]}
               fontFamily="Space Grotesk"
-              fontSize="32px"
+              fontSize={["25px", "25px", "32px"]}
+              fontWeight={"600"}
               whiteSpace="nowrap"
               color={route === "media" ? "black" : "#C7C7C7"}
               onClick={() => setRoute("media")}

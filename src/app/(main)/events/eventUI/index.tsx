@@ -79,7 +79,7 @@ const Events = ({
     : events;
 
   return (
-    <Box mx={["1.5rem", "1.5rem", "6rem"]}>
+    <Box mx={["0", "0", "6rem"]}>
       <ContainerWrapper>
         <Flex
           flexDirection={["column", "row"]}
@@ -91,7 +91,7 @@ const Events = ({
           <Heading
             width={["100%", "", ""]}
             fontFamily="Space Grotesk"
-            fontSize="32px"
+            fontSize={["25px", "25px", "32px"]}
           >
             Upcoming Events
           </Heading>
