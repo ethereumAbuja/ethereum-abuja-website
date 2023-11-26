@@ -8,11 +8,10 @@ import ContainerWrapper from "@/components/ContainerWrapper";
 
 export default function Header() {
   return (
-    <div>
+    <Box pt={"5rem"}>
       <Box
         border="1px"
         width="100%"
-        px="2rem"
         py="2rem"
         bgImage={[
           "/image/resourcepage/bg_mobile.svg",
@@ -32,7 +31,7 @@ export default function Header() {
                   color={COLORS.white}
                   fontFamily="Space Grotesk"
                   fontWeight={600}
-                  fontSize={["25px", "25px", "30px", "40px"]}
+                  fontSize={["33px", "33px", "33px", "40px"]}
                 >
                   Media, Guides & Resources
                 </Heading>
@@ -91,6 +90,6 @@ export default function Header() {
           </Flex>
         </ContainerWrapper>
       </Box>
-    </div>
+    </Box>
   );
 }

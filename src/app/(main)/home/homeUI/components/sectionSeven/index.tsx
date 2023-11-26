@@ -21,25 +21,30 @@ const SectionSix = () => {
 
   return (
     <Box>
-      <Box pt={"7rem"} mb={["30px", "30px", "-120px"]} id="scroll-target">
-        <ContainerWrapper>
+      <Box pt={"5rem"} mb={["30px", "30px", "-120px"]} id="scroll-target">
+        <Box>
           <Flex
             flexDir={["column-reverse", "column-reverse", "row"]}
             justify="space-between"
             alignItems="center"
+            gap={["0", "130px", "130px"]}
           >
             <Flex
               flexDir={"column"}
               alignItems={["center", "center", "start"]}
               textAlign={["center", "center", "start"]}
+              maxW={"1140px"}
+              mx={"auto"}
+              px={".5rem"}
             >
               <Text
                 fontSize={["14px", "16px", "24px"]}
                 fontWeight={500}
-                lineHeight={"165%"}
-                maxWidth={["300px", "500px", "500px"]}
+                lineHeight={["29.7px", "39.6px", "39.6px"]}
+                maxWidth={["350px", "500px", "500px"]}
                 textAlign={["center", "center", "start"]}
                 mt={["20px", "20px", "0px"]}
+                letterSpacing={"0.24px"}
               >
                 Contribute to web3abuja.eth and ignite the spark of blockchain
                 revolution in Abuja and Northern Nigeria
@@ -75,7 +80,7 @@ const SectionSix = () => {
               />
             </Box>
           </Flex>
-        </ContainerWrapper>
+        </Box>
       </Box>
     </Box>
   );

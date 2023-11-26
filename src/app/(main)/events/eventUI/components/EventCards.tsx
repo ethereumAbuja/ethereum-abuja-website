@@ -35,7 +35,7 @@ export default function EventCard({
       justifyContent="space-between"
       {...props}
       border="2px"
-      borderRadius="md"
+      borderRadius="8px"
     >
       <Box p="1rem">
         <HStack width="100%" my="1rem" justifyContent="space-between">
@@ -89,6 +89,7 @@ export default function EventCard({
         href={link}
         target="_blank"
         rel="noopener noreferrer"
+        borderBottomRadius={"6px"}
       >
         <Text>Open</Text>
         {ETHABJ_SVG().arrowRightIcon2()}

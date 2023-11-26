@@ -7,12 +7,13 @@ import { builders } from "@/utils/dummyJSON";
 const SectionFour = () => {
   return (
     <Box py={"137.5px"}>
-      <Box maxW={"1100px"} mx={"auto"} px={"1rem"}>
+      <Box maxW={"1140px"} mx={"auto"} px={".5rem"}>
         <Flex
           flexDir={"column"}
-          alignItems={"flex-start"}
+          alignItems={["", "flex-start", "flex-start"]}
           gap={"8px"}
           mb={"32px"}
+          textAlign={["center", "left", "left"]}
         >
           <Text
             color={"#1D2E32"}
@@ -24,9 +25,9 @@ const SectionFour = () => {
           </Text>
           <Text
             color={"#060606"}
-            fontSize={"40px"}
+            fontSize={["32px", "32px", "40px"]}
             fontWeight={"600"}
-            lineHeight={"64px"}
+            lineHeight={["38.4px", "38.4px", "64px"]}
           >
             Become a Builder
           </Text>
@@ -41,7 +42,7 @@ const SectionFour = () => {
               flexDir={"column"}
               alignItems="flex-end"
               justify="space-between"
-              gap="60px"
+              gap="98px"
               borderRadius={"8px"}
               border={"1.5px solid black"}
             >
@@ -77,6 +78,7 @@ const SectionFour = () => {
                 w={"100%"}
                 py={"15px"}
                 px={"20px"}
+                _hover={{ textDecor: "none" }}
                 justifyContent={"space-between"}
                 alignItems={"center"}
                 bg={"#F6E6C7"}

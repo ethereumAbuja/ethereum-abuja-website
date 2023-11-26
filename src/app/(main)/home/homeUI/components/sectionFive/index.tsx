@@ -7,13 +7,13 @@ import React from "react";
 const SectionFive = () => {
   return (
     <Box py={"45px"}>
-      <Flex maxW={"1100px"} mx={"auto"} px={"1rem"} flexDir="column">
+      <Flex maxW={"1140px"} mx={"auto"} px={".5rem"} flexDir="column">
         <Flex
           flexDir={"column"}
-          alignItems={"flex-start"}
+          alignItems={["", "flex-start", "flex-start"]}
           gap={"8px"}
           mb={"32px"}
-          textAlign={["center", "center", "left"]}
+          textAlign={["center", "left", "left"]}
         >
           <Text
             color={"#1D2E32"}
@@ -25,9 +25,9 @@ const SectionFive = () => {
           </Text>
           <Text
             color={"#060606"}
-            fontSize={"40px"}
+            fontSize={["32px", "32px", "40px"]}
             fontWeight={"600"}
-            lineHeight={"64px"}
+            lineHeight={["38.4px", "38.4px", "64px"]}
           >
             Our Ecosystem Partners
           </Text>

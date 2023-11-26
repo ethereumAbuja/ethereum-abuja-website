@@ -21,17 +21,19 @@ const SectionSix = () => {
 
   return (
     <Box>
-      <Box py={"7rem"}>
+      <Box py={"5rem"}>
         <ContainerWrapper>
           <Flex
             flexDir={["column", "column", "row"]}
-            justify="space-between"
+            justify="center"
             alignItems="center"
+            gap={["0", "0", "32px"]}
           >
             <Flex
               flexDir={"column"}
               alignItems={["center", "center", "start"]}
               textAlign={["center", "center", "start"]}
+              gap={["0", "0", "32px"]}
             >
               <Text
                 fontSize="20px"
@@ -46,7 +48,7 @@ const SectionSix = () => {
                 <Text
                   fontSize={["32px", "32px", "40px"]}
                   fontWeight={"600"}
-                  lineHeight={"120%"}
+                  lineHeight={["38.4px", "38.4px", "64px"]}
                   maxW="500px"
                   //   mt={["40px", "40px", "0px"]}
                 >
@@ -55,8 +57,8 @@ const SectionSix = () => {
 
                 <Box
                   position="absolute"
-                  top={"-60px"}
-                  right={"-80px"}
+                  top={"-45px"}
+                  right={"-45px"}
                   display={["none", "none", "none", "flex"]}
                 >
                   {ETHABJ_SVG2().joinusStyleSvg()}
@@ -64,12 +66,13 @@ const SectionSix = () => {
               </Flex>
 
               <Text
+                color={"#1D2E32"}
                 fontSize={["14px", "16px", "18px"]}
                 fontWeight={400}
-                lineHeight={"165%"}
-                maxWidth={["300px", "500px", "600px"]}
-                mt="32px"
+                lineHeight={"29.7px"}
+                maxWidth={["300px", "500px", "550px"]}
                 textAlign={["center", "center", "start"]}
+                mt={["20px", "20px", "0"]}
               >
                 Get in touch with us to learn more about our initiatives and how
                 you can get involved. Connect with us through social media or
