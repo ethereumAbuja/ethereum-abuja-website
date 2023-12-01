@@ -11,6 +11,7 @@ import {
 import React from "react";
 import ContainerWrapper from "@/components/ContainerWrapper";
 import { COLORS } from "@/constants/theme/lightDarkTheme";
+import { JOIN_COM_URL } from "@/utils/config";
 
 const SectionTwo = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
@@ -63,7 +64,7 @@ const SectionTwo = () => {
               <Button
                 mt="40px"
                 as="a"
-                href="https://chat.whatsapp.com/FcsSrUumLY0IdBUcsXqcQi"
+                href={JOIN_COM_URL}
                 target="_blank"
                 bg={COLORS.joinComColorBTN}
                 w={["160px", "", "160px"]}

@@ -17,6 +17,7 @@ import blackCube from "../../../../../public/image/aboutpage/black-cube.svg";
 import greenCube from "../.././../../../public/image/aboutpage/green-stack-cube.png";
 import greenCubeStyle from "../../../../../public/image/aboutpage/cube-box-style.png";
 import { COLORS } from "@/constants/theme/lightDarkTheme";
+import { JOIN_COM_URL } from "@/utils/config";
 
 type Props = {};
 
@@ -180,7 +181,7 @@ const AboutUI = ({ pipelineData }: any) => {
             p="14px 0"
             mt={["25px", "", "30px"]}
             border="0.5px solid #000"
-            href="https://chat.whatsapp.com/FcsSrUumLY0IdBUcsXqcQi"
+            href={JOIN_COM_URL}
             target="_blank"
             rel="noopener noreferrer"
             position="relative"

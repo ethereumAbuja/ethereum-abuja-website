@@ -20,7 +20,7 @@ export default function NoEvents() {
 
         <Button
           as="a"
-          href="https://chat.whatsapp.com/FcsSrUumLY0IdBUcsXqcQi"
+          href="https://docs.google.com/forms/d/e/1FAIpQLSc1wGP8PQkydcjO6nCiYePQRR33OcWm4LYF5b-8GU2uqrZQeQ/viewform?usp=send_form&usp=embed_facebook"
           target="_blank"
           bg="black"
           w={["160px", "", "200px"]}

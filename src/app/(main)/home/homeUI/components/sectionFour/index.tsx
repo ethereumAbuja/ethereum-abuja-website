@@ -1,13 +1,28 @@
 import { Link } from "@chakra-ui/next-js";
-import { Box, Flex, Text, SimpleGrid } from "@chakra-ui/react";
+import { Box, Flex, Text, SimpleGrid, Spinner } from "@chakra-ui/react";
 import React from "react";
 import { ETHABJ_SVG } from "@/assets/svg";
 import { builders } from "@/utils/dummyJSON";
+import { JOIN_COM_URL } from "@/utils/config";
+import dynamic from "next/dynamic";
+
+const CarouselPart = dynamic(() => import("./components/CarouselPart"), {
+  ssr: false,
+  loading: () => (
+    <Box>
+      <Spinner size={"sm"} />
+    </Box>
+  ),
+});
 
 const SectionFour = () => {
   return (
     <Box py={"137.5px"}>
       <Box maxW={"1140px"} mx={"auto"} px={".5rem"}>
+        {/* <Box pb="137px">
+          <CarouselPart />
+        </Box> */}
+
         <Flex
           flexDir={"column"}
           alignItems={["", "flex-start", "flex-start"]}
@@ -71,7 +86,7 @@ const SectionFour = () => {
               </Flex>
 
               <Link
-                href="https://chat.whatsapp.com/FcsSrUumLY0IdBUcsXqcQi"
+                href={JOIN_COM_URL}
                 target="_blank"
                 display={"flex"}
                 h={"56px"}

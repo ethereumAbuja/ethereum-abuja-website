@@ -6,7 +6,11 @@ export default function ContainerWrapper({
   ...props
 }: ContainerWrapperProps) {
   return (
-    <ContainerBox pos="relative" maxW={["container.xl"]} {...props}>
+    <ContainerBox
+      pos="relative"
+      maxW={["40em", "40em", "48em", "60em", "74em", "80em"]}
+      {...props}
+    >
       {children}
     </ContainerBox>
   );
