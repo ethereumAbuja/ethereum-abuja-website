@@ -1,6 +1,7 @@
 import { Box, Button, Flex, Text, VStack } from "@chakra-ui/react";
 import Image from "next/image";
 import { COLORS } from "@/constants/theme/lightDarkTheme";
+import { JOIN_COM_URL } from "@/utils/config";
 
 export default function NoGuideMedia() {
   return (
@@ -21,7 +22,7 @@ export default function NoGuideMedia() {
 
         <Button
           as="a"
-          href="https://chat.whatsapp.com/FcsSrUumLY0IdBUcsXqcQi"
+          href={JOIN_COM_URL}
           target="_blank"
           bg="black"
           w={["160px", "", "200px"]}

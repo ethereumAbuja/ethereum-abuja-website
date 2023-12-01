@@ -3,6 +3,7 @@ import { Box, Heading, Image, Text, Button } from "@chakra-ui/react";
 import { Link as ScrollLink } from "react-scroll";
 import { COLORS } from "@/constants/theme/lightDarkTheme";
 import { ETHABJ_SVG2 } from "@/assets/svg/svgFile2";
+import { JOIN_COM_URL } from "@/utils/config";
 
 const Hero = () => {
   return (
@@ -51,7 +52,7 @@ const Hero = () => {
         <Button
           mt="24px"
           as="a"
-          href="https://chat.whatsapp.com/FcsSrUumLY0IdBUcsXqcQi"
+          href={JOIN_COM_URL}
           target="_blank"
           bg="black"
           w={["160px", "", "160px"]}

@@ -15,6 +15,7 @@ import React from "react";
 import ContainerWrapper from "@/components/ContainerWrapper";
 import { COLORS } from "@/constants/theme/lightDarkTheme";
 import { ETHABJ_SVG2 } from "@/assets/svg/svgFile2";
+import { JOIN_COM_URL } from "@/utils/config";
 
 const SectionSix = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
@@ -53,7 +54,7 @@ const SectionSix = () => {
               <Button
                 mt="24px"
                 as="a"
-                href="https://chat.whatsapp.com/FcsSrUumLY0IdBUcsXqcQi"
+                href={JOIN_COM_URL}
                 target="_blank"
                 bg="black"
                 w={["160px", "", "160px"]}

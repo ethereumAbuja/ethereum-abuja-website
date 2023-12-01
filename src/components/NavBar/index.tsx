@@ -22,6 +22,7 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { useState } from "react";
 import { nanoid } from "@reduxjs/toolkit";
 import { NavBarLinks as tabs } from "@/lib/config/site";
+import { JOIN_COM_URL } from "@/utils/config";
 
 const NavBar = () => {
   const [mobileNav, setMobileNav] = useState<boolean>(false);
@@ -83,7 +84,7 @@ const NavBar = () => {
 
           <Box display={["none", "none", "flex", "flex"]}>
             <Link
-              href="https://chat.whatsapp.com/FcsSrUumLY0IdBUcsXqcQi"
+              href={JOIN_COM_URL}
               target="_blank"
               display={"flex"}
               w={"160px"}
@@ -214,7 +215,7 @@ const NavBar = () => {
             <Box display={["flex", "flex", "none", "none"]}>
               <Link
                 as="a"
-                href="https://chat.whatsapp.com/FcsSrUumLY0IdBUcsXqcQi"
+                href={JOIN_COM_URL}
                 target="_blank"
                 display={"flex"}
                 w={["300px", "", "350px"]}

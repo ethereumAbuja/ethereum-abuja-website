@@ -15,6 +15,7 @@ import React from "react";
 import ContainerWrapper from "@/components/ContainerWrapper";
 import { COLORS } from "@/constants/theme/lightDarkTheme";
 import { ETHABJ_SVG2 } from "@/assets/svg/svgFile2";
+import { JOIN_COM_URL } from "@/utils/config";
 
 const SectionSix = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
@@ -136,6 +137,9 @@ const SectionSix = () => {
 
               <Button
                 mt="40px"
+                as="a"
+                href={JOIN_COM_URL}
+                target="_blank"
                 bg="#060606"
                 w="100%"
                 h="50px"
