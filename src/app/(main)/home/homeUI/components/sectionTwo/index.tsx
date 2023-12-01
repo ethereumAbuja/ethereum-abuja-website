@@ -25,7 +25,7 @@ const SectionTwo = () => {
         backgroundSize="cover"
         py={"7rem"}
       >
-        <ContainerWrapper>
+        <Box maxW={"1140px"} mx={"auto"} px={".5rem"}>
           <Flex
             flexDir={["column-reverse", "column-reverse", "row"]}
             justify="space-between"
@@ -100,7 +100,7 @@ const SectionTwo = () => {
               )}
             </Box>
           </Flex>
-        </ContainerWrapper>
+        </Box>
       </Box>
       <Image
         src="/image/Section 2.5 - community initiative stripe.png"

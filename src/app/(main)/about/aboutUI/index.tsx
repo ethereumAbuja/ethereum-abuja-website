@@ -26,10 +26,10 @@ const AboutUI = ({ pipelineData }: any) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   return (
-    <Box>
+    <Box pt={"5rem"}>
       <Flex
         width="100%"
-        height="700px"
+        height="100vh"
         bgImage={["/image/aboutpage/meetup-image.svg"]}
         position="relative"
         backgroundRepeat="no-repeat"
@@ -49,25 +49,32 @@ const AboutUI = ({ pipelineData }: any) => {
           bgGradient="linear(to-b, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8))"
         />
         <Flex flexDir="column" zIndex={1}>
-          <Text fontSize="64px" color="#FCFCFC" fontWeight={600}>
+          <Text
+            fontSize={["40px", "40px", "64px"]}
+            color="#FCFCFC"
+            fontWeight={600}
+          >
             About Us
           </Text>
           <Text
             color="#EAEAEA"
             fontSize={["16px", "", "18px"]}
-            maxW={["350px", "", "800px"]}
+            maxW={["300px", "", "800px"]}
           >
             We are crafting a web3 digital haven within the vast landscape of
             the internet where community contributions takes precedence.
           </Text>
         </Flex>
       </Flex>
-      <ContainerWrapper>
+      <Box>
         <Flex
           direction={["column", "column", "row"]}
           justify="space-between"
           pt={{ base: "20px", md: "70px" }}
           alignItems={["center", "", ""]}
+          maxW={"1220px"}
+          ml={"auto"}
+          pl={["0", "0", "1rem"]}
         >
           <Flex
             flexDir="column"
@@ -90,6 +97,7 @@ const AboutUI = ({ pipelineData }: any) => {
               fontWeight={600}
               // mt={["60px", "", ""]}
               textAlign={["center", "center", "left"]}
+              mb={"8px"}
             >
               The mission
             </Text>
@@ -133,13 +141,13 @@ const AboutUI = ({ pipelineData }: any) => {
 
         <Flex
           mt={["", "70px", ""]}
-          h={["800px"]}
+          h={"800px"}
           justify="center"
           alignItems="center"
           textAlign="center"
           bgImage={["", "", "/image/aboutpage/cube-style.svg"]}
           backgroundRepeat="no-repeat"
-          backgroundPosition="contain"
+          backgroundPosition="center"
           backgroundSize="cover"
           flexDir="column"
           position="relative"
@@ -179,6 +187,7 @@ const AboutUI = ({ pipelineData }: any) => {
             _hover={{
               bg: COLORS.joinComColorBTN,
               borderColor: "1px solid black",
+              textDecor: "none",
             }}
           >
             Join Community
@@ -190,7 +199,7 @@ const AboutUI = ({ pipelineData }: any) => {
             </Box>
           )}
         </Flex>
-      </ContainerWrapper>
+      </Box>
     </Box>
   );
 };

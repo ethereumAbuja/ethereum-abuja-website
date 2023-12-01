@@ -7,14 +7,18 @@ import { ETHABJ_SVG2 } from "@/assets/svg/svgFile2";
 const Hero = () => {
   return (
     <Box
-      h={"100vh"}
       justifyContent="center"
       alignItems="center"
-      pos={"relative"}
-      zIndex={"10"}
       px={["3rem", "", "0px"]}
       py={["3rem", "", "0px"]}
       pt={["100px", "100px", "0px", "0px"]}
+      bgImage={[
+        "/image/Mobile LP hero asset 1.png",
+        "/image/Header_Image.png",
+        "/image/Header_Image.png",
+      ]}
+      bgSize={"cover"}
+      bgPos={["0 -90px", "inherit", "inherit"]}
     >
       <Box
         display={"flex"}
@@ -22,20 +26,21 @@ const Hero = () => {
         alignItems={"center"}
         textAlign={"center"}
         position="relative"
+        pt={["50%", "19%", "19%"]}
       >
         <Text
           color={"#060606"}
-          fontSize={["30px", "40px", "", "64px"]}
+          fontSize={["40px", "40px", "", "64px"]}
           fontWeight={600}
-          lineHeight="120%"
+          lineHeight="48px"
         >
           Welcome to web3abuja.eth
         </Text>
         <Text
           color={"#1D2E32"}
-          fontSize={["12px", "14px", "16px"]}
+          fontSize={["14px", "14px", "16px"]}
           fontWeight={500}
-          lineHeight="165%"
+          lineHeight="23.1px"
           mt="8px"
           maxW={["", "", "550px"]}
         >
@@ -65,21 +70,11 @@ const Hero = () => {
         </Button>
 
         <ScrollLink to="scroll-target" smooth={true} duration={1000}>
-          <Box as="button" mt="100px">
+          <Box as="button" mt="190px">
             {ETHABJ_SVG2().scrollAnimationIcon()}
           </Box>
         </ScrollLink>
       </Box>
-      <Image
-        top={"-200px"}
-        left={"0"}
-        pos={"absolute"}
-        zIndex={"-10"}
-        src="/image/Header_Image.png"
-        alt="image"
-        objectFit={"cover"}
-        w={"100%"}
-      />
     </Box>
   );
 };

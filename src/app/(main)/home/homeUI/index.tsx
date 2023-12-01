@@ -66,15 +66,15 @@ const HomeUI = ({ pipelineData }: any) => {
   const { appTheme } = useAppSelector((state) => state.themeReducer);
 
   return (
-    <Box py="15%">
-      {/* <ContainerWrapper> */}
-      <Hero />
+    <Box pb="6%">
+      <Box pt={"1rem"} pb={["0", "13rem", "13rem"]}>
+        <Hero />
+      </Box>
       <SectionTwo />
       <SectionFour />
       <SectionFive />
       <SectionSix />
       <SectionSeven />
-      {/* </ContainerWrapper> */}
     </Box>
   );
 };
