@@ -1,10 +1,25 @@
-import { partners } from "@/utils/dummyJSON";
 import { Box, Flex, Text } from "@chakra-ui/react";
 import Image from "next/image";
 import { nanoid } from "@reduxjs/toolkit";
 import React from "react";
 
+import image1 from "../../../../../../../public/web3bridge.png";
+import image2 from "../../../../../../../public/aya hq horizontal.png";
+
 const SectionFive = () => {
+  const partners = [
+    {
+      partnerimage: image2,
+      partnername: "Aya",
+      partnerwebsite: "https://www.ayahq.com/",
+    },
+    {
+      partnerimage: image1,
+      partnername: "Web3bridge",
+      partnerwebsite: "https://www.web3bridge.com/",
+    },
+  ];
+
   return (
     <Box py={"45px"}>
       <Flex maxW={"1140px"} mx={"auto"} px={".5rem"} flexDir="column">
