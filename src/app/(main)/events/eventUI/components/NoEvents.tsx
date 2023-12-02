@@ -45,7 +45,7 @@ export default function NoEvents() {
         order={[-1, 1]}
       >
         <Image
-          src="/image/eventsPage/NoEvents.svg"
+          src="/image/eventsPage/NoEvents.png"
           alt="No events listed"
           fill
           style={{ objectFit: "contain" }}

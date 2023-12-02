@@ -15,7 +15,7 @@ export default function Header() {
         py="2rem"
         bgImage={[
           "/image/resourcepage/bg_mobile.svg",
-          "/image/resourcepage/bg.svg",
+          "/image/resourcepage/bg.png",
         ]}
         backgroundRepeat="no-repeat"
         backgroundPosition="center center"

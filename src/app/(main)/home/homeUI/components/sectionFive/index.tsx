@@ -61,7 +61,7 @@ const SectionFive = () => {
                 width={400}
                 height={400}
                 src={e.partnerimage}
-                alt="image"
+                alt="partner logo"
               />
               <Text
                 color={"#1D2E32"}
