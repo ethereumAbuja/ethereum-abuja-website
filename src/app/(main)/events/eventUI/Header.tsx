@@ -15,7 +15,7 @@ export default function Header() {
         py="2rem"
         bgImage={[
           "/image/eventspage/headBanner.svg",
-          "/image/eventspage/headBannerDesktop.svg",
+          "/image/eventspage/headBannerDesktop.png",
         ]}
         backgroundRepeat="no-repeat"
         backgroundPosition="center center"

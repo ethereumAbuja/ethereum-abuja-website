@@ -31,7 +31,7 @@ const AboutUI = ({ pipelineData }: any) => {
       <Flex
         width="100%"
         height="100vh"
-        bgImage={["/image/aboutpage/meetup-image.svg"]}
+        bgImage={["/image/aboutpage/meetup-image.png"]}
         position="relative"
         backgroundRepeat="no-repeat"
         backgroundPosition="center"
@@ -146,7 +146,7 @@ const AboutUI = ({ pipelineData }: any) => {
           justify="center"
           alignItems="center"
           textAlign="center"
-          bgImage={["", "", "/image/aboutpage/cube-style.svg"]}
+          bgImage={["", "", "/image/aboutpage/cube-style.png"]}
           backgroundRepeat="no-repeat"
           backgroundPosition="center"
           backgroundSize="cover"
