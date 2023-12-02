@@ -3,8 +3,8 @@ import Image from "next/image";
 import { nanoid } from "@reduxjs/toolkit";
 import React from "react";
 
-import image1 from "../../../../../../../public/web3bridge.png";
-import image2 from "../../../../../../../public/aya hq horizontal.png";
+import image1 from "/public/web3bridge.png";
+import image2 from "/public/ayahqhorizontal.png";
 
 const SectionFive = () => {
   const partners = [
