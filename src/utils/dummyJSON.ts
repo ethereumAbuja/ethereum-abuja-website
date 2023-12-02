@@ -1,6 +1,6 @@
 
-import image1 from '../../public/web3bridge.png';
-import image2 from '../../public/aya hq horizontal.png'
+import image1 from '/public/web3bridge.png';
+import image2 from '/public/ayahqhorizontal.png'
 // import image2 from '../../public/image/image-2.jpg'
 // import Images_Icons from '@/constants/icons-images';
 
