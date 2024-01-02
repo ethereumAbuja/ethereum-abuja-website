@@ -10,6 +10,10 @@ export const NavBarLinks: TabsProps[] = [
     link: "/about",
   },
   {
+    name: "Support ETHAbuja",
+    link: "/donation"
+  },
+  {
     name: "Events",
     link: "/events",
   },

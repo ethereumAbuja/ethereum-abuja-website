@@ -2,24 +2,16 @@
 
 import {
   Box,
-  chakra,
-  Tag,
   Flex,
-  Container,
-  SimpleGrid,
   Stack,
   Text,
-  VisuallyHidden,
   Input,
   InputGroup,
   InputRightElement,
   IconButton,
-  useColorModeValue,
   HStack,
   useBreakpointValue,
 } from "@chakra-ui/react";
-import { ReactNode } from "react";
-import { FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
 import { BiRightArrowAlt } from "react-icons/bi";
 import ContainerWrapper from "../ContainerWrapper";
 import { useAppSelector } from "@/hooks/rtkHooks";

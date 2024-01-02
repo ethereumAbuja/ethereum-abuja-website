@@ -1,10 +1,10 @@
 import React from "react";
-import AboutUI from "./aboutUI";
+import DonationUI from "./donationUI";
 
 export const metadata = {
-  title: "ETHAbuja | About",
+  title: "ETHAbuja | Donation",
 };
 
 export default async function About() {
-  return <AboutUI />;
+  return <DonationUI />;
 }

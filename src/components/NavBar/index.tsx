@@ -42,14 +42,18 @@ const NavBar = () => {
     >
       <ContainerWrapper maxW={"1150px"} mx={"auto"}>
         <Flex h={"80px"} justify={"space-between"} align="center">
-          <Link href={"/home"} role="logo_link">
+          <Link
+            href={"/home"}
+            role="logo_link"
+            style={{ textDecoration: "none" }}
+          >
             {ETHABJ_SVG().logo()}
           </Link>
 
           <Flex gap="4px" display={["none", "none", "flex", "flex"]}>
             <For each={tabs}>
               {(e) => (
-                <Link href={e.link} style={{ textTransform: "none" }}>
+                <Link href={e.link} style={{ textDecoration: "none" }}>
                   <HStack
                     p="10px"
                     color={
@@ -99,6 +103,7 @@ const NavBar = () => {
               bgGradient={
                 "linear(90deg, #4662AA 0%, rgba(154, 57, 229, 0.90) 102.94%)"
               }
+              style={{ textDecoration: "none" }}
             >
               <Text
                 color={"#FDFDFF"}
@@ -142,7 +147,11 @@ const NavBar = () => {
             px={"1.5rem"}
           >
             <Flex mt={7} ml={6} position={"absolute"} top={"0"} left={"0"}>
-              <Link href={"/home"} role="logo_link">
+              <Link
+                href={"/home"}
+                role="logo_link"
+                style={{ textDecoration: "none" }}
+              >
                 {ETHABJ_SVG().logo()}
               </Link>
             </Flex>
@@ -174,7 +183,7 @@ const NavBar = () => {
                 <Box key={e.link}>
                   <Link
                     href={e.link}
-                    style={{ textTransform: "none" }}
+                    style={{ textTransform: "none", textDecoration: "none" }}
                     onClick={() => setMobileNav(false)}
                     key={nanoid()}
                   >
@@ -231,6 +240,7 @@ const NavBar = () => {
                   bg: COLORS.joinComColorBTN,
                   borderColor: "1px solid black",
                 }}
+                style={{ textDecoration: "none" }}
               >
                 <Text
                   color={"#FDFDFF"}

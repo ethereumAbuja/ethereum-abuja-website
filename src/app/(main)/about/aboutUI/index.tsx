@@ -21,7 +21,7 @@ import { JOIN_COM_URL } from "@/utils/config";
 
 type Props = {};
 
-const AboutUI = ({ pipelineData }: any) => {
+const AboutUI = () => {
   const { appTheme } = useAppSelector((state) => state.themeReducer);
 
   const isMobile = useBreakpointValue({ base: true, md: false });
