@@ -6,8 +6,6 @@
   <a href="https://ethabuja.com">
     <img src="https://github.com/ethereumAbuja/ethereum-abuja-website/assets/85754527/b4c76b32-5dcd-4941-884c-c37d374604ef" alt="ETH abuja banner">
   </a>
-  ![ETH abuja banner](https://github.com/ethereumAbuja/ethereum-abuja-website/assets/85754527/b4c76b32-5dcd-4941-884c-c37d374604ef)
-
   <h1>👋 Welcome to ethabuja.org! (Ethereum Abuja)</h1>
 </div>
 
