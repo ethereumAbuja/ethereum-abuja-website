@@ -1,8 +1,13 @@
 [![All Contributors](https://img.shields.io/github/all-contributors/ethereumAbuja/ethereum-abuja-website?color=orange&style=flat-square)](#contributors-)
 [![Twitter Follow](https://img.shields.io/twitter/follow/ethdotorg.svg?style=social)](https://twitter.com/EthAbuja)
 
+
 <div align="center" style="margin-top: 1em; margin-bottom: 3em;">
-  <a href="https://ethabuja.com">![Abuja Monument](https://github.com/ethereumAbuja/ethereum-abuja-website/assets/85754527/f573b143-963b-45ab-bf61-288bd1dd1d6b)</a>
+  <a href="https://ethabuja.com">
+    <img src="https://github.com/ethereumAbuja/ethereum-abuja-website/assets/85754527/b4c76b32-5dcd-4941-884c-c37d374604ef" alt="ETH abuja banner">
+  </a>
+  ![ETH abuja banner](https://github.com/ethereumAbuja/ethereum-abuja-website/assets/85754527/b4c76b32-5dcd-4941-884c-c37d374604ef)
+
   <h1>👋 Welcome to ethabuja.org! (Ethereum Abuja)</h1>
 </div>
 
