@@ -1,6 +1,11 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+[![All Contributors](https://img.shields.io/github/all-contributors/ethereumAbuja/ethereum-abuja-website?color=orange&style=flat-square)](#contributors-)
+[![Twitter Follow](https://img.shields.io/twitter/follow/ethdotorg.svg?style=social)](https://twitter.com/EthAbuja)
 
-## Getting Started
+<div align="center" style="margin-top: 1em; margin-bottom: 3em;">
+  <a href="https://ethabuja.com"><img alt="ethereum-abuja logo" src="![Abuja Monument](https://github.com/ethereumAbuja/ethereum-abuja-website/assets/85754527/f573b143-963b-45ab-bf61-288bd1dd1d6b)" alt="ethabuja.com" width="125"></a>
+  <h1>👋 Welcome to ethabuja.org! (Ethereum Abuja)</h1>
+</div>
+
 
 How to get running on your local machine:
 
