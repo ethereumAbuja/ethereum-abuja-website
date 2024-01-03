@@ -1,4 +1,4 @@
-[![Twitter Follow](https://img.shields.io/twitter/follow/ethdotorg.svg?style=social)](https://twitter.com/EthAbuja)
+[![Twitter Follow](https://img.shields.io/twitter/follow/ethabuja.svg?style=social)](https://twitter.com/EthAbuja)
 
 <div align="center" style="margin-top: 1em; margin-bottom: 3em;">
   <a href="https://ethabuja.com">
