@@ -23,7 +23,7 @@ const WallHeros = () => {
 
   return (
     <>
-      <Box pt="5%" mb="4rem">
+      <Box pt="5%" mb="3rem">
         <Text textAlign="center">WALL OF HEROES (Sponsors) 🧑‍🚒</Text>
       </Box>
 
@@ -45,7 +45,9 @@ const WallHeros = () => {
                   : undefined
               }
               color={
-                nameIndex % 3 === 2
+                nameIndex % 3 === 1
+                  ? "#000000"
+                  : nameIndex % 3 === 2
                   ? "#000000"
                   : textColors[nameIndex % textColors.length]
               }
