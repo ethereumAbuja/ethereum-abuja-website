@@ -1,11 +1,96 @@
 import React from "react";
 import { Box, Text } from "@chakra-ui/react";
+import Marquee from "react-fast-marquee";
+import sponsorNames from "./data";
 
 const WallHeros = () => {
+  const backgroundColors = [
+    "#0400DE",
+    "#FF5733",
+    "#66FF66",
+    "#DFFF5F",
+    "#6CFF69",
+    "#92E7FA",
+    "#FFE037",
+    "#22DC83",
+    "#FF2A2A",
+    "#FFB21D",
+  ];
+  const textColors = [
+    "#FFFFFF",
+    "#FFFFFF",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#FFFFFF",
+    "#FFFFFF",
+  ];
+  const namesPerMarquee = 20;
+
+  const marqueesData = Array.from(
+    { length: Math.ceil(sponsorNames.length / namesPerMarquee) },
+    (_, index) =>
+      sponsorNames.slice(index * namesPerMarquee, (index + 1) * namesPerMarquee)
+  );
+
   return (
-    <Box pt="5%">
-      <Text textAlign="center">WALL OF HEROES (Sponsors) 🧑‍🚒</Text>
-    </Box>
+    <>
+      <Box pt="5%" mb="3rem">
+        <Text textAlign="center">WALL OF HEROES (Sponsors) 🧑‍🚒</Text>
+      </Box>
+
+      <Box bgGradient="linear(to-b, #B125B400, #B125B41A)" py="1.5rem">
+        {marqueesData.map((marqueeNames, marqueeIndex) => (
+          <Marquee
+            key={marqueeIndex}
+            direction={marqueeIndex % 2 === 0 ? "right" : "left"}
+            speed={100}
+          >
+            {marqueeNames.map((name, nameIndex) => (
+              <Box
+                key={nameIndex}
+                px="25px"
+                py="5px"
+                m="5px"
+                bg={
+                  nameIndex % 3 === 0
+                    ? backgroundColors[nameIndex % backgroundColors.length]
+                    : undefined
+                }
+                color={
+                  nameIndex % 3 === 1
+                    ? "#000000"
+                    : nameIndex % 3 === 2
+                    ? "#000000"
+                    : textColors[nameIndex % textColors.length]
+                }
+                borderRadius={
+                  nameIndex % 3 === 1
+                    ? "md"
+                    : nameIndex % 3 === 0
+                    ? "3xl"
+                    : undefined
+                }
+                border={
+                  nameIndex % 3 === 1
+                    ? "0.01rem solid #101010"
+                    : nameIndex % 3 === 2
+                    ? undefined
+                    : undefined
+                }
+              >
+                <Text fontWeight="500" fontSize="0.9rem">
+                  {name}
+                </Text>
+              </Box>
+            ))}
+          </Marquee>
+        ))}
+      </Box>
+    </>
   );
 };
 
