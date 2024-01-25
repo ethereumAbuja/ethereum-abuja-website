@@ -47,7 +47,7 @@ const HeroSponsorPage = () => {
   };
 
   return (
-    <Box py="6%">
+    <Box py={["7rem", "7rem", "5rem", "5rem"]}>
       <Flex flexDir={"column"} gap={"10rem"}>
         <Flex
           flexDir={"column"}
@@ -55,13 +55,14 @@ const HeroSponsorPage = () => {
           mx={"auto"}
           alignItems={"center"}
           gap={"12px"}
+          px={".5rem"}
         >
           <Text
             color={"#060606"}
             textAlign="center"
             fontWeight={"600"}
-            fontSize={"64px"}
-            lineHeight={"76.8px"}
+            fontSize={["32px", "32px", "64px", "64px"]}
+            lineHeight={["38.4px", "38.4px", "76.8px", "76.8px"]}
           >
             Sponsor ETHAbuja
           </Text>
@@ -77,16 +78,25 @@ const HeroSponsorPage = () => {
           </Text>
         </Flex>
         <Box>
-          <Flex justifyContent={"center"}>
+          <Flex justifyContent={"center"} px={["1rem", "1rem", "1rem", "0"]}>
             <Box
-              w={"776px"}
+              w={["100%", "100%", "100%", "776px"]}
               h={"auto"}
               borderRadius={"16px"}
               border={"1px solid #D6D1F0"}
               bg={"#FFF"}
             >
-              <Box py={"24px"} pl={"48px"}>
-                <Flex w={"313px"} alignItems={"center"} gap={"16px"}>
+              <Box
+                py={"24px"}
+                pl={["1rem", "48px", "48px"]}
+                pr={["1rem,", "0", "0"]}
+              >
+                <Flex
+                  w={["100%", "313px", "313px"]}
+                  flexDir={["column", "row", "row"]}
+                  alignItems={"center"}
+                  gap={"16px"}
+                >
                   <Image
                     src="image/Heart compartment.png"
                     w={"64px"}
@@ -98,20 +108,20 @@ const HeroSponsorPage = () => {
                     fontWeight={"600"}
                     lineHeight={"22.5px"}
                     letterSpacing={"0.18px"}
+                    textAlign={["center", "left", "left"]}
                   >
                     Sponsor the ETHAbuja Maintainers
                   </Text>
                 </Flex>
               </Box>
               <Divider />
-              <Box px={"48px"} py={"24px"}>
+              <Box px={["24px", "24px", "24px", "48px"]} py={"24px"}>
                 <Box mb={"2rem"}>
-                  <Flex gap={"16px"}>
+                  <Flex flexDir={["column", "row", "row"]} gap={"16px"}>
                     <Flex
                       display={"inline-flex"}
                       gap={"4px"}
                       alignItems={"center"}
-                      justifyContent={"center"}
                     >
                       <Checkbox onChange={handleCopyAddress}>
                         <Text
@@ -138,7 +148,6 @@ const HeroSponsorPage = () => {
                       display={"inline-flex"}
                       gap={"4px"}
                       alignItems={"center"}
-                      justifyContent={"center"}
                     >
                       <Checkbox onChange={handleAddName}>
                         <Text
@@ -188,7 +197,7 @@ const HeroSponsorPage = () => {
                           boxShadow: "none",
                         }}
                         border={"none"}
-                        value={"0x7a0a3654bab7bB5d7830C1D96738208a213cbdb6"}
+                        value={["0x7a0a3654bab7bB5d7830C1D96738208a213cbdb6"]}
                       />
 
                       <Button
@@ -210,7 +219,7 @@ const HeroSponsorPage = () => {
                 ) : (
                   <Box>
                     {addName ? (
-                      <Box w={"49%"} mb={"1.5rem"}>
+                      <Box w={["100%", "49%", "49%"]} mb={"1rem"}>
                         <Text
                           color={"#3A3A3A"}
                           fontSize={"14px"}
@@ -238,7 +247,11 @@ const HeroSponsorPage = () => {
                       ""
                     )}
 
-                    <Flex gap={"16px"} mb={"24px"}>
+                    <Flex
+                      flexDir={["column", "row", "row"]}
+                      gap={"16px"}
+                      mb={"24px"}
+                    >
                       <Box w={"100%"}>
                         <Text
                           color={"#3A3A3A"}
@@ -308,10 +321,10 @@ const HeroSponsorPage = () => {
                       </Box>
                     </Flex>
 
-                    <Flex justifyContent={"flex-end"}>
+                    <Flex justifyContent={["center", "flex-end", "flex-end"]}>
                       <Button
                         display={"flex"}
-                        w={"160px"}
+                        w={["100%", "160px", "160px"]}
                         py={"11px"}
                         justifyContent={"center"}
                         alignItems={"center"}
