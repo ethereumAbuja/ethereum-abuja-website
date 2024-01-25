@@ -40,6 +40,24 @@ a {
   color: #fff;
 }
 
+.css-so9kbn:focus {
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+.css-so9kbn {
+  background: #f5f6fe;
+  padding: 2px 4px;
+  border-radius: 20rem;
+}
+
+.css-i3puav:focus {
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
 /* .swiper-slide:nth-child(1n) {
   background-color: rgb(206, 17, 17);
 }
