@@ -11,7 +11,7 @@ import { PersistGate } from "redux-persist/integration/react";
 const Providers: FC<ProvidersProps> = ({ children }) => {
   return (
     <Provider store={store}>
-       <PersistGate loading={null} persistor={persistor}>
+      <PersistGate loading={null} persistor={persistor}>
         <ChakraProvider theme={ethAbj_theme} data-testid="chakra_prov">
           {children}
         </ChakraProvider>

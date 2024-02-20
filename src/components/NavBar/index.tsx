@@ -23,6 +23,7 @@ import { useState } from "react";
 import { nanoid } from "@reduxjs/toolkit";
 import { NavBarLinks as tabs } from "@/lib/config/site";
 import { JOIN_COM_URL } from "@/utils/config";
+import ConnectButton from "../connectButton";
 
 const NavBar = () => {
   const [mobileNav, setMobileNav] = useState<boolean>(false);
@@ -30,6 +31,8 @@ const NavBar = () => {
   const dispatch = useAppDispatch();
 
   const pathname = usePathname();
+
+  const isDonationPage = pathname === "/donation";
 
   return (
     <Box
@@ -87,33 +90,50 @@ const NavBar = () => {
           </Flex>
 
           <Box display={["none", "none", "flex", "flex"]}>
-            <Link
-              href={JOIN_COM_URL}
-              target="_blank"
-              display={"flex"}
-              w={"160px"}
-              py={"12px"}
-              px={"0"}
-              justifyContent={"center"}
-              alignItems={"center"}
-              gap={"10px"}
-              borderRadius={"8px"}
-              border={"1px solid #000"}
-              _hover={{ textDecor: "none" }}
-              bgGradient={
-                "linear(90deg, #4662AA 0%, rgba(154, 57, 229, 0.90) 102.94%)"
-              }
-              style={{ textDecoration: "none" }}
-            >
-              <Text
-                color={"#FDFDFF"}
-                fontSize={"16px"}
-                fontWeight={"500"}
-                lineHeight={"26.4px"}
+            {isDonationPage ? (
+              // <Button
+              //   border="1px solid #8140CE"
+              //   borderRadius="8px"
+              //   bg="black"
+              //   color="white"
+              //   _hover={{
+              //     bg: "black",
+              //   }}
+              // >
+              //   Connect Wallet
+              // </Button>
+              <>
+                <ConnectButton />
+              </>
+            ) : (
+              <Link
+                href={JOIN_COM_URL}
+                target="_blank"
+                display={"flex"}
+                w={"160px"}
+                py={"12px"}
+                px={"0"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                gap={"10px"}
+                borderRadius={"8px"}
+                border={"1px solid #000"}
+                _hover={{ textDecor: "none" }}
+                bgGradient={
+                  "linear(90deg, #4662AA 0%, rgba(154, 57, 229, 0.90) 102.94%)"
+                }
+                style={{ textDecoration: "none" }}
               >
-                Join Community
-              </Text>
-            </Link>
+                <Text
+                  color={"#FDFDFF"}
+                  fontSize={"16px"}
+                  fontWeight={"500"}
+                  lineHeight={"26.4px"}
+                >
+                  Join Community
+                </Text>
+              </Link>
+            )}
           </Box>
 
           <Button

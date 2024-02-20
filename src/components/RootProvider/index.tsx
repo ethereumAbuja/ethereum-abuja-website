@@ -1,6 +1,5 @@
 "use client";
 import { persistor, store } from "@/store/store";
-import { ChakraProvider } from "@chakra-ui/react";
 import type { FC } from "react";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
