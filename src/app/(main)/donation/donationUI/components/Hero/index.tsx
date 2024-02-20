@@ -10,40 +10,28 @@ import {
   Input,
   Text,
   Tooltip,
-  Select,
   Button,
 } from "@chakra-ui/react";
 import { ETHABJ_SVG } from "@/assets/svg";
 import "../../../../../globals.css";
+import { useAccount } from "wagmi";
+import { addRequestMeta } from "next/dist/server/request-meta";
 
 const HeroSponsorPage = () => {
   const [copyAddress, setCopyAddress] = useState<boolean>(false);
   const [addName, setAddName] = useState<boolean>(false);
+  // const [sponsorOption, setSponsorOption] = useState<string | null>(null);
+
+  const { address } = useAccount();
 
   const handleCopyAddress = () => {
-    if (copyAddress === false) {
-      setCopyAddress(true);
-    } else {
-      setCopyAddress(false);
-    }
-
-    if (addName === true) {
-      // setCopyAddress(true);
-      setAddName(false);
-    }
+    setCopyAddress((prevCopyAddress) => !prevCopyAddress);
+    if (addName) setAddName(false);
   };
 
   const handleAddName = () => {
-    if (addName === false) {
-      setAddName(true);
-    } else {
-      setAddName(false);
-    }
-
-    if (copyAddress === true) {
-      // setAddName(true);
-      setCopyAddress(false);
-    }
+    setAddName((prevAddName) => !prevAddName);
+    if (copyAddress) setCopyAddress(false);
   };
 
   return (
@@ -123,7 +111,17 @@ const HeroSponsorPage = () => {
                       gap={"4px"}
                       alignItems={"center"}
                     >
-                      <Checkbox onChange={handleCopyAddress}>
+                      <Checkbox
+                        isChecked={copyAddress}
+                        onChange={handleCopyAddress}
+                        _checked={{
+                          "& .chakra-checkbox__control": {
+                            background: "#8140CE",
+                            borderColor: "#8140CE",
+                            borderRadius: "50px",
+                          },
+                        }}
+                      >
                         <Text
                           color={"#1D2E32"}
                           fontSize={"14px"}
@@ -135,10 +133,13 @@ const HeroSponsorPage = () => {
                       <Tooltip
                         label="If you feel uncomfortable connecting your wallet, you can always just copy the address and send from your metamask instead"
                         placement="top"
+                        border="0.4px solid #8140CE"
+                        color="black"
                         fontSize={"12px"}
                         borderRadius={"8px"}
                         textAlign={"center"}
                         p={".5rem"}
+                        bgColor="white"
                       >
                         {ETHABJ_SVG().questionMark()}
                       </Tooltip>
@@ -149,7 +150,17 @@ const HeroSponsorPage = () => {
                       gap={"4px"}
                       alignItems={"center"}
                     >
-                      <Checkbox onChange={handleAddName}>
+                      <Checkbox
+                        isChecked={addName}
+                        onChange={handleAddName}
+                        _checked={{
+                          "& .chakra-checkbox__control": {
+                            background: "#8140CE",
+                            borderColor: "#8140CE",
+                            borderRadius: "50px",
+                          },
+                        }}
+                      >
                         <Text
                           color={"#1D2E32"}
                           fontSize={"14px"}
@@ -161,10 +172,13 @@ const HeroSponsorPage = () => {
                       <Tooltip
                         label="Get your name on the wall of sponsors below, nothing big, just a fun way to say thank you"
                         placement="top"
+                        border="0.4px solid #8140CE"
+                        color="black"
                         fontSize={"12px"}
                         borderRadius={"8px"}
                         textAlign={"center"}
                         p={".5rem"}
+                        bgColor="white"
                       >
                         {ETHABJ_SVG().questionMark()}
                       </Tooltip>
@@ -197,7 +211,7 @@ const HeroSponsorPage = () => {
                           boxShadow: "none",
                         }}
                         border={"none"}
-                        value={["0x7a0a3654bab7bB5d7830C1D96738208a213cbdb6"]}
+                        value={address}
                       />
 
                       <Button
