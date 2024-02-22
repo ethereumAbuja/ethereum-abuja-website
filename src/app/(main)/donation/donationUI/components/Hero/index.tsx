@@ -37,6 +37,8 @@ import {
 } from "wagmi/chains";
 import { config } from "@/constants/config";
 import { chains } from "../chainData";
+import ConnectButton from "@/components/connectButton";
+import DonationModal from "@/components/Modals/Donation";
 
 const HeroSponsorPage = () => {
   const [copyAddress, setCopyAddress] = useState<boolean>(false);
@@ -66,7 +68,7 @@ const HeroSponsorPage = () => {
         toast,
         "Warning || address was unable to copy",
         4000,
-        "bottom-left"
+        "bottom-left",
       );
     } else {
       clipboardCopy(ETHABJ_WALLET_ADDRESS).then(() => {
@@ -74,14 +76,14 @@ const HeroSponsorPage = () => {
           toast,
           "You just copied ETHAbuja Wallet Address!",
           5000,
-          "bottom"
+          "bottom",
         );
       });
     }
   };
 
   //***FN to handling Connect wallet and also contribute button
-  function handleConnectAndContribute() {
+  function useContributionHandler() {
     if (isConnected) {
       // Handle contribution logic when wallet is connected
     } else {
@@ -111,7 +113,7 @@ const HeroSponsorPage = () => {
 
   //***FN to handle the select chain change
   const handleSelectChainChange = async (
-    e: React.ChangeEvent<HTMLSelectElement>
+    e: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     const selectedChainValue = e.target.value;
     setSelectedChain(selectedChainValue);
@@ -122,7 +124,7 @@ const HeroSponsorPage = () => {
         toast,
         "Please connect wallet before switching the chain..",
         4000,
-        "bottom-left"
+        "bottom-left",
       );
       return;
     }
@@ -137,7 +139,7 @@ const HeroSponsorPage = () => {
         toast,
         `Switched to ${selectedChainValue} chain.`,
         3000,
-        "bottom"
+        "bottom",
       );
     } catch (error) {
       console.error("Error switching chain:", error);
@@ -145,7 +147,7 @@ const HeroSponsorPage = () => {
         toast,
         "Failed to switch the chain. Please try again.",
         4000,
-        "bottom-left"
+        "bottom-left",
       );
     }
   };
@@ -456,29 +458,34 @@ const HeroSponsorPage = () => {
                     </Flex>
 
                     <Flex justifyContent={["center", "flex-end", "flex-end"]}>
-                      <Button
-                        display={"flex"}
-                        w={["100%", "160px", "160px"]}
-                        py={"11px"}
-                        justifyContent={"center"}
-                        alignItems={"center"}
-                        gap={"10px"}
-                        borderRadius={"8px"}
-                        border={"1px solid #8140CE"}
-                        bg={"#907EF4"}
-                        _hover={{ bg: "#907EF4" }}
-                        onClick={handleConnectAndContribute}
-                      >
-                        <Text
-                          color={"#FDFDFD"}
-                          fontSize={"14px"}
-                          fontWeight={"500"}
-                          lineHeight={"23.1px"}
+                      {isConnected ? (
+                        <Button
+                          display={"flex"}
+                          w={["100%", "160px", "160px"]}
+                          py={"11px"}
+                          justifyContent={"center"}
+                          alignItems={"center"}
+                          gap={"10px"}
+                          borderRadius={"8px"}
+                          border={"1px solid #8140CE"}
+                          bg={"#907EF4"}
+                          _hover={{ bg: "#907EF4" }}
+                          onClick={useContributionHandler}
                         >
-                          {isConnected ? "Contribute" : "Connect Wallet"}
-                        </Text>
-                      </Button>
+                          <Text
+                            color={"#FDFDFD"}
+                            fontSize={"14px"}
+                            fontWeight={"500"}
+                            lineHeight={"23.1px"}
+                          >
+                            Contribute
+                          </Text>
+                        </Button>
+                      ) : (
+                        <ConnectButton />
+                      )}
                     </Flex>
+                    <DonationModal/>
                   </Box>
                 )}
               </Box>

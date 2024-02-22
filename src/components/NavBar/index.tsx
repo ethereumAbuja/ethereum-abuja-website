@@ -39,7 +39,7 @@ const NavBar = () => {
       boxShadow={COLORS.navBoxShadow}
       backdropFilter="blur(20px)"
       backgroundColor={"whiteAlpha.700"}
-      zIndex={1000}
+      zIndex={50}
       h="80px"
       border="0px solid #314D53"
     >
