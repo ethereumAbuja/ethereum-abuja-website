@@ -5,11 +5,9 @@ import {
   useWaitForTransactionReceipt,
 } from "wagmi";
 import { hexToDecimal } from "../../../constants/helpers";
-import { Address, parseEther } from "viem";
+import { Address, formatUnits } from "viem";
 import ERC20TOKENABI from "../../../constants/abi/erc20.abi.json";
-import {
-  DONATION_CONTRACT_ADDRESS,
-} from "@/constants/contract-address";
+import { DONATION_CONTRACT_ADDRESS } from "@/constants/contract-address";
 import { ChainId } from "@/constants/config/chainId";
 import { useMemo } from "react";
 import { useTokenAllowance } from "./useTokenAllowance";
@@ -56,7 +54,7 @@ export const useApproveToken = ({
     functionName: "approve",
     args: [
       DONATION_CONTRACT_ADDRESS[chainId],
-      amount ? parseEther(amount.toString()) : "0",
+      amount ? formatUnits(amount,18) : "0",
     ], // Convert to string if not undefined
   });
 
@@ -67,7 +65,15 @@ export const useApproveToken = ({
     writeContract,
   } = useWriteContract();
 
-  writeContract(data!.request);
+  writeContract({
+    address: token,
+    abi: ERC20TOKENABI,
+    functionName: "approve",
+    args: [
+      DONATION_CONTRACT_ADDRESS[chainId],
+      amount ? formatUnits(amount, 18) : "0",
+    ], // Convert to string if not undefined
+  });
 
   const {
     isError: approveError,
@@ -77,49 +83,26 @@ export const useApproveToken = ({
     hash: writeData,
   });
 
-  // const tokenAuthorization = () => {
-  //   const priceInput = price !== undefined ? parseEther(price.toString()) : "0";
-
-  //   //@ts-ignore
-  //   if (hexToDecimal(tokenRead?._hex) > hexToDecimal(priceInput?._hex)) {
-  //     write(contractDataConfig!.request);
-  //   } else {
-  //     writeContract(data!.request);
-  //   }
-  // };
-
-  // return {
-  //   approveTokenLoading,
-  //   approveError,
-  //   approveSuccess,
-  //   approveLoading,
-  //   tokenAuthorization,
-  //   writeLoading,
-  //   waitError,
-  //   waitSuccess,
-  //   waitLoading,
-  // };
 
   return useMemo(() => {
     let state = ApprovalState.UNKNOWN;
     if (
-      parseEther(allowance?.toString()!) &&
-      parseEther(amount?.toString()!) &&
-      parseEther(allowance?.toString()!) > parseEther(amount?.toString()!)
+      allowance &&
+      amount &&
+      Number(formatUnits(allowance, 18)) > Number(formatUnits(amount, 18))
     )
       state = ApprovalState.APPROVED;
     else if (
-      parseEther(allowance?.toString()!) &&
-      parseEther(amount?.toString()!) &&
-      parseEther(allowance?.toString()!) == parseEther(amount?.toString()!)
+      allowance && amount
+      Number(formatUnits(allowance, 18)) == Number(formatUnits(amount, 18))
     )
       state = ApprovalState.APPROVED;
     else if (approveLoading) state = ApprovalState.PENDING;
     else if (isAllowanceLoading) state = ApprovalState.LOADING;
     else if (
-      parseEther(allowance?.toString()!) &&
-      parseEther(amount?.toString()!) &&
-      parseEther(allowance?.toString()!) < parseEther(amount?.toString()!)
+      allowance &&
+      amount &&
+      Number(formatUnits(allowance, 18)) < Number(formatUnits(amount, 18))
     )
       state = ApprovalState.NOT_APPROVED;
 

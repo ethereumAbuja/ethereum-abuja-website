@@ -3,26 +3,24 @@
 import { ChainId } from "@/constants/config/chainId";
 import { Address, erc20Abi } from "viem";
 import { useReadContract } from "wagmi";
-
 interface UseTokenAllowance {
-  token?: Address | undefined;
+  token: Address | undefined;
   chainId: ChainId | undefined;
-  owner: Address | undefined;
-  spender: Address | undefined;
-  enabled?: boolean;
+  address: Address | undefined;
 }
 
-export const useTokenAllowance = ({
+export const useAccountBalance = ({
   chainId,
   token,
-  owner,
-  spender,
+  address,
 }: UseTokenAllowance) => {
+  if (!address || !chainId || !token) return null;
+
   return useReadContract({
     chainId,
-    address: token ? (token as Address) : undefined,
+    address: token as Address,
     abi: erc20Abi,
-    functionName: "allowance",
-    args: [owner as Address, spender as Address],
+    functionName: "balanceOf",
+    args: [address],
   });
 };

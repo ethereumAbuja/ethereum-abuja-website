@@ -19,7 +19,12 @@ import CustomToast from "@/components/CustomToast";
 import CustomErrorToast from "@/components/CustomErrorToast";
 import clipboardCopy from "clipboard-copy";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
-import { useAccount } from "wagmi";
+import {
+  useAccount,
+  useReadContract,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
 import { ETHABJ_WALLET_ADDRESS } from "@/utils/config";
 import { switchChain } from "@wagmi/core";
 import {
@@ -39,15 +44,125 @@ import { config } from "@/constants/config";
 import { chains } from "../chainData";
 import ConnectButton from "@/components/connectButton";
 import DonationModal from "@/components/Modals/Donation";
+import { useAccountBalance } from "@/hooks/wagmi/balances/useGetBalance";
+import {
+  DONATION_CONTRACT_ADDRESS,
+  getDonationTokenAddress,
+} from "@/constants/contract-address";
+import { DONATION_TOKENS } from "@/constants/config/chainId";
+import { Address, erc20Abi, formatUnits } from "viem";
+import { useTokenAllowance } from "@/hooks/wagmi/approvals/useTokenAllowance";
+import {
+  ApprovalState,
+  useApproveToken,
+} from "@/hooks/wagmi/approvals/useApproveToken";
 
+import donationAbi from "@/constants/abi/donation.abi.json";
+
+enum allowanceState {
+  UNKNOWN = "UNKNOWN",
+  APPROVED = "APPROVED",
+  UNAPPROVED = "UNAPPROVED",
+}
 const HeroSponsorPage = () => {
   const [copyAddress, setCopyAddress] = useState<boolean>(false);
   const [addName, setAddName] = useState<boolean>(false);
   const [selectedChain, setSelectedChain] = useState<string>("ethereum");
+  const [donationTokenApproval, setDonationTokenApproval] =
+    useState<allowanceState>(allowanceState.UNKNOWN);
+
+  const [amount, setAmount] = useState("");
+
+  const { data: hash, isPending, writeContract } = useWriteContract();
 
   let toast = useToast();
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, chainId } = useAccount();
+  const [donationToken, setDonationToken] = useState<DONATION_TOKENS>(
+    DONATION_TOKENS.USDT,
+  );
   const { open } = useWeb3Modal();
+
+  const _donationToken = getDonationTokenAddress({
+    donationToken,
+    chainId: chainId ?? 1,
+  });
+  //FETCH DONATION TOKEN BALANCE
+  const {
+    data: donationTokenBal,
+    isFetching: isFetchinDonTokenBal,
+    isError,
+    isSuccess: isSuccessDonToken,
+  } = useReadContract({
+    abi: erc20Abi,
+    address: _donationToken as Address,
+    functionName: "balanceOf",
+    args: [address as Address],
+    scopeKey: "Donation tokenBalance",
+  });
+
+  //DONATION AMOUNT APPROVAL CHECK AND FUNCTION
+
+  const PtokenAllowance = useTokenAllowance({
+    chainId,
+    token: _donationToken as Address,
+    owner: address,
+    spender: DONATION_CONTRACT_ADDRESS[chainId],
+  });
+
+  const handleDonationAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    console.log("donation amount", e.target.value);
+    setAmount(e.target.value);
+
+    console.log("this is BigInt value", BigInt(e.target.value));
+
+    PtokenAllowance &&
+    Number(formatUnits(PtokenAllowance.data, 18)) >= Number(e.target.value)
+      ? setDonationTokenApproval(allowanceState.APPROVED)
+      : setDonationTokenApproval(allowanceState.UNAPPROVED);
+
+    console.log(donationTokenApproval);
+  };
+
+  //APPROVE TOKEN FUNCTION
+
+  const approveToken = () => {
+    if (!chainId) return null;
+
+    writeContract({
+      address: _donationToken,
+      abi: erc20Abi,
+      functionName: "approve",
+      args: [DONATION_CONTRACT_ADDRESS[chainId], BigInt(amount)],
+    });
+  };
+
+  //DONATE FUNCTION
+
+  const donatefn = () => {
+    if (!chainId || !address) return null;
+
+    console.log("donation starting....");
+
+    writeContract({
+      address: DONATION_CONTRACT_ADDRESS[chainId],
+      abi: donationAbi,
+      functionName: "donate",
+      args: [_donationToken as Address, BigInt(amount)],
+    });
+  };
+
+  //TRANSACTIONS RECEIPT
+
+  const {
+    isLoading: isConfirming,
+    isSuccess: isConfirmed,
+    isError: trxErrors,
+  } = useWaitForTransactionReceipt({
+    hash,
+  });
+
+  console.log("trx states", isConfirming, isConfirmed, trxErrors);
 
   ///***FN to handle the Checkbox of Copy Address
   const handleCopyAddress = () => {
@@ -81,15 +196,6 @@ const HeroSponsorPage = () => {
       });
     }
   };
-
-  //***FN to handling Connect wallet and also contribute button
-  function useContributionHandler() {
-    if (isConnected) {
-      // Handle contribution logic when wallet is connected
-    } else {
-      open();
-    }
-  }
 
   //***Function to get chain ID based on selected chain value
   const getChainId = (selectedChainValue: any) => {
@@ -151,6 +257,10 @@ const HeroSponsorPage = () => {
       );
     }
   };
+
+  const donationReady: boolean =
+    donationTokenApproval == allowanceState.APPROVED ||
+    donationTokenApproval == allowanceState.UNKNOWN;
 
   return (
     <Box
@@ -308,6 +418,7 @@ const HeroSponsorPage = () => {
                     </Flex>
                   </Flex>
                 </Box>
+
                 {copyAddress ? (
                   <Box>
                     <Text
@@ -414,6 +525,7 @@ const HeroSponsorPage = () => {
                               boxShadow: "none",
                             }}
                             border={"none"}
+                            onChange={handleDonationAmount}
                           />
                           <Box>
                             <select
@@ -424,6 +536,17 @@ const HeroSponsorPage = () => {
                               <option value="usdc">USDC</option>
                             </select>
                           </Box>
+                          {isSuccessDonToken && (
+                            <Box marginLeft={"4px"}>
+                              <Text whiteSpace={"nowrap"}>
+                                {" "}
+                                Bal:{" "}
+                                <span>
+                                  {formatUnits(donationTokenBal, 18)}
+                                </span>{" "}
+                              </Text>
+                            </Box>
+                          )}
                         </Flex>
                       </Box>
 
@@ -458,7 +581,8 @@ const HeroSponsorPage = () => {
                     </Flex>
 
                     <Flex justifyContent={["center", "flex-end", "flex-end"]}>
-                      {isConnected ? (
+                      {!isConnected && <ConnectButton />}
+                      {isConnected && donationReady ? (
                         <Button
                           display={"flex"}
                           w={["100%", "160px", "160px"]}
@@ -470,7 +594,12 @@ const HeroSponsorPage = () => {
                           border={"1px solid #8140CE"}
                           bg={"#907EF4"}
                           _hover={{ bg: "#907EF4" }}
-                          onClick={useContributionHandler}
+                          disabled={
+                            donationTokenApproval == allowanceState.UNKNOWN
+                              ? true
+                              : false
+                          }
+                          onClick={donatefn}
                         >
                           <Text
                             color={"#FDFDFD"}
@@ -482,10 +611,24 @@ const HeroSponsorPage = () => {
                           </Text>
                         </Button>
                       ) : (
-                        <ConnectButton />
+                        <Button
+                          display={"flex"}
+                          w={["100%", "160px", "160px"]}
+                          py={"11px"}
+                          justifyContent={"center"}
+                          alignItems={"center"}
+                          gap={"10px"}
+                          borderRadius={"8px"}
+                          border={"1px solid #8140CE"}
+                          bg={"#907EF4"}
+                          _hover={{ bg: "#907EF4" }}
+                          onClick={approveToken}
+                        >
+                          Approve
+                        </Button>
                       )}
                     </Flex>
-                    <DonationModal/>
+                    {/* <DonationModal/> */}
                   </Box>
                 )}
               </Box>
