@@ -12,6 +12,16 @@ import {
   Tooltip,
   Button,
   useToast,
+  useDisclosure,
+} from "@chakra-ui/react";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 import { ETHABJ_SVG } from "@/assets/svg";
 import "../../../../../globals.css";
@@ -49,7 +59,7 @@ import {
   DONATION_CONTRACT_ADDRESS,
   getDonationTokenAddress,
 } from "@/constants/contract-address";
-import { DONATION_TOKENS } from "@/constants/config/chainId";
+import { ChainId, DONATION_TOKENS } from "@/constants/config/chainId";
 import { Address, erc20Abi, formatUnits } from "viem";
 import { useTokenAllowance } from "@/hooks/wagmi/approvals/useTokenAllowance";
 import {
@@ -65,6 +75,7 @@ enum allowanceState {
   UNAPPROVED = "UNAPPROVED",
 }
 const HeroSponsorPage = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [copyAddress, setCopyAddress] = useState<boolean>(false);
   const [addName, setAddName] = useState<boolean>(false);
   const [selectedChain, setSelectedChain] = useState<string>("ethereum");
@@ -73,7 +84,13 @@ const HeroSponsorPage = () => {
 
   const [amount, setAmount] = useState("");
 
-  const { data: hash, isPending, writeContract } = useWriteContract();
+  const {
+    data: hash,
+    isPending,
+    isSuccess,
+    isError: mainIsError,
+    writeContract,
+  } = useWriteContract();
 
   let toast = useToast();
   const { address, isConnected, chainId } = useAccount();
@@ -106,7 +123,7 @@ const HeroSponsorPage = () => {
     chainId,
     token: _donationToken as Address,
     owner: address,
-    spender: DONATION_CONTRACT_ADDRESS[chainId],
+    spender: DONATION_CONTRACT_ADDRESS[chainId as ChainId] as Address,
   });
 
   const handleDonationAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,9 +132,14 @@ const HeroSponsorPage = () => {
     setAmount(e.target.value);
 
     console.log("this is BigInt value", BigInt(e.target.value));
-
+    console.log(
+      "this is approved tokens",
+      Number(formatUnits(PtokenAllowance.data ?? 0n, 18)).toFixed(2),
+    );
+    console.log("this is value inputed", Number(e.target.value));
     PtokenAllowance &&
-    Number(formatUnits(PtokenAllowance.data, 18)) >= Number(e.target.value)
+    Number(formatUnits(PtokenAllowance.data ?? 0n, 18)) >=
+      Number(e.target.value)
       ? setDonationTokenApproval(allowanceState.APPROVED)
       : setDonationTokenApproval(allowanceState.UNAPPROVED);
 
@@ -125,15 +147,17 @@ const HeroSponsorPage = () => {
   };
 
   //APPROVE TOKEN FUNCTION
-
   const approveToken = () => {
     if (!chainId) return null;
 
     writeContract({
-      address: _donationToken,
+      address: _donationToken as Address,
       abi: erc20Abi,
       functionName: "approve",
-      args: [DONATION_CONTRACT_ADDRESS[chainId], BigInt(amount)],
+      args: [
+        DONATION_CONTRACT_ADDRESS[chainId as ChainId] as Address,
+        BigInt(amount),
+      ],
     });
   };
 
@@ -145,7 +169,7 @@ const HeroSponsorPage = () => {
     console.log("donation starting....");
 
     writeContract({
-      address: DONATION_CONTRACT_ADDRESS[chainId],
+      address: DONATION_CONTRACT_ADDRESS[chainId as ChainId] as Address,
       abi: donationAbi,
       functionName: "donate",
       args: [_donationToken as Address, BigInt(amount)],
@@ -322,6 +346,7 @@ const HeroSponsorPage = () => {
                     src="image/Heart compartment.png"
                     w={"64px"}
                     h={"64px"}
+                    alt="an image"
                   />
                   <Text
                     color={"#060606"}
@@ -542,7 +567,9 @@ const HeroSponsorPage = () => {
                                 {" "}
                                 Bal:{" "}
                                 <span>
-                                  {formatUnits(donationTokenBal, 18)}
+                                  {Number(
+                                    formatUnits(donationTokenBal, 18),
+                                  ).toFixed(2)}
                                 </span>{" "}
                               </Text>
                             </Box>
@@ -599,7 +626,7 @@ const HeroSponsorPage = () => {
                               ? true
                               : false
                           }
-                          onClick={donatefn}
+                          onClick={onOpen}
                         >
                           <Text
                             color={"#FDFDFD"}
@@ -611,29 +638,44 @@ const HeroSponsorPage = () => {
                           </Text>
                         </Button>
                       ) : (
-                        <Button
-                          display={"flex"}
-                          w={["100%", "160px", "160px"]}
-                          py={"11px"}
-                          justifyContent={"center"}
-                          alignItems={"center"}
-                          gap={"10px"}
-                          borderRadius={"8px"}
-                          border={"1px solid #8140CE"}
-                          bg={"#907EF4"}
-                          _hover={{ bg: "#907EF4" }}
-                          onClick={approveToken}
-                        >
-                          Approve
-                        </Button>
+                        isConnected && (
+                          <Button
+                            display={"flex"}
+                            w={["100%", "160px", "160px"]}
+                            py={"11px"}
+                            justifyContent={"center"}
+                            alignItems={"center"}
+                            gap={"10px"}
+                            borderRadius={"8px"}
+                            border={"1px solid #8140CE"}
+                            bg={"#907EF4"}
+                            _hover={{ bg: "#907EF4" }}
+                            onClick={approveToken}
+                          >
+                            Approve
+                          </Button>
+                        )
                       )}
                     </Flex>
                     {/* <DonationModal/> */}
                   </Box>
                 )}
               </Box>
+
+              <Flex>
+                <Text>Donation Indicator</Text>
+              </Flex>
             </Box>
           </Flex>
+          <TransactionModal
+            hash={hash}
+            isPending={isPending}
+            isSuccess={isSuccess}
+            isErred={mainIsError}
+            isOpen={isOpen}
+            onClose={onClose}
+            donatefn={donatefn}
+          />
         </Box>
       </Flex>
     </Box>
@@ -641,3 +683,54 @@ const HeroSponsorPage = () => {
 };
 
 export default HeroSponsorPage;
+
+type modalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+
+  donationAmount: BigInt;
+  donatefn: () => void;
+
+  //trx states
+
+  isSuccess: boolean;
+  isPending: boolean;
+  isErred: boolean;
+
+  hash: Address;
+};
+const TransactionModal = ({
+  isOpen,
+  onClose,
+  donatefn,
+
+  isSuccess,
+  isPending,
+  isErred,
+
+  hash,
+}: modalProps) => {
+  return (
+    <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Transactions</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody pb={6}>
+          <Text>Hello world</Text>
+
+          <Button>
+            {isPending && "TRANSACTION PENDING"}
+            {isSuccess && "TRANSACTION SUCCESFULL"}
+            {mainIsError && "TRANSACTION ERROR"}
+            {hash && hash}
+          </Button>
+        </ModalBody>
+
+        <ModalFooter>
+          <Button onClick={donatefn}>Donate</Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+};
