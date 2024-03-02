@@ -70,10 +70,18 @@ import {
 
 import donationAbi from "@/constants/abi/donation.abi.json";
 
+//state to track allowance of inputed toke
 enum allowanceState {
   UNKNOWN = "UNKNOWN",
   APPROVED = "APPROVED",
   UNAPPROVED = "UNAPPROVED",
+}
+
+//this enum trxType  is basically to detertmine the items to be displayed in the modal after succesfull transactions during donation
+enum trxType {
+  APPROVAL = "APPROVAL",
+  DONATION = "DONATION",
+  UNKNOWN = "UNKNOWN",
 }
 const HeroSponsorPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -84,6 +92,8 @@ const HeroSponsorPage = () => {
     useState<allowanceState>(allowanceState.UNKNOWN);
 
   const [amount, setAmount] = useState("");
+
+  const [trxtype, setTrxtype] = useState<trxType>(trxType.UNKNOWN);
 
   const {
     data: hash,
@@ -151,6 +161,8 @@ const HeroSponsorPage = () => {
   const approveToken = () => {
     if (!chainId) return null;
 
+    setTrxtype(trxType.APPROVAL);
+
     writeContract({
       address: _donationToken as Address,
       abi: erc20Abi,
@@ -169,6 +181,12 @@ const HeroSponsorPage = () => {
     });
 
     isSuccess && setDonationTokenApproval(allowanceState.APPROVED);
+
+    newAllowance &&
+      Number(formatUnits(newAllowance.data ?? 0n, 18)) >= Number(amount) &&
+      setDonationTokenApproval(allowanceState.APPROVED);
+
+    isSuccess && onOpen();
   };
 
   //DONATE FUNCTION
@@ -176,7 +194,7 @@ const HeroSponsorPage = () => {
   const donatefn = () => {
     if (!chainId || !address) return null;
 
-    console.log("donation starting....");
+    setTrxtype(trxType.DONATION);
 
     writeContract({
       address: DONATION_CONTRACT_ADDRESS[chainId as ChainId] as Address,
@@ -184,6 +202,8 @@ const HeroSponsorPage = () => {
       functionName: "donate",
       args: [_donationToken as Address, parseEther(amount)],
     });
+
+    isSuccess && onOpen();
   };
 
   //TRANSACTIONS RECEIPT
