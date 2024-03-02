@@ -70,7 +70,6 @@ import {
 
 import donationAbi from "@/constants/abi/donation.abi.json";
 
-
 enum allowanceState {
   UNKNOWN = "UNKNOWN",
   APPROVED = "APPROVED",
@@ -161,6 +160,15 @@ const HeroSponsorPage = () => {
         parseEther(amount),
       ],
     });
+
+    const newAllowance = useTokenAllowance({
+      chainId,
+      token: _donationToken as Address,
+      owner: address,
+      spender: DONATION_CONTRACT_ADDRESS[chainId as ChainId] as Address,
+    });
+
+    isSuccess && setDonationTokenApproval(allowanceState.APPROVED);
   };
 
   //DONATE FUNCTION
@@ -174,7 +182,7 @@ const HeroSponsorPage = () => {
       address: DONATION_CONTRACT_ADDRESS[chainId as ChainId] as Address,
       abi: donationAbi,
       functionName: "donate",
-      args: [_donationToken as Address, BigInt(amount)],
+      args: [_donationToken as Address, parseEther(amount)],
     });
   };
 
@@ -628,7 +636,10 @@ const HeroSponsorPage = () => {
                               ? true
                               : false
                           }
-                          onClick={onOpen}
+                          // onClick={() => {
+                          //   onOpen();
+                          // }}
+                          onClick={donatefn}
                         >
                           <Text
                             color={"#FDFDFD"}
@@ -747,7 +758,9 @@ const TransactionModal = ({
         </ModalBody>
 
         <ModalFooter>
-          <Button onClick={approvefn}>Approve</Button>
+          <Button color={isDonationReady ? " " : "#FDFDFD"} onClick={approvefn}>
+            Approve
+          </Button>
           <Button onClick={donatefn}>Donate</Button>
         </ModalFooter>
       </ModalContent>
