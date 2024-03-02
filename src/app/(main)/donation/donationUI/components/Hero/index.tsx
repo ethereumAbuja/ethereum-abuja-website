@@ -161,7 +161,7 @@ const HeroSponsorPage = () => {
   const approveToken = () => {
     if (!chainId) return null;
 
-    setTrxtype(trxType.APPROVAL);
+    setTrxtype(trxType.APPROVAL)
 
     writeContract({
       address: _donationToken as Address,
@@ -186,7 +186,7 @@ const HeroSponsorPage = () => {
       Number(formatUnits(newAllowance.data ?? 0n, 18)) >= Number(amount) &&
       setDonationTokenApproval(allowanceState.APPROVED);
 
-    isSuccess && onOpen();
+      isSuccess && onOpen()
   };
 
   //DONATE FUNCTION
@@ -194,7 +194,7 @@ const HeroSponsorPage = () => {
   const donatefn = () => {
     if (!chainId || !address) return null;
 
-    setTrxtype(trxType.DONATION);
+    setTrxtype(trxType.DONATION)
 
     writeContract({
       address: DONATION_CONTRACT_ADDRESS[chainId as ChainId] as Address,
@@ -203,7 +203,7 @@ const HeroSponsorPage = () => {
       args: [_donationToken as Address, parseEther(amount)],
     });
 
-    isSuccess && onOpen();
+    isSuccess && onOpen()
   };
 
   //TRANSACTIONS RECEIPT
@@ -215,6 +215,9 @@ const HeroSponsorPage = () => {
   } = useWaitForTransactionReceipt({
     hash,
   });
+
+  //useEffect for transactions
+
 
   console.log("trx states", isConfirming, isConfirmed, trxErrors);
 
