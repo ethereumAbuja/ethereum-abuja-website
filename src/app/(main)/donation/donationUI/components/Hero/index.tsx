@@ -13,6 +13,7 @@ import {
   Button,
   useToast,
   useDisclosure,
+  VStack,
 } from "@chakra-ui/react";
 import {
   Modal,
@@ -60,7 +61,7 @@ import {
   getDonationTokenAddress,
 } from "@/constants/contract-address";
 import { ChainId, DONATION_TOKENS } from "@/constants/config/chainId";
-import { Address, erc20Abi, formatUnits } from "viem";
+import { Address, erc20Abi, formatUnits, parseEther } from "viem";
 import { useTokenAllowance } from "@/hooks/wagmi/approvals/useTokenAllowance";
 import {
   ApprovalState,
@@ -68,6 +69,7 @@ import {
 } from "@/hooks/wagmi/approvals/useApproveToken";
 
 import donationAbi from "@/constants/abi/donation.abi.json";
+
 
 enum allowanceState {
   UNKNOWN = "UNKNOWN",
@@ -156,7 +158,7 @@ const HeroSponsorPage = () => {
       functionName: "approve",
       args: [
         DONATION_CONTRACT_ADDRESS[chainId as ChainId] as Address,
-        BigInt(amount),
+        parseEther(amount),
       ],
     });
   };
@@ -662,12 +664,22 @@ const HeroSponsorPage = () => {
                 )}
               </Box>
 
-              <Flex>
+              <VStack>
                 <Text>Donation Indicator</Text>
-              </Flex>
+                <Button>
+                  {isPending && "TRANSACTION PENDING"}
+                  {isSuccess && "TRANSACTION SUCCESFULL"}
+                  {mainIsError && "TRANSACTION ERROR"}
+                  {hash && hash}
+                </Button>
+              </VStack>
             </Box>
           </Flex>
+
           <TransactionModal
+            donationAmount={amount}
+            isDonationReady={donationReady}
+            approvefn={approveToken}
             hash={hash}
             isPending={isPending}
             isSuccess={isSuccess}
@@ -688,8 +700,9 @@ type modalProps = {
   isOpen: boolean;
   onClose: () => void;
 
-  donationAmount: BigInt;
+  donationAmount: string;
   donatefn: () => void;
+  approvefn: () => void;
 
   //trx states
 
@@ -697,16 +710,22 @@ type modalProps = {
   isPending: boolean;
   isErred: boolean;
 
-  hash: Address;
+  isDonationReady: boolean;
+
+  hash: Address | undefined;
 };
 const TransactionModal = ({
   isOpen,
   onClose,
+
   donatefn,
+  approvefn,
 
   isSuccess,
   isPending,
   isErred,
+
+  isDonationReady,
 
   hash,
 }: modalProps) => {
@@ -722,12 +741,13 @@ const TransactionModal = ({
           <Button>
             {isPending && "TRANSACTION PENDING"}
             {isSuccess && "TRANSACTION SUCCESFULL"}
-            {mainIsError && "TRANSACTION ERROR"}
+            {isErred && "TRANSACTION ERROR"}
             {hash && hash}
           </Button>
         </ModalBody>
 
         <ModalFooter>
+          <Button onClick={approvefn}>Approve</Button>
           <Button onClick={donatefn}>Donate</Button>
         </ModalFooter>
       </ModalContent>
