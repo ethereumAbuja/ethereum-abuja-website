@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Checkbox,
@@ -83,6 +83,48 @@ enum trxType {
   DONATION = "DONATION",
   UNKNOWN = "UNKNOWN",
 }
+
+//sent chainId and donation token search param
+//approve token function
+
+// const searchParams = useSearchParams()
+
+// const defaultedParams = useMemo(() => {
+//   const params = new URLSearchParams(searchParams)
+//   if (!params.has('chainId'))
+//     params.set(
+//       'chainId',
+//       (chain?.id && isSupportedChainId(chain.id)
+//         ? chain.id
+//         : ChainId.ETHEREUM
+//       ).toString(),
+//     )
+//   if (!params.has('token0')) {
+//     params.set('token0', 'NATIVE')
+//   }
+//   if (!params.has('token1')) {
+//     params.set('token1', getQuoteCurrency(Number(params.get('chainId'))))
+//   }
+//   return params
+// }, [chain, searchParams])
+
+// // Get a new searchParams string by merging the current
+// // searchParams with a provided key/value pair
+// const createQueryString = useCallback(
+//   (values: { name: string; value: string | null }[]) => {
+//     const params = new URLSearchParams(defaultedParams)
+//     values.forEach(({ name, value }) => {
+//       if (value === null) {
+//         params.delete(name)
+//       } else {
+//         params.set(name, value)
+//       }
+//     })
+//     return params.toString()
+//   },
+//   [defaultedParams],
+// )
+
 const HeroSponsorPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [copyAddress, setCopyAddress] = useState<boolean>(false);
@@ -104,6 +146,7 @@ const HeroSponsorPage = () => {
   } = useWriteContract();
 
   let toast = useToast();
+
   const { address, isConnected, chainId } = useAccount();
   const [donationToken, setDonationToken] = useState<DONATION_TOKENS>(
     DONATION_TOKENS.USDT,
@@ -114,12 +157,14 @@ const HeroSponsorPage = () => {
     donationToken,
     chainId: chainId ?? 1,
   });
+
   //FETCH DONATION TOKEN BALANCE
   const {
     data: donationTokenBal,
     isFetching: isFetchinDonTokenBal,
     isError,
     isSuccess: isSuccessDonToken,
+    refetch: refectBalance,
   } = useReadContract({
     abi: erc20Abi,
     address: _donationToken as Address,
@@ -130,12 +175,15 @@ const HeroSponsorPage = () => {
 
   //DONATION AMOUNT APPROVAL CHECK AND FUNCTION
 
-  const PtokenAllowance = useTokenAllowance({
-    chainId,
-    token: _donationToken as Address,
-    owner: address,
-    spender: DONATION_CONTRACT_ADDRESS[chainId as ChainId] as Address,
-  });
+  const { data: PtokenAllowance, refetch: refetchAllowance } =
+    useTokenAllowance({
+      chainId,
+      token: _donationToken as Address,
+      owner: address,
+      spender: DONATION_CONTRACT_ADDRESS[chainId as ChainId] as Address,
+    });
+
+  //Check approval state when inpute token value]
 
   const handleDonationAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -145,12 +193,11 @@ const HeroSponsorPage = () => {
     console.log("this is BigInt value", BigInt(e.target.value));
     console.log(
       "this is approved tokens",
-      Number(formatUnits(PtokenAllowance.data ?? 0n, 18)).toFixed(2),
+      Number(formatUnits(PtokenAllowance ?? 0n, 18)).toFixed(2),
     );
     console.log("this is value inputed", Number(e.target.value));
     PtokenAllowance &&
-    Number(formatUnits(PtokenAllowance.data ?? 0n, 18)) >=
-      Number(e.target.value)
+    Number(formatUnits(PtokenAllowance ?? 0n, 18)) >= Number(e.target.value)
       ? setDonationTokenApproval(allowanceState.APPROVED)
       : setDonationTokenApproval(allowanceState.UNAPPROVED);
 
@@ -161,7 +208,7 @@ const HeroSponsorPage = () => {
   const approveToken = () => {
     if (!chainId) return null;
 
-    setTrxtype(trxType.APPROVAL)
+    setTrxtype(trxType.APPROVAL);
 
     writeContract({
       address: _donationToken as Address,
@@ -186,15 +233,22 @@ const HeroSponsorPage = () => {
       Number(formatUnits(newAllowance.data ?? 0n, 18)) >= Number(amount) &&
       setDonationTokenApproval(allowanceState.APPROVED);
 
-      isSuccess && onOpen()
+    isSuccess && onOpen();
   };
 
-  //DONATE FUNCTION
+  //RECOMPUTE ALLOWANCE STATE AFTER SUCCESSFUL APPROVAL
+
+  const recomputeAllowanceState = () => {
+    Number(formatUnits(PtokenAllowance ?? 0n, 18)) >= Number(amount) &&
+      setDonationTokenApproval(allowanceState.APPROVED);
+  };
+
+  // DONATE FUNCTION
 
   const donatefn = () => {
     if (!chainId || !address) return null;
 
-    setTrxtype(trxType.DONATION)
+    setTrxtype(trxType.DONATION);
 
     writeContract({
       address: DONATION_CONTRACT_ADDRESS[chainId as ChainId] as Address,
@@ -203,7 +257,7 @@ const HeroSponsorPage = () => {
       args: [_donationToken as Address, parseEther(amount)],
     });
 
-    isSuccess && onOpen()
+    isSuccess && onOpen();
   };
 
   //TRANSACTIONS RECEIPT
@@ -215,9 +269,6 @@ const HeroSponsorPage = () => {
   } = useWaitForTransactionReceipt({
     hash,
   });
-
-  //useEffect for transactions
-
 
   console.log("trx states", isConfirming, isConfirmed, trxErrors);
 
@@ -274,6 +325,67 @@ const HeroSponsorPage = () => {
     }
   };
 
+  const values = useMemo(() => {
+    return {
+      // state
+      //chainId
+
+      chainId,
+
+      //tokenaddress and address
+
+      _donationToken,
+      donationToken,
+      //curr transaction type -approval -donation
+      trxtype,
+      // tranx states -pending, success error
+      hash,
+      isPending,
+      isSuccess,
+      mainIsError,
+    };
+  }, []);
+
+  useEffect(() => {
+    refectBalance();
+    isConfirmed &&
+      toast({
+        position: "bottom-right",
+        render: () => (
+          <Box color="white" p={3} bg="blue.500">
+            confirmed
+          </Box>
+        ),
+      });
+    isConfirming &&
+      toast({
+        position: "bottom-right",
+        render: () => (
+          <Box color="white" p={3} bg="blue.500">
+            confirming
+          </Box>
+        ),
+      });
+
+    trxtype == trxType.APPROVAL && isConfirmed && refetchAllowance();
+    recomputeAllowanceState();
+  }, [
+    isConfirming,
+    isConfirmed,
+    chainId,
+
+    //UNNECESSARY USEEFFECT DEPENDENCIES
+    // toast,
+    // refectBalance,
+    // refetchAllowance,
+    // trxtype,
+    // recomputeAllowanceState,
+
+    // values.isSuccess,
+    // values.isPending,
+    // values.mainIsError,
+  ]);
+
   //***FN to handle the select chain change
   const handleSelectChainChange = async (
     e: React.ChangeEvent<HTMLSelectElement>,
@@ -319,6 +431,8 @@ const HeroSponsorPage = () => {
     donationTokenApproval == allowanceState.APPROVED ||
     donationTokenApproval == allowanceState.UNKNOWN;
 
+  //TRACK TRANSACTION STATE
+
   return (
     <Box
       py={["7rem", "7rem", "5rem", "5rem"]}
@@ -327,6 +441,20 @@ const HeroSponsorPage = () => {
       bgPos={["0 -90px", "inherit", "inherit"]}
     >
       <Flex flexDir={"column"} gap={"10rem"}>
+        <Button
+          onClick={() =>
+            toast({
+              position: "bottom-left",
+              render: () => (
+                <Box color="white" p={3} bg="blue.500">
+                  Hello World
+                </Box>
+              ),
+            })
+          }
+        >
+          Show Toast
+        </Button>
         <Flex
           flexDir={"column"}
           maxW={"700px"}
@@ -659,10 +787,10 @@ const HeroSponsorPage = () => {
                               ? true
                               : false
                           }
-                          // onClick={() => {
-                          //   onOpen();
-                          // }}
-                          onClick={donatefn}
+                          onClick={() => {
+                            onOpen();
+                          }}
+                          // onClick={donatefn}
                         >
                           <Text
                             color={"#FDFDFD"}
@@ -781,9 +909,6 @@ const TransactionModal = ({
         </ModalBody>
 
         <ModalFooter>
-          <Button color={isDonationReady ? " " : "#FDFDFD"} onClick={approvefn}>
-            Approve
-          </Button>
           <Button onClick={donatefn}>Donate</Button>
         </ModalFooter>
       </ModalContent>

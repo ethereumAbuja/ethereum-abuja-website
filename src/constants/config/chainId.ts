@@ -6,6 +6,6 @@ export enum ChainId {
 }
 
 export enum DONATION_TOKENS {
-  USDT,
-  USDC,
+  USDT = "USDT",
+  USDC = "USDC",
 }

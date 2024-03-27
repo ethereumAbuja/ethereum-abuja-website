@@ -32,3 +32,8 @@ export const getDonationTokenAddress = ({
   else if (donationToken == DONATION_TOKENS.USDT) return USDT_ADDRESS[chainId];
   else return "An error occured";
 };
+
+// const ETHERSCAN_URL: { [chainId in ChainId]: string } = {
+//   1: "https://etherscan.io",
+//   84532: "https://sepolia-explorer.base.org",
+// };
