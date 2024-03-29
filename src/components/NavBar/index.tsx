@@ -23,7 +23,7 @@ import { useState } from "react";
 import { nanoid } from "@reduxjs/toolkit";
 import { NavBarLinks as tabs } from "@/lib/config/site";
 import { JOIN_COM_URL } from "@/utils/config";
-import ConnectButton from "../connectButton";
+import ConnectButton from "../wagmi/connectButton";
 
 const NavBar = () => {
   const [mobileNav, setMobileNav] = useState<boolean>(false);

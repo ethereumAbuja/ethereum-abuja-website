@@ -53,7 +53,7 @@ import {
 } from "wagmi/chains";
 import { config } from "@/constants/config";
 import { chains } from "../chainData";
-import ConnectButton from "@/components/connectButton";
+import ConnectButton from "@/components/wagmi/connectButton";
 import DonationModal from "@/components/Modals/Donation";
 import { useAccountBalance } from "@/hooks/wagmi/balances/useGetBalance";
 import {
@@ -69,6 +69,7 @@ import {
 } from "@/hooks/wagmi/approvals/useApproveToken";
 
 import donationAbi from "@/constants/abi/donation.abi.json";
+import NetoworKSelector from "@/components/wagmi/network-selector";
 
 //state to track allowance of inputed toke
 enum allowanceState {
@@ -441,20 +442,6 @@ const HeroSponsorPage = () => {
       bgPos={["0 -90px", "inherit", "inherit"]}
     >
       <Flex flexDir={"column"} gap={"10rem"}>
-        <Button
-          onClick={() =>
-            toast({
-              position: "bottom-left",
-              render: () => (
-                <Box color="white" p={3} bg="blue.500">
-                  Hello World
-                </Box>
-              ),
-            })
-          }
-        >
-          Show Toast
-        </Button>
         <Flex
           flexDir={"column"}
           maxW={"700px"}
@@ -738,34 +725,17 @@ const HeroSponsorPage = () => {
                         </Flex>
                       </Box>
 
-                      <Box w={"100%"}>
+                      <VStack w={"100%"} display={"flex"} gap="2" alignItems={"start"}>
                         <Text
                           color={"#3A3A3A"}
                           fontSize={"14px"}
                           fontWeight={"500"}
-                          mb={"5px"}
+                
                         >
                           Select Chain
                         </Text>
-                        <select
-                          className="css-i3puav"
-                          style={{
-                            width: "100%",
-                            height: "3.2rem",
-                            borderRadius: ".3rem",
-                            border: "1px solid #E2E8F0",
-                            padding: "5px 10px",
-                          }}
-                          value={selectedChain}
-                          onChange={handleSelectChainChange}
-                        >
-                          {chains.map((chain) => (
-                            <option key={chain.value} value={chain.value}>
-                              {chain.label}
-                            </option>
-                          ))}
-                        </select>
-                      </Box>
+                        <NetoworKSelector />
+                      </VStack>
                     </Flex>
 
                     <Flex justifyContent={["center", "flex-end", "flex-end"]}>
@@ -821,20 +791,9 @@ const HeroSponsorPage = () => {
                         )
                       )}
                     </Flex>
-                    {/* <DonationModal/> */}
                   </Box>
                 )}
               </Box>
-
-              <VStack>
-                <Text>Donation Indicator</Text>
-                <Button>
-                  {isPending && "TRANSACTION PENDING"}
-                  {isSuccess && "TRANSACTION SUCCESFULL"}
-                  {mainIsError && "TRANSACTION ERROR"}
-                  {hash && hash}
-                </Button>
-              </VStack>
             </Box>
           </Flex>
 
