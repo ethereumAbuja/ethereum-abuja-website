@@ -70,6 +70,7 @@ import {
 
 import donationAbi from "@/constants/abi/donation.abi.json";
 import NetoworKSelector from "@/components/wagmi/network-selector";
+import CurrencySwitch from "@/components/wagmi/currency-switch";
 
 //state to track allowance of inputed toke
 enum allowanceState {
@@ -326,26 +327,26 @@ const HeroSponsorPage = () => {
     }
   };
 
-  const values = useMemo(() => {
-    return {
-      // state
-      //chainId
+  // const values = useMemo(() => {
+  //   return {
+  //     // state
+  //     //chainId
 
-      chainId,
+  //     chainId,
 
-      //tokenaddress and address
+  //     //tokenaddress and address
 
-      _donationToken,
-      donationToken,
-      //curr transaction type -approval -donation
-      trxtype,
-      // tranx states -pending, success error
-      hash,
-      isPending,
-      isSuccess,
-      mainIsError,
-    };
-  }, []);
+  //     _donationToken,
+  //     donationToken,
+  //     //curr transaction type -approval -donation
+  //     trxtype,
+  //     // tranx states -pending, success error
+  //     hash,
+  //     isPending,
+  //     isSuccess,
+  //     mainIsError,
+  //   };
+  // }, []);
 
   useEffect(() => {
     refectBalance();
@@ -701,13 +702,7 @@ const HeroSponsorPage = () => {
                             onChange={handleDonationAmount}
                           />
                           <Box>
-                            <select
-                              style={{ fontSize: "14px" }}
-                              className="css-so9kbn"
-                            >
-                              <option value="usdt">USDT</option>
-                              <option value="usdc">USDC</option>
-                            </select>
+                            <CurrencySwitch />
                           </Box>
                           {isSuccessDonToken && (
                             <Box marginLeft={"4px"}>
@@ -725,12 +720,16 @@ const HeroSponsorPage = () => {
                         </Flex>
                       </Box>
 
-                      <VStack w={"100%"} display={"flex"} gap="2" alignItems={"start"}>
+                      <VStack
+                        w={"100%"}
+                        display={"flex"}
+                        gap="2"
+                        alignItems={"start"}
+                      >
                         <Text
                           color={"#3A3A3A"}
                           fontSize={"14px"}
                           fontWeight={"500"}
-                
                         >
                           Select Chain
                         </Text>
