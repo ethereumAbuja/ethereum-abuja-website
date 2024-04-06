@@ -89,7 +89,7 @@ enum trxType {
 //sent chainId and donation token search param
 //approve token function
 
-// const searchParams = useSearchParams()
+const searchParams = useSearchParams();
 
 // const defaultedParams = useMemo(() => {
 //   const params = new URLSearchParams(searchParams)
@@ -155,10 +155,9 @@ const HeroSponsorPage = () => {
   );
   const { open } = useWeb3Modal();
 
-  const _donationToken = getDonationTokenAddress({
-    donationToken,
-    chainId: chainId ?? 1,
-  });
+  const _donationToken = getDonationTokenAddress(donationToken, searchParams);
+
+  console.log("this is donation token", _donationToken);
 
   //FETCH DONATION TOKEN BALANCE
   const {
