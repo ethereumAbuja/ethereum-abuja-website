@@ -12,17 +12,6 @@ import {
   Tooltip,
   Button,
   useToast,
-  useDisclosure,
-  VStack,
-} from "@chakra-ui/react";
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
 } from "@chakra-ui/react";
 import { ETHABJ_SVG } from "@/assets/svg";
 import "../../../../../globals.css";
@@ -37,25 +26,7 @@ import {
   useWriteContract,
 } from "wagmi";
 import { ETHABJ_WALLET_ADDRESS } from "@/utils/config";
-import { switchChain } from "@wagmi/core";
-import {
-  mainnet,
-  sepolia,
-  base,
-  baseSepolia,
-  arbitrum,
-  arbitrumSepolia,
-  polygon,
-  bsc,
-  polygonMumbai,
-  optimismSepolia,
-  optimism,
-} from "wagmi/chains";
-import { config } from "@/constants/config";
-import { chains } from "../chainData";
-import ConnectButton from "@/components/wagmi/connectButton";
-import DonationModal from "@/components/Modals/Donation";
-import { useAccountBalance } from "@/hooks/wagmi/balances/useGetBalance";
+
 import {
   DONATION_CONTRACT_ADDRESS,
   getDonationTokenAddress,
@@ -63,14 +34,8 @@ import {
 import { ChainId, DONATION_TOKENS } from "@/constants/config/chainId";
 import { Address, erc20Abi, formatUnits, parseEther } from "viem";
 import { useTokenAllowance } from "@/hooks/wagmi/approvals/useTokenAllowance";
-import {
-  ApprovalState,
-  useApproveToken,
-} from "@/hooks/wagmi/approvals/useApproveToken";
-
-import donationAbi from "@/constants/abi/donation.abi.json";
-import NetoworKSelector from "@/components/wagmi/network-selector";
-import CurrencySwitch from "@/components/wagmi/currency-switch";
+import { useSearchParams } from "next/navigation";
+import Web3Donation from "./web3-donation-panel";
 
 //state to track allowance of inputed toke
 enum allowanceState {
@@ -86,59 +51,14 @@ enum trxType {
   UNKNOWN = "UNKNOWN",
 }
 
-//sent chainId and donation token search param
-//approve token function
-
-const searchParams = useSearchParams();
-
-// const defaultedParams = useMemo(() => {
-//   const params = new URLSearchParams(searchParams)
-//   if (!params.has('chainId'))
-//     params.set(
-//       'chainId',
-//       (chain?.id && isSupportedChainId(chain.id)
-//         ? chain.id
-//         : ChainId.ETHEREUM
-//       ).toString(),
-//     )
-//   if (!params.has('token0')) {
-//     params.set('token0', 'NATIVE')
-//   }
-//   if (!params.has('token1')) {
-//     params.set('token1', getQuoteCurrency(Number(params.get('chainId'))))
-//   }
-//   return params
-// }, [chain, searchParams])
-
-// // Get a new searchParams string by merging the current
-// // searchParams with a provided key/value pair
-// const createQueryString = useCallback(
-//   (values: { name: string; value: string | null }[]) => {
-//     const params = new URLSearchParams(defaultedParams)
-//     values.forEach(({ name, value }) => {
-//       if (value === null) {
-//         params.delete(name)
-//       } else {
-//         params.set(name, value)
-//       }
-//     })
-//     return params.toString()
-//   },
-//   [defaultedParams],
-// )
-
 const HeroSponsorPage = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const [copyAddress, setCopyAddress] = useState<boolean>(false);
   const [addName, setAddName] = useState<boolean>(false);
-  const [selectedChain, setSelectedChain] = useState<string>("ethereum");
   const [donationTokenApproval, setDonationTokenApproval] =
     useState<allowanceState>(allowanceState.UNKNOWN);
-
   const [amount, setAmount] = useState("");
-
   const [trxtype, setTrxtype] = useState<trxType>(trxType.UNKNOWN);
-
+  const searchParams = useSearchParams();
   const {
     data: hash,
     isPending,
@@ -146,18 +66,9 @@ const HeroSponsorPage = () => {
     isError: mainIsError,
     writeContract,
   } = useWriteContract();
-
   let toast = useToast();
-
-  const { address, isConnected, chainId } = useAccount();
-  const [donationToken, setDonationToken] = useState<DONATION_TOKENS>(
-    DONATION_TOKENS.USDT,
-  );
-  const { open } = useWeb3Modal();
-
-  const _donationToken = getDonationTokenAddress(donationToken, searchParams);
-
-  console.log("this is donation token", _donationToken);
+  const { address, chainId } = useAccount();
+  const _donationToken = getDonationTokenAddress(searchParams);
 
   //FETCH DONATION TOKEN BALANCE
   const {
@@ -184,81 +95,11 @@ const HeroSponsorPage = () => {
       spender: DONATION_CONTRACT_ADDRESS[chainId as ChainId] as Address,
     });
 
-  //Check approval state when inpute token value]
-
-  const handleDonationAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    console.log("donation amount", e.target.value);
-    setAmount(e.target.value);
-
-    console.log("this is BigInt value", BigInt(e.target.value));
-    console.log(
-      "this is approved tokens",
-      Number(formatUnits(PtokenAllowance ?? 0n, 18)).toFixed(2),
-    );
-    console.log("this is value inputed", Number(e.target.value));
-    PtokenAllowance &&
-    Number(formatUnits(PtokenAllowance ?? 0n, 18)) >= Number(e.target.value)
-      ? setDonationTokenApproval(allowanceState.APPROVED)
-      : setDonationTokenApproval(allowanceState.UNAPPROVED);
-
-    console.log(donationTokenApproval);
-  };
-
-  //APPROVE TOKEN FUNCTION
-  const approveToken = () => {
-    if (!chainId) return null;
-
-    setTrxtype(trxType.APPROVAL);
-
-    writeContract({
-      address: _donationToken as Address,
-      abi: erc20Abi,
-      functionName: "approve",
-      args: [
-        DONATION_CONTRACT_ADDRESS[chainId as ChainId] as Address,
-        parseEther(amount),
-      ],
-    });
-
-    const newAllowance = useTokenAllowance({
-      chainId,
-      token: _donationToken as Address,
-      owner: address,
-      spender: DONATION_CONTRACT_ADDRESS[chainId as ChainId] as Address,
-    });
-
-    isSuccess && setDonationTokenApproval(allowanceState.APPROVED);
-
-    newAllowance &&
-      Number(formatUnits(newAllowance.data ?? 0n, 18)) >= Number(amount) &&
-      setDonationTokenApproval(allowanceState.APPROVED);
-
-    isSuccess && onOpen();
-  };
-
   //RECOMPUTE ALLOWANCE STATE AFTER SUCCESSFUL APPROVAL
 
   const recomputeAllowanceState = () => {
     Number(formatUnits(PtokenAllowance ?? 0n, 18)) >= Number(amount) &&
       setDonationTokenApproval(allowanceState.APPROVED);
-  };
-
-  // DONATE FUNCTION
-
-  const donatefn = () => {
-    if (!chainId || !address) return null;
-
-    setTrxtype(trxType.DONATION);
-
-    writeContract({
-      address: DONATION_CONTRACT_ADDRESS[chainId as ChainId] as Address,
-      abi: donationAbi,
-      functionName: "donate",
-      args: [_donationToken as Address, parseEther(amount)],
-    });
-
-    isSuccess && onOpen();
   };
 
   //TRANSACTIONS RECEIPT
@@ -270,8 +111,6 @@ const HeroSponsorPage = () => {
   } = useWaitForTransactionReceipt({
     hash,
   });
-
-  console.log("trx states", isConfirming, isConfirmed, trxErrors);
 
   ///***FN to handle the Checkbox of Copy Address
   const handleCopyAddress = () => {
@@ -306,133 +145,15 @@ const HeroSponsorPage = () => {
     }
   };
 
-  //***Function to get chain ID based on selected chain value
-  const getChainId = (selectedChainValue: any) => {
-    switch (selectedChainValue) {
-      case "ethereum":
-        return mainnet.id;
-      case "arbitrum":
-        return arbitrum.id;
-      case "optimism":
-        return optimism.id;
-      case "base":
-        return base.id;
-      case "bsc":
-        return bsc.id;
-      case "sepolia":
-        return sepolia.id;
-      default:
-        return mainnet.id;
-    }
-  };
-
-  // const values = useMemo(() => {
-  //   return {
-  //     // state
-  //     //chainId
-
-  //     chainId,
-
-  //     //tokenaddress and address
-
-  //     _donationToken,
-  //     donationToken,
-  //     //curr transaction type -approval -donation
-  //     trxtype,
-  //     // tranx states -pending, success error
-  //     hash,
-  //     isPending,
-  //     isSuccess,
-  //     mainIsError,
-  //   };
-  // }, []);
-
   useEffect(() => {
     refectBalance();
-    isConfirmed &&
-      toast({
-        position: "bottom-right",
-        render: () => (
-          <Box color="white" p={3} bg="blue.500">
-            confirmed
-          </Box>
-        ),
-      });
-    isConfirming &&
-      toast({
-        position: "bottom-right",
-        render: () => (
-          <Box color="white" p={3} bg="blue.500">
-            confirming
-          </Box>
-        ),
-      });
-
     trxtype == trxType.APPROVAL && isConfirmed && refetchAllowance();
     recomputeAllowanceState();
-  }, [
-    isConfirming,
-    isConfirmed,
-    chainId,
-
-    //UNNECESSARY USEEFFECT DEPENDENCIES
-    // toast,
-    // refectBalance,
-    // refetchAllowance,
-    // trxtype,
-    // recomputeAllowanceState,
-
-    // values.isSuccess,
-    // values.isPending,
-    // values.mainIsError,
-  ]);
-
-  //***FN to handle the select chain change
-  const handleSelectChainChange = async (
-    e: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    const selectedChainValue = e.target.value;
-    setSelectedChain(selectedChainValue);
-
-    if (!isConnected) {
-      // Notify user to connect wallet before switching the chain
-      CustomErrorToast(
-        toast,
-        "Please connect wallet before switching the chain..",
-        4000,
-        "bottom-left",
-      );
-      return;
-    }
-
-    try {
-      // Switch the chain if the wallet is connected
-      await switchChain(config, {
-        chainId: getChainId(selectedChainValue),
-      });
-
-      CustomToast(
-        toast,
-        `Switched to ${selectedChainValue} chain.`,
-        3000,
-        "bottom",
-      );
-    } catch (error) {
-      console.error("Error switching chain:", error);
-      CustomErrorToast(
-        toast,
-        "Failed to switch the chain. Please try again.",
-        4000,
-        "bottom-left",
-      );
-    }
-  };
+  }, [chainId]);
 
   const donationReady: boolean =
     donationTokenApproval == allowanceState.APPROVED ||
     donationTokenApproval == allowanceState.UNKNOWN;
-
-  //TRACK TRANSACTION STATE
 
   return (
     <Box
@@ -470,6 +191,7 @@ const HeroSponsorPage = () => {
             support by contributing to our collective.
           </Text>
         </Flex>
+
         <Box>
           <Flex justifyContent={"center"} px={["1rem", "1rem", "1rem", "0"]}>
             <Box
@@ -668,145 +390,18 @@ const HeroSponsorPage = () => {
                     ) : (
                       ""
                     )}
-
-                    <Flex
-                      flexDir={["column", "row", "row"]}
-                      gap={"16px"}
-                      mb={"24px"}
-                    >
-                      <Box w={"100%"}>
-                        <Text
-                          color={"#3A3A3A"}
-                          fontSize={"14px"}
-                          fontWeight={"500"}
-                          mb={"5px"}
-                        >
-                          Amount
-                        </Text>
-                        <Flex
-                          border={"1px solid #E2E8F0"}
-                          py={"5px"}
-                          pr={"10px"}
-                          pl={"5px"}
-                          borderRadius={"md"}
-                          alignItems={"center"}
-                        >
-                          <Input
-                            p={"0"}
-                            type="number"
-                            _focus={{
-                              boxShadow: "none",
-                            }}
-                            border={"none"}
-                            onChange={handleDonationAmount}
-                          />
-                          <Box>
-                            <CurrencySwitch />
-                          </Box>
-                          {isSuccessDonToken && (
-                            <Box marginLeft={"4px"}>
-                              <Text whiteSpace={"nowrap"}>
-                                {" "}
-                                Bal:{" "}
-                                <span>
-                                  {Number(
-                                    formatUnits(donationTokenBal, 18),
-                                  ).toFixed(2)}
-                                </span>{" "}
-                              </Text>
-                            </Box>
-                          )}
-                        </Flex>
-                      </Box>
-
-                      <VStack
-                        w={"100%"}
-                        display={"flex"}
-                        gap="2"
-                        alignItems={"start"}
-                      >
-                        <Text
-                          color={"#3A3A3A"}
-                          fontSize={"14px"}
-                          fontWeight={"500"}
-                        >
-                          Select Chain
-                        </Text>
-                        <NetoworKSelector />
-                      </VStack>
-                    </Flex>
-
-                    <Flex justifyContent={["center", "flex-end", "flex-end"]}>
-                      {!isConnected && <ConnectButton />}
-                      {isConnected && donationReady ? (
-                        <Button
-                          display={"flex"}
-                          w={["100%", "160px", "160px"]}
-                          py={"11px"}
-                          justifyContent={"center"}
-                          alignItems={"center"}
-                          gap={"10px"}
-                          borderRadius={"8px"}
-                          border={"1px solid #8140CE"}
-                          bg={"#907EF4"}
-                          _hover={{ bg: "#907EF4" }}
-                          disabled={
-                            donationTokenApproval == allowanceState.UNKNOWN
-                              ? true
-                              : false
-                          }
-                          onClick={() => {
-                            onOpen();
-                          }}
-                          // onClick={donatefn}
-                        >
-                          <Text
-                            color={"#FDFDFD"}
-                            fontSize={"14px"}
-                            fontWeight={"500"}
-                            lineHeight={"23.1px"}
-                          >
-                            Contribute
-                          </Text>
-                        </Button>
-                      ) : (
-                        isConnected && (
-                          <Button
-                            display={"flex"}
-                            w={["100%", "160px", "160px"]}
-                            py={"11px"}
-                            justifyContent={"center"}
-                            alignItems={"center"}
-                            gap={"10px"}
-                            borderRadius={"8px"}
-                            border={"1px solid #8140CE"}
-                            bg={"#907EF4"}
-                            _hover={{ bg: "#907EF4" }}
-                            onClick={approveToken}
-                          >
-                            Approve
-                          </Button>
-                        )
-                      )}
-                    </Flex>
+                    <Web3Donation
+                      _donationToken={_donationToken as Address}
+                      amount={amount}
+                      setAmount={setAmount}
+                      trxtype={trxtype}
+                      setTrxtype={setTrxtype}
+                    />
                   </Box>
                 )}
               </Box>
             </Box>
           </Flex>
-
-          <TransactionModal
-            donationAmount={amount}
-            isDonationReady={donationReady}
-            approvefn={approveToken}
-            hash={hash}
-            isPending={isPending}
-            isSuccess={isSuccess}
-            isErred={mainIsError}
-            isOpen={isOpen}
-            onClose={onClose}
-            donatefn={donatefn}
-          />
         </Box>
       </Flex>
     </Box>
@@ -814,61 +409,3 @@ const HeroSponsorPage = () => {
 };
 
 export default HeroSponsorPage;
-
-type modalProps = {
-  isOpen: boolean;
-  onClose: () => void;
-
-  donationAmount: string;
-  donatefn: () => void;
-  approvefn: () => void;
-
-  //trx states
-
-  isSuccess: boolean;
-  isPending: boolean;
-  isErred: boolean;
-
-  isDonationReady: boolean;
-
-  hash: Address | undefined;
-};
-const TransactionModal = ({
-  isOpen,
-  onClose,
-
-  donatefn,
-  approvefn,
-
-  isSuccess,
-  isPending,
-  isErred,
-
-  isDonationReady,
-
-  hash,
-}: modalProps) => {
-  return (
-    <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Transactions</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody pb={6}>
-          <Text>Hello world</Text>
-
-          <Button>
-            {isPending && "TRANSACTION PENDING"}
-            {isSuccess && "TRANSACTION SUCCESFULL"}
-            {isErred && "TRANSACTION ERROR"}
-            {hash && hash}
-          </Button>
-        </ModalBody>
-
-        <ModalFooter>
-          <Button onClick={donatefn}>Donate</Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
-  );
-};

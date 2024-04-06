@@ -41,7 +41,6 @@ export const USDT_ADDRESS: { [chainId in ChainId]: string } = {
 // };
 
 export const getDonationTokenAddress = (
-  donationToken: DONATION_TOKENS,
   searchParams: URLSearchParams,
 ): string => {
   const chainIdParam = searchParams.get("chainId");
@@ -54,7 +53,7 @@ export const getDonationTokenAddress = (
       throw new Error("Unsupported chain ID provided in URL");
     }
   } else {
-    const { chain } = useAccount(); 
+    const { chain } = useAccount();
     chainId = chain?.id;
   }
 
@@ -71,7 +70,8 @@ export const getDonationTokenAddress = (
   }
 
   const contractAddressMapping =
-    donationToken === DONATION_TOKENS.USDT ? USDT_ADDRESS : USDC_ADDRESS;
+    donationTokenFromUrl === DONATION_TOKENS.USDT ? USDT_ADDRESS : USDC_ADDRESS;
+
   const contractAddress = contractAddressMapping[chainId];
 
   if (!contractAddress) {
