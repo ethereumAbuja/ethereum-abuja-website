@@ -46,21 +46,29 @@ enum trxType {
 }
 
 interface Props {
+  addName: boolean;
   _donationToken: Address;
   amount: string;
   setAmount: (val: string) => void;
 
   trxtype: trxType;
-  setTrxtype: (trx:trxType)=>void
+  setTrxtype: (trx: trxType) => void;
 }
 
-function Web3Donation({ _donationToken, amount, setAmount, trxtype, setTrxtype  }: Props) {
+function Web3Donation({
+  addName,
+  _donationToken,
+  amount,
+  setAmount,
+  trxtype,
+  setTrxtype,
+}: Props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   //   const [amount, setAmount] = useState("");
   const { address, isConnected, chainId } = useAccount();
   const [donationTokenApproval, setDonationTokenApproval] =
     useState<allowanceState>(allowanceState.UNKNOWN);
-//   const [trxtype, setTrxtype] = useState<trxType>(trxType.UNKNOWN);
+  //   const [trxtype, setTrxtype] = useState<trxType>(trxType.UNKNOWN);
 
   const { data: PtokenAllowance, refetch: refetchAllowance } =
     useTokenAllowance({
@@ -215,6 +223,21 @@ function Web3Donation({ _donationToken, amount, setAmount, trxtype, setTrxtype  
 
   return (
     <Box>
+      {addName && <Box w={["100%", "49%", "49%"]} mb={"1rem"}>
+        <Text color={"#3A3A3A"} fontSize={"14px"} fontWeight={"500"} mb={"5px"}>
+          Name (or pseudonym)
+        </Text>
+        <Box border={"1px solid #E2E8F0"} p={"5px"} borderRadius={"md"}>
+          <Input
+            p={"0"}
+            _focus={{
+              boxShadow: "none",
+            }}
+            border={"none"}
+            type="text"
+          />
+        </Box>
+      </Box>}
       <Flex flexDir={["column", "row", "row"]} gap={"16px"} mb={"24px"}>
         <Box w={"100%"}>
           <Text

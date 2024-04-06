@@ -36,20 +36,8 @@ import { Address, erc20Abi, formatUnits, parseEther } from "viem";
 import { useTokenAllowance } from "@/hooks/wagmi/approvals/useTokenAllowance";
 import { useSearchParams } from "next/navigation";
 import Web3Donation from "./web3-donation-panel";
-
-//state to track allowance of inputed toke
-enum allowanceState {
-  UNKNOWN = "UNKNOWN",
-  APPROVED = "APPROVED",
-  UNAPPROVED = "UNAPPROVED",
-}
-
-//this enum trxType  is basically to detertmine the items to be displayed in the modal after succesfull transactions during donation
-enum trxType {
-  APPROVAL = "APPROVAL",
-  DONATION = "DONATION",
-  UNKNOWN = "UNKNOWN",
-}
+import ManualDonation from "./manual-donation";
+import { allowanceState, trxType } from "../utils";
 
 const HeroSponsorPage = () => {
   const [copyAddress, setCopyAddress] = useState<boolean>(false);
@@ -206,6 +194,8 @@ const HeroSponsorPage = () => {
                 pl={["1rem", "48px", "48px"]}
                 pr={["1rem,", "0", "0"]}
               >
+                {/* begining of the box */}
+                {/* top image and box heading */}
                 <Flex
                   w={["100%", "313px", "313px"]}
                   flexDir={["column", "row", "row"]}
@@ -315,82 +305,11 @@ const HeroSponsorPage = () => {
                 </Box>
 
                 {copyAddress ? (
-                  <Box>
-                    <Text
-                      color={"#3A3A3A"}
-                      fontSize={"14px"}
-                      fontWeight={"500"}
-                      mb={"5px"}
-                    >
-                      Copy Wallet Address
-                    </Text>
-                    <Flex
-                      border={"1px solid #E2E8F0"}
-                      p={"5px"}
-                      borderRadius={"md"}
-                      alignItems={"center"}
-                      justifyContent={"space-between"}
-                    >
-                      <Input
-                        fontSize={"16px"}
-                        fontWeight={"500"}
-                        color={"#1D2E32"}
-                        p={"0.5rem"}
-                        _focus={{
-                          boxShadow: "none",
-                        }}
-                        border={"none"}
-                        value={ETHABJ_WALLET_ADDRESS}
-                      />
-
-                      <Button
-                        h={"28px"}
-                        p={"9px 12px"}
-                        borderRadius={"176px"}
-                        bg={"rgba(241, 242, 254, 0.70)"}
-                        onClick={handleCopyButtonClick}
-                      >
-                        <Text
-                          fontSize={"14px"}
-                          fontWeight={"500"}
-                          color={"#1D2E32"}
-                        >
-                          Copy
-                        </Text>
-                      </Button>
-                    </Flex>
-                  </Box>
+                  <ManualDonation />
                 ) : (
                   <Box>
-                    {addName ? (
-                      <Box w={["100%", "49%", "49%"]} mb={"1rem"}>
-                        <Text
-                          color={"#3A3A3A"}
-                          fontSize={"14px"}
-                          fontWeight={"500"}
-                          mb={"5px"}
-                        >
-                          Name (or pseudonym)
-                        </Text>
-                        <Box
-                          border={"1px solid #E2E8F0"}
-                          p={"5px"}
-                          borderRadius={"md"}
-                        >
-                          <Input
-                            p={"0"}
-                            _focus={{
-                              boxShadow: "none",
-                            }}
-                            border={"none"}
-                            type="text"
-                          />
-                        </Box>
-                      </Box>
-                    ) : (
-                      ""
-                    )}
                     <Web3Donation
+                      addName={addName}
                       _donationToken={_donationToken as Address}
                       amount={amount}
                       setAmount={setAmount}
@@ -407,5 +326,4 @@ const HeroSponsorPage = () => {
     </Box>
   );
 };
-
 export default HeroSponsorPage;
