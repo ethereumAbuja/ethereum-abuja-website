@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
@@ -14,6 +15,7 @@
     "@chakra-ui/react": "^2.8.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@prisma/client": "^5.12.1",
     "@reduxjs/toolkit": "^1.9.5",
     "@tanstack/react-query": "^5.17.19",
     "@types/node": "20.6.3",
@@ -49,5 +51,8 @@
     "uuid": "^9.0.0",
     "viem": "^2.5.0",
     "wagmi": "^2.5.2"
+  },
+  "devDependencies": {
+    "prisma": "^5.12.1"
   }
 }
