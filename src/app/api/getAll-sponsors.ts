@@ -1,20 +1,13 @@
 import { db } from "@/lib/db";
-import { Prisma } from "@prisma/client";
 
-export async function POST(req: Request) {
+export async function GET() {
   try {
-    const { name, twitter } = await req.json();
-
-    const sponsorExist = await db.sponsor.findUnique({
-      //   where: { OR: [{ name }, { twitter }] },
-      where: { OR: [name, twitter] },
+    const sponsors = await db.sponsor.findMany({
+      include: { donations: true },
     });
+    return new Response(JSON.stringify(sponsors), { status: 201 });
   } catch (error) {
-    error;
-
-    return new Response(
-      "Could not subscribe to subreddit at this time. Please try later",
-      { status: 500 },
-    );
+    console.error(error);
+    return new Response("Could not fetch sponsors", { status: 500 });
   }
 }

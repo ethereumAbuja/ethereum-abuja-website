@@ -31,6 +31,7 @@ import {
 import { ChainId, DONATION_TOKENS } from "@/constants/config/chainId";
 
 import donationAbi from "@/constants/abi/donation.abi.json";
+import useAddSponsor from "@/hooks/useAddSponsor";
 
 //state to track allowance of inputed toke
 enum allowanceState {
@@ -68,7 +69,16 @@ function Web3Donation({
   const { address, isConnected, chainId } = useAccount();
   const [donationTokenApproval, setDonationTokenApproval] =
     useState<allowanceState>(allowanceState.UNKNOWN);
-  //   const [trxtype, setTrxtype] = useState<trxType>(trxType.UNKNOWN);
+
+  const [spoonsorDetails, setSponsorDetails] = useState<{
+    name: string;
+    twitter: string;
+    amount: string;
+  }>({
+    name: "",
+    twitter: "",
+    amount: "",
+  });
 
   const { data: PtokenAllowance, refetch: refetchAllowance } =
     useTokenAllowance({
@@ -163,8 +173,6 @@ function Web3Donation({
       functionName: "donate",
       args: [_donationToken as Address, parseEther(amount)],
     });
-
-    isSuccess && onOpen();
   };
 
   //TRANSACTIONS RECEIPT
@@ -183,6 +191,32 @@ function Web3Donation({
       setDonationTokenApproval(allowanceState.APPROVED);
   };
 
+  //INPUT BOXES HANDLE EVENTS
+  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSponsorDetails((prevState) => ({
+      ...prevState,
+      username: event.target.value,
+    }));
+    console.log(spoonsorDetails);
+  };
+
+  const handleSponsorNameChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setSponsorDetails((prevState) => ({
+      ...prevState,
+      sponsorName: event.target.value,
+    }));
+    console.log(spoonsorDetails);
+  };
+
+  const {
+    isLoading: addSponsorLoading,
+    success: AddSponsorSuccess,
+    error: addSponsorError,
+    addSponsor,
+  } = useAddSponsor();
+
   useEffect(() => {
     refectBalance();
     isConfirmed &&
@@ -194,6 +228,9 @@ function Web3Donation({
           </Box>
         ),
       });
+
+    isConfirmed && addSponsor();
+
     isConfirming &&
       toast({
         position: "top-right",
@@ -223,21 +260,61 @@ function Web3Donation({
 
   return (
     <Box>
-      {addName && <Box w={["100%", "49%", "49%"]} mb={"1rem"}>
-        <Text color={"#3A3A3A"} fontSize={"14px"} fontWeight={"500"} mb={"5px"}>
-          Name (or pseudonym)
-        </Text>
-        <Box border={"1px solid #E2E8F0"} p={"5px"} borderRadius={"md"}>
-          <Input
-            p={"0"}
-            _focus={{
-              boxShadow: "none",
-            }}
-            border={"none"}
-            type="text"
-          />
-        </Box>
-      </Box>}
+      {addName && (
+        <Flex
+          flexDir={["column", "row", "row"]}
+          gap={["0.2rem", "0.2rem", "1rem"]}
+          w={["100%"]}
+          mb={"1rem"}
+        >
+          <Box w={["100%", "49%", "49%"]} mb={"1rem"}>
+            <Text
+              color={"#3A3A3A"}
+              fontSize={"14px"}
+              fontWeight={"500"}
+              mb={"5px"}
+              whiteSpace={"nowrap"}
+            >
+              Name (or pseudonym)
+            </Text>
+            <Box border={"1px solid #E2E8F0"} p={"5px"} borderRadius={"md"}>
+              <Input
+                p={"0"}
+                _focus={{
+                  boxShadow: "none",
+                }}
+                border={"none"}
+                type="text"
+                placeholder="Name(or pseudonym)"
+                onChange={handleUsernameChange}
+              />
+            </Box>
+          </Box>
+          <Box w={["100%", "49%", "49%"]} mb={"1rem"}>
+            <Text
+              color={"#3A3A3A"}
+              fontSize={"14px"}
+              fontWeight={"500"}
+              mb={"5px"}
+              whiteSpace={"nowrap"}
+            >
+              X(Twitter) handle
+            </Text>
+            <Box border={"1px solid #E2E8F0"} p={"5px"} borderRadius={"md"}>
+              <Input
+                p={"0"}
+                _focus={{
+                  boxShadow: "none",
+                }}
+                border={"none"}
+                type="text"
+                placeholder="twitter(username)"
+                onChange={handleSponsorNameChange}
+              />
+            </Box>
+          </Box>
+        </Flex>
+      )}
       <Flex flexDir={["column", "row", "row"]} gap={"16px"} mb={"24px"}>
         <Box w={"100%"}>
           <Text

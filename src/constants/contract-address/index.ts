@@ -1,5 +1,6 @@
 import { useAccount } from "wagmi";
 import { ChainId, DONATION_TOKENS, SUPPORT_CHAINID } from "../config/chainId";
+import { useNetworkConnectorUpdater } from "@/hooks/useSwitchNetwork";
 
 export const DONATION_CONTRACT_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.SEPOLIA]: "0xe76Ce85d258AC678E4bE56a1cd980B3046B7b50e",
@@ -49,6 +50,7 @@ export const getDonationTokenAddress = (
   if (chainIdParam) {
     chainId = parseInt(chainIdParam, 10);
 
+    console.log("this is chainId from getDonantion address", chainId);
     if (!SUPPORT_CHAINID.includes(chainId)) {
       throw new Error("Unsupported chain ID provided in URL");
     }
@@ -58,7 +60,9 @@ export const getDonationTokenAddress = (
   }
 
   const donationTokenFromUrl = searchParams.get("donationtoken");
-
+  if (!chainId || !donationTokenFromUrl) {
+    useNetworkConnectorUpdater();
+  }
   if (
     !chainId ||
     !donationTokenFromUrl ||
@@ -72,7 +76,8 @@ export const getDonationTokenAddress = (
   const contractAddressMapping =
     donationTokenFromUrl === DONATION_TOKENS.USDT ? USDT_ADDRESS : USDC_ADDRESS;
 
-  const contractAddress = contractAddressMapping[chainId];
+  const contractAddress =
+    contractAddressMapping[chainId ? chainId : (ChainId.SEPOLIA as ChainId)];
 
   if (!contractAddress) {
     throw new Error(
