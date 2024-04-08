@@ -1,50 +1,81 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import { Box, Text } from "@chakra-ui/react";
 import Marquee from "react-fast-marquee";
 import sponsorNames from "./data";
+import axios from "axios";
+
+const backgroundColors = [
+  "#0400DE",
+  "#FF5733",
+  "#66FF66",
+  "#DFFF5F",
+  "#6CFF69",
+  "#92E7FA",
+  "#FFE037",
+  "#22DC83",
+  "#FF2A2A",
+  "#FFB21D",
+  "#F52762",
+  "#000000",
+  "#FFFFFF",
+];
+
+const textColors = [
+  "#FFFFFF",
+  "#FFFFFF",
+  "#000000",
+  "#000000",
+  "#000000",
+  "#000000",
+  "#000000",
+  "#000000",
+  "#FFFFFF",
+  "#FFFFFF",
+];
+
+const backgroundImages = [
+  "url('image/svgviewer-waves.svg')",
+  "url('image/svgviewer-output.svg')",
+  "url('image/svgviewer-output2.svg')",
+];
+
+const namesPerMarquee = 20;
 
 const WallHeros = () => {
-  const backgroundColors = [
-    "#0400DE",
-    "#FF5733",
-    "#66FF66",
-    "#DFFF5F",
-    "#6CFF69",
-    "#92E7FA",
-    "#FFE037",
-    "#22DC83",
-    "#FF2A2A",
-    "#FFB21D",
-    "#F52762",
-    "#000000",
-    "#FFFFFF",
-  ];
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [success, setSuccess] = useState(false);
 
-  const textColors = [
-    "#FFFFFF",
-    "#FFFFFF",
-    "#000000",
-    "#000000",
-    "#000000",
-    "#000000",
-    "#000000",
-    "#000000",
-    "#FFFFFF",
-    "#FFFFFF",
-  ];
+  const getheros = async() => {
+    try {
+      const response = await axios.get("/api/getallsponsors");
+      if (response.status === 201) {
+        console.log("heros list", response.data);
+      } else {
+        console.log("succesfully called api, error occured");
+        setError(new Error("Failed to add sponsor"));
+      }
+    } catch (error) {
+      console.log("succesfully called api, error occured");
+      console.error(error);
+      setError(error as Error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  const backgroundImages = [
-    "url('image/svgviewer-waves.svg')",
-    "url('image/svgviewer-output.svg')",
-    "url('image/svgviewer-output2.svg')",
-  ];
-
-  const namesPerMarquee = 20;
+  useEffect(()=>{
+    getheros()
+  })
 
   const marqueesData = Array.from(
     { length: Math.ceil(sponsorNames.length / namesPerMarquee) },
     (_, index) =>
-      sponsorNames.slice(index * namesPerMarquee, (index + 1) * namesPerMarquee)
+      sponsorNames.slice(
+        index * namesPerMarquee,
+        (index + 1) * namesPerMarquee,
+      ),
   );
 
   return (

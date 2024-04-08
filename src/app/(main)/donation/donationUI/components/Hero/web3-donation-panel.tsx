@@ -3,6 +3,9 @@ import CurrencySwitch from "@/components/wagmi/currency-switch";
 import NetoworKSelector from "@/components/wagmi/network-selector";
 import { DONATION_CONTRACT_ADDRESS } from "@/constants/contract-address";
 import { useTokenAllowance } from "@/hooks/wagmi/approvals/useTokenAllowance";
+import { useSearchParams } from "next/navigation";
+import SyncLoader from "react-spinners/ClipLoader";
+import { IoCheckmarkCircleSharp } from "react-icons/io5";
 import {
   Box,
   Button,
@@ -31,7 +34,8 @@ import {
 import { ChainId, DONATION_TOKENS } from "@/constants/config/chainId";
 
 import donationAbi from "@/constants/abi/donation.abi.json";
-import useAddSponsor from "@/hooks/useAddSponsor";
+import useAddSponsor, { SponsorDetailsType } from "@/hooks/useAddSponsor";
+import { useWeb3Modal } from "@web3modal/wagmi/react";
 
 //state to track allowance of inputed toke
 enum allowanceState {
@@ -65,16 +69,18 @@ function Web3Donation({
   setTrxtype,
 }: Props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  //   const [amount, setAmount] = useState("");
+  const { open } = useWeb3Modal();
+  const {
+    isLoading: addSponsorLoading,
+    success: AddSponsorSuccess,
+    error: addSponsorError,
+    addSponsor,
+  } = useAddSponsor();
   const { address, isConnected, chainId } = useAccount();
   const [donationTokenApproval, setDonationTokenApproval] =
     useState<allowanceState>(allowanceState.UNKNOWN);
 
-  const [spoonsorDetails, setSponsorDetails] = useState<{
-    name: string;
-    twitter: string;
-    amount: string;
-  }>({
+  const [sponsorDetails, setSponsorDetails] = useState<SponsorDetailsType>({
     name: "",
     twitter: "",
     amount: "",
@@ -91,9 +97,10 @@ function Web3Donation({
   const {
     data: hash,
     isPending,
-    isSuccess,
-    isError: mainIsError,
+    isSuccess: isSubmitted,
+    isError: isWriteContractError,
     writeContract,
+    error: WriteContractError,
   } = useWriteContract();
   //Check approval state when inpute token value]
   const handleDonationAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,6 +114,10 @@ function Web3Donation({
       Number(formatUnits(PtokenAllowance ?? 0n, 18)).toFixed(2),
     );
     console.log("this is value inputed", Number(e.target.value));
+    setSponsorDetails((prevState) => ({
+      ...prevState,
+      amount: parseEther(amount).toString(),
+    }));
     PtokenAllowance &&
     Number(formatUnits(PtokenAllowance ?? 0n, 18)) >= Number(e.target.value)
       ? setDonationTokenApproval(allowanceState.APPROVED)
@@ -153,7 +164,7 @@ function Web3Donation({
       spender: DONATION_CONTRACT_ADDRESS[chainId as ChainId] as Address,
     });
 
-    isSuccess && setDonationTokenApproval(allowanceState.APPROVED);
+    isSubmitted && setDonationTokenApproval(allowanceState.APPROVED);
 
     newAllowance &&
       Number(formatUnits(newAllowance.data ?? 0n, 18)) >= Number(amount) &&
@@ -161,10 +172,22 @@ function Web3Donation({
   };
 
   // DONATE FUNCTION
-
   const donatefn = () => {
-    if (!chainId || !address) return null;
-
+    if (!chainId || !address) {
+      open({ view: "Account" });
+    }
+    if (addName && sponsorDetails.name == "" || addName && sponsorDetails.twitter == "") {
+      toast({
+        position: "top-right",
+        render: () => (
+          <Box color="white" p={3} bg="blue.500">
+            Please Fields "Name" and "Twitter" cannot be empty, kindly fill or
+            donate anonymously😊
+          </Box>
+        ),
+      });
+      return null;
+    }
     setTrxtype(trxType.DONATION);
 
     writeContract({
@@ -180,7 +203,8 @@ function Web3Donation({
   const {
     isLoading: isConfirming,
     isSuccess: isConfirmed,
-    isError: trxErrors,
+    isError: isWaitTrxError,
+    error: WaitForTransactionReceiptError,
   } = useWaitForTransactionReceipt({
     hash,
   });
@@ -195,9 +219,9 @@ function Web3Donation({
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSponsorDetails((prevState) => ({
       ...prevState,
-      username: event.target.value,
+      name: event.target.value,
     }));
-    console.log(spoonsorDetails);
+    console.log(sponsorDetails);
   };
 
   const handleSponsorNameChange = (
@@ -205,20 +229,22 @@ function Web3Donation({
   ) => {
     setSponsorDetails((prevState) => ({
       ...prevState,
-      sponsorName: event.target.value,
+      twitter: event.target.value,
     }));
-    console.log(spoonsorDetails);
+    console.log(sponsorDetails);
   };
-
-  const {
-    isLoading: addSponsorLoading,
-    success: AddSponsorSuccess,
-    error: addSponsorError,
-    addSponsor,
-  } = useAddSponsor();
 
   useEffect(() => {
     refectBalance();
+    isWriteContractError &&
+      toast({
+        position: "top-right",
+        render: () => (
+          <Box color="white" p={3} bg="blue.500">
+            {WriteContractError?.message}
+          </Box>
+        ),
+      });
     isConfirmed &&
       toast({
         position: "top-right",
@@ -229,7 +255,13 @@ function Web3Donation({
         ),
       });
 
-    isConfirmed && addSponsor();
+    isConfirmed &&
+      addSponsor({
+        name: sponsorDetails.name,
+        twitter: sponsorDetails.twitter,
+        amount: sponsorDetails.amount,
+      });
+    isConfirmed && setAmount("");
 
     isConfirming &&
       toast({
@@ -240,19 +272,20 @@ function Web3Donation({
           </Box>
         ),
       });
-    trxErrors &&
+    isWaitTrxError &&
       toast({
         position: "top-right",
         render: () => (
           <Box color="white" p={3} bg="blue.500">
-            Error occured while Donating
+            {WaitForTransactionReceiptError.name}
+            {WaitForTransactionReceiptError.message}
           </Box>
         ),
       });
 
     trxtype == trxType.APPROVAL && isConfirmed && refetchAllowance();
     recomputeAllowanceState();
-  }, [isConfirming, isConfirmed, chainId]);
+  }, [isConfirming, isConfirmed, chainId, isWriteContractError]);
 
   const donationReady: boolean =
     donationTokenApproval == allowanceState.APPROVED ||
@@ -339,6 +372,7 @@ function Web3Donation({
               _focus={{
                 boxShadow: "none",
               }}
+              value={amount}
               border={"none"}
               onChange={handleDonationAmount}
             />
@@ -387,7 +421,6 @@ function Web3Donation({
             onClick={() => {
               onOpen();
             }}
-            // onClick={donatefn}
           >
             <Text
               color={"#FDFDFD"}
@@ -424,8 +457,8 @@ function Web3Donation({
           approvefn={approveToken}
           hash={hash}
           isPending={isPending}
-          isSuccess={isSuccess}
-          isErred={mainIsError}
+          isSubmitted={isSubmitted}
+          isErred={isWriteContractError}
           isOpen={isOpen}
           onClose={onClose}
           donatefn={donatefn}
@@ -447,7 +480,7 @@ type modalProps = {
 
   //trx states
 
-  isSuccess: boolean;
+  isSubmitted: boolean;
   isPending: boolean;
   isErred: boolean;
 
@@ -462,7 +495,9 @@ const TransactionModal = ({
   donatefn,
   approvefn,
 
-  isSuccess,
+  donationAmount,
+
+  isSubmitted,
   isPending,
   isErred,
 
@@ -470,26 +505,65 @@ const TransactionModal = ({
 
   hash,
 }: modalProps) => {
+  const searchParams = useSearchParams();
+  const [userConfirmation, setUserConfirmation] = useState<boolean>(false);
   return (
     <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Transactions</ModalHeader>
+        <ModalHeader>Review Transactions</ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
-          <Text>Hello world</Text>
+          <Box w={"100%"}>
+            {isSubmitted ? (
+              <Flex alignItems={"center"} flexDir={"column"} gap={"1.5rem"}>
+                <IoCheckmarkCircleSharp size={100} color="#00FF00" />
+                <Text>Donation Successful. God Bless!</Text>
+              </Flex>
+            ) : (
+              <>
+                {userConfirmation && isPending ? (
+                  <Flex flexDir={"column"} alignItems={"center"} gap={"1.5rem"}>
+                    <SyncLoader color="#36d7b7" size={45} />
+                    <Text>Confirm Donation</Text>
+                    <Text>Proceed in Wallet</Text>
+                  </Flex>
+                ) : (
+                  <Flex flexDir={"column"} alignItems={"center"} gap={"2rem"}>
+                    <Text>You are about to DONATE</Text>
+                    <Text>
+                      {donationAmount} {searchParams.get("donationtoken")}
+                    </Text>
+                    <Text> to ETHABUJA MAINTENERS</Text>
+                  </Flex>
+                )}
+              </>
+            )}
+          </Box>
 
-          <Button>
+          {/* <Button>
             {isPending && "TRANSACTION PENDING"}
-            {isSuccess && "TRANSACTION SUCCESFULL"}
+            {isSubmitted && "TRANSACTION SUCCESFULL"}
             {isErred && "TRANSACTION ERROR"}
             {hash && hash}
-          </Button>
+          </Button> */}
         </ModalBody>
 
-        <ModalFooter>
-          <Button onClick={donatefn}>Donate</Button>
-        </ModalFooter>
+        {!isPending && !userConfirmation && (
+          <ModalFooter>
+            <Button
+              bg={"green.500"}
+              textColor={"white"}
+              w={"100%"}
+              onClick={() => {
+                setUserConfirmation(true);
+                donatefn();
+              }}
+            >
+              Confirm Donation{" "}
+            </Button>
+          </ModalFooter>
+        )}
       </ModalContent>
     </Modal>
   );

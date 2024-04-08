@@ -16,14 +16,15 @@ datasource db {
 
 model Sponsor {
   id        Int      @id @default(autoincrement())
-  name      String   @unique
+  name      String   
   twitter   String   @unique
+  amount    String
   donations Donation[]
 }
 
 model Donation {
   id        Int      @id @default(autoincrement())
-  amount    BigInt
+  amount    String
   sponsorId Int
   sponsor   Sponsor  @relation(fields: [sponsorId], references: [id])
   createdAt DateTime @default(now())

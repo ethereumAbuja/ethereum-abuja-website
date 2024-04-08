@@ -44,7 +44,7 @@ const HeroSponsorPage = () => {
   const [addName, setAddName] = useState<boolean>(false);
   const [donationTokenApproval, setDonationTokenApproval] =
     useState<allowanceState>(allowanceState.UNKNOWN);
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState<string>("");
   const [trxtype, setTrxtype] = useState<trxType>(trxType.UNKNOWN);
   const searchParams = useSearchParams();
   const {

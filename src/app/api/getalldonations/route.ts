@@ -1,9 +1,11 @@
+// getalldonations
+
 import { db } from "@/lib/db";
 
 export async function GET(req: Request) {
   try {
     const donations = await db.donation.findMany({
-      include: { sponsor: true }, 
+      include: { sponsor: true },
     });
 
     return new Response(JSON.stringify(donations), { status: 201 });
