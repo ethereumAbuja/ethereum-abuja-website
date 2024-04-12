@@ -65,40 +65,36 @@ export default function NetoworKSelector() {
     <div>
       <Popover>
         <PopoverTrigger>
-          
-            <Button
-              variant={"secondary"}
-              display="flex"
-              alignItems={"center"}
-              justifyContent={"center"}
-              gap=".5rem"
-              borderRadius="0.3rem"
-              border="1px solid #E2E8F0"
-              padding="5px 10px"
-              width={"100%"}
-              height={"3.2rem"}
-            >
-              <Suspense fallback={null}>
-                <NetworkIcon chainId={selected} width={20} height={20} />
-                <Text>{ChainKey[selected as ChainId]}</Text>
-              </Suspense>
-            </Button>
-          
+          <Button
+            variant={"secondary"}
+            display="flex"
+            alignItems={"center"}
+            justifyContent={"center"}
+            gap=".5rem"
+            borderRadius="0.3rem"
+            border="1px solid #E2E8F0"
+            padding="5px 10px"
+            width={"100%"}
+            height={"3.2rem"}
+          >
+            <Suspense fallback={null}>
+              <NetworkIcon chainId={selected} width={20} height={20} />
+              <Text>{ChainKey[selected as ChainId]}</Text>
+            </Suspense>
+          </Button>
         </PopoverTrigger>
         <PopoverContent>
           <PopoverArrow />
           <PopoverHeader>Select Network</PopoverHeader>
           <PopoverBody>
-            <VStack gap="1rem" alignItems={"start"}>
+            <VStack gap="0.21rem" alignItems={"start"}>
               {SUPPORT_CHAINID.map((el) => (
                 <Button
-                variant={"secondary"}
+                  variant={"secondary"}
                   cursor="pointer"
                   gap="0.5rem"
                   key={el}
-                  onClick={(value) =>
-                    onSwitchNetwork(el, () => setOpen(false))
-                  }
+                  onClick={(value) => onSwitchNetwork(el, () => setOpen(false))}
                 >
                   <NetworkIcon chainId={el} width={22} height={22} />
                   <Text>{ChainKey[el as ChainId]}</Text>

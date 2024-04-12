@@ -28,19 +28,46 @@ import {
 import { useSwitchChain, useAccount } from "wagmi";
 import { ProviderRpcError, UserRejectedRequestError } from "viem";
 import { useIsMounted } from "@/hooks/useIsMounted";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
 
 export default function CurrencySwitch() {
   const { chain } = useAccount();
   let toast = useToast();
   const isMounted = useIsMounted();
   const [open, setOpen] = useState(false);
+  const [currency, setCurrency] = useState<DONATION_TOKENS>(DONATION_TOKENS.USDT);
   const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { push } = useRouter();
 
-  const updateDonationToken = (_donationToken: string) => {
-    const params = new URLSearchParams(searchParams);
-    params.set("donationtoken", _donationToken);
-  };
+  const createQueryString = useCallback(
+    (values: { name: string; value: string | null }[]) => {
+      const params = new URLSearchParams(searchParams);
+      values.forEach(({ name, value }) => {
+        if (value === null) {
+          params.delete(name);
+        } else {
+          params.set(name, value);
+        }
+      });
+      return params.toString();
+    },
+    [searchParams],
+  );
+
+  const updateSearchParams = useCallback<{ (_donationToken: string): void }>(
+    (_donationToken) => {
+      console.log("set_donationToken", _donationToken);
+      push(
+        `${pathname}?${createQueryString([
+          { name: "donationtoken", value: _donationToken },
+        ])}`,
+        { scroll: false },
+      );
+    },
+    [createQueryString, pathname, push],
+  );
+
 
   return (
     <div>
@@ -64,25 +91,15 @@ export default function CurrencySwitch() {
               <PopoverArrow />
               <PopoverHeader>Select Currency</PopoverHeader>
               <PopoverBody>
-                <VStack gap="0.2rem" alignItems={"start"}>
+                <VStack gap="0.2rem"  alignItems={"start"}>
                   {CURRENCIES.map((el) => (
                     <Button
                       variant={"secondary"}
                       cursor="pointer"
                       key={el}
                       onClick={() => {
-                        new URLSearchParams(searchParams).set(
-                          "donationtoken",
-                          el,
-                        );
-                        // updateDonationToken(el);
-                        console.log(
-                          "updating donation token",
-                          new URLSearchParams(searchParams).get(
-                            "donationtoken",
-                          ),
-                        );
-                        onClose();
+                        updateSearchParams(el);
+                        onClose()
                       }}
                     >
                       <Text>{el as string}</Text>

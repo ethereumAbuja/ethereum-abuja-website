@@ -1,6 +1,7 @@
 export enum ChainId {
-  ETHEREUM = 1,
   SEPOLIA = 11155111,
+  BASE_SEPOLIA = 84532,
+  ETHEREUM = 1,
   BASE = 8453,
   ARBITRIUM = 42161,
   BNB_SMART_CHAIN = 56,
@@ -8,6 +9,7 @@ export enum ChainId {
 
 export const SUPPORT_CHAINID: ChainId[] = [
   ChainId.SEPOLIA,
+  ChainId.BASE_SEPOLIA,
   ChainId.ETHEREUM,
   ChainId.BASE,
   ChainId.ARBITRIUM,
@@ -15,6 +17,7 @@ export const SUPPORT_CHAINID: ChainId[] = [
 ];
 export const ChainKey = {
   [ChainId.SEPOLIA]: "Ethereum Sepolia",
+  [ChainId.BASE_SEPOLIA]: "Base Sepolia",
   [ChainId.BASE]: "Base",
   [ChainId.ETHEREUM]: "Ethereum Mainnet",
   [ChainId.ARBITRIUM]: "Arbitrum",

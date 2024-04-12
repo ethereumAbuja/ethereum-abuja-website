@@ -1,6 +1,7 @@
 import React from "react";
 import { Box } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
+import { useNetworkConnectorUpdater } from "@/hooks/useSwitchNetwork";
 
 const HeroSponsorPage = dynamic(() => import("./components/Hero"), {
   ssr: false,
@@ -21,6 +22,7 @@ const WallHeros = dynamic(() => import("./components/WallHeros"), {
 });
 
 const DonationDapp = () => {
+  useNetworkConnectorUpdater();
   return (
     <Box py={"5%"}>
       <HeroSponsorPage />
