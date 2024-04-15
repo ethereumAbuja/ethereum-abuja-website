@@ -31,7 +31,11 @@ import {
   useWriteContract,
   useWaitForTransactionReceipt,
 } from "wagmi";
-import { ChainId, DONATION_TOKENS } from "@/constants/config/chainId";
+import {
+  ChainId,
+  DONATION_SUPPORTED_CHAINID,
+  DONATION_TOKENS,
+} from "@/constants/config/chainId";
 
 import donationAbi from "@/constants/abi/donation.abi.json";
 import useAddSponsor, { SponsorDetailsType } from "@/hooks/useAddSponsor";
@@ -156,19 +160,6 @@ function Web3Donation({
         parseEther(amount),
       ],
     });
-
-    const newAllowance = useTokenAllowance({
-      chainId,
-      token: _donationToken as Address,
-      owner: address,
-      spender: DONATION_CONTRACT_ADDRESS[chainId as ChainId] as Address,
-    });
-
-    isSubmitted && setDonationTokenApproval(allowanceState.APPROVED);
-
-    newAllowance &&
-      Number(formatUnits(newAllowance.data ?? 0n, 18)) >= Number(amount) &&
-      setDonationTokenApproval(allowanceState.APPROVED);
   };
 
   // DONATE FUNCTION
@@ -176,7 +167,10 @@ function Web3Donation({
     if (!chainId || !address) {
       open({ view: "Account" });
     }
-    if (addName && sponsorDetails.name == "" || addName && sponsorDetails.twitter == "") {
+    if (
+      (addName && sponsorDetails.name == "") ||
+      (addName && sponsorDetails.twitter == "")
+    ) {
       toast({
         position: "top-right",
         render: () => (
@@ -213,6 +207,14 @@ function Web3Donation({
   const recomputeAllowanceState = () => {
     Number(formatUnits(PtokenAllowance ?? 0n, 18)) >= Number(amount) &&
       setDonationTokenApproval(allowanceState.APPROVED);
+    toast({
+      position: "top-right",
+      render: () => (
+        <Box color="white" p={3} bg="blue.500">
+          STATE RECOMPUTED
+        </Box>
+      ),
+    });
   };
 
   //INPUT BOXES HANDLE EVENTS
@@ -234,8 +236,17 @@ function Web3Donation({
     console.log(sponsorDetails);
   };
 
+  //Useeffect for approve function
   useEffect(() => {
+    trxtype == trxType.APPROVAL && refetchAllowance();
     refectBalance();
+    trxtype == trxType.APPROVAL &&
+      setDonationTokenApproval(allowanceState.APPROVED);
+    trxtype == trxType.APPROVAL && recomputeAllowanceState();
+  }, [isConfirmed]);
+
+  //Useeffect for general transaction events
+  useEffect(() => {
     isWriteContractError &&
       toast({
         position: "top-right",
@@ -256,12 +267,15 @@ function Web3Donation({
       });
 
     isConfirmed &&
+      trxtype == trxType.DONATION &&
+      addName &&
       addSponsor({
         name: sponsorDetails.name,
         twitter: sponsorDetails.twitter,
         amount: sponsorDetails.amount,
       });
-    isConfirmed && setAmount("");
+
+    isConfirmed && trxtype == trxType.DONATION && setAmount("");
 
     isConfirming &&
       toast({
@@ -282,14 +296,10 @@ function Web3Donation({
           </Box>
         ),
       });
-
-    trxtype == trxType.APPROVAL && isConfirmed && refetchAllowance();
-    recomputeAllowanceState();
   }, [isConfirming, isConfirmed, chainId, isWriteContractError]);
 
   const donationReady: boolean =
-    donationTokenApproval == allowanceState.APPROVED ||
-    donationTokenApproval == allowanceState.UNKNOWN;
+    donationTokenApproval == allowanceState.APPROVED;
 
   return (
     <Box>
@@ -397,7 +407,9 @@ function Web3Donation({
           <Text color={"#3A3A3A"} fontSize={"14px"} fontWeight={"500"}>
             Select Chain
           </Text>
-          <NetoworKSelector />
+          <NetoworKSelector
+            CHAINS_LIST_TO_SELECT_FROM={DONATION_SUPPORTED_CHAINID}
+          />
         </VStack>
       </Flex>
 

@@ -46,12 +46,15 @@ const WallHeros = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
   const [success, setSuccess] = useState(false);
+  const [heroslist, setHeroslist] = useState<any[]>([]);
 
-  const getheros = async() => {
+  const getheros = async () => {
     try {
       const response = await axios.get("/api/getallsponsors");
       if (response.status === 201) {
         console.log("heros list", response.data);
+        setHeroslist(response.data);
+        console.log("heros list from  state", heroslist);
       } else {
         console.log("succesfully called api, error occured");
         setError(new Error("Failed to add sponsor"));
@@ -65,14 +68,14 @@ const WallHeros = () => {
     }
   };
 
-  useEffect(()=>{
-    getheros()
-  })
+  useEffect(() => {
+    getheros();
+  });
 
   const marqueesData = Array.from(
-    { length: Math.ceil(sponsorNames.length / namesPerMarquee) },
+    { length: Math.ceil(heroslist.length / namesPerMarquee) },
     (_, index) =>
-      sponsorNames.slice(
+      heroslist.slice(
         index * namesPerMarquee,
         (index + 1) * namesPerMarquee,
       ),
@@ -83,7 +86,7 @@ const WallHeros = () => {
       <Box pt="5%" mb="3rem">
         <Text textAlign="center">WALL OF HEROES (Sponsors) 🧑‍🚒</Text>
       </Box>
-      {sponsorNames.length === 0 ? (
+      {heroslist.length === 0 ? (
         <Box
           bgImage={"url('image/Wall-of-sponsor.png')"}
           textAlign="center"
@@ -143,7 +146,7 @@ const WallHeros = () => {
                   }
                 >
                   <Text fontWeight="500" fontSize="0.9rem">
-                    {name}
+                    {name.name}
                   </Text>
                 </Box>
               ))}
