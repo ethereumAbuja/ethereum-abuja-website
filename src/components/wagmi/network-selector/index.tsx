@@ -24,7 +24,11 @@ import { ProviderRpcError, UserRejectedRequestError } from "viem";
 import { useIsMounted } from "@/hooks/useIsMounted";
 import { NetworkIcon } from "./network-icon";
 
-export default function NetoworKSelector() {
+export default function NetoworKSelector({
+  CHAINS_LIST_TO_SELECT_FROM,
+}: {
+  CHAINS_LIST_TO_SELECT_FROM?: ChainId[];
+}) {
   const { chains, switchChain } = useSwitchChain();
   const { chain } = useAccount();
   let toast = useToast();
@@ -61,6 +65,8 @@ export default function NetoworKSelector() {
   const selected =
     isMounted && chain ? (chain?.id as ChainId) : ChainId.SEPOLIA;
 
+  const CHAINLISTS = CHAINS_LIST_TO_SELECT_FROM ?? SUPPORT_CHAINID;
+
   return (
     <div>
       <Popover>
@@ -78,8 +84,16 @@ export default function NetoworKSelector() {
             height={"3.2rem"}
           >
             <Suspense fallback={null}>
-              <NetworkIcon chainId={selected} width={20} height={20} />
-              <Text>{ChainKey[selected as ChainId]}</Text>
+              {chain && SUPPORT_CHAINID.includes(chain.id) ? (
+                <>
+                  <NetworkIcon chainId={selected} width={20} height={20} />
+                  <Text>{ChainKey[selected as ChainId]}</Text>
+                </>
+              ) : (
+                <Button onClick={() => switchChain({ chainId: CHAINLISTS[0] })}>
+                  Switch to Supported Chain
+                </Button>
+              )}
             </Suspense>
           </Button>
         </PopoverTrigger>
@@ -88,7 +102,7 @@ export default function NetoworKSelector() {
           <PopoverHeader>Select Network</PopoverHeader>
           <PopoverBody>
             <VStack gap="0.21rem" alignItems={"start"}>
-              {SUPPORT_CHAINID.map((el) => (
+              {CHAINLISTS.map((el) => (
                 <Button
                   variant={"secondary"}
                   cursor="pointer"

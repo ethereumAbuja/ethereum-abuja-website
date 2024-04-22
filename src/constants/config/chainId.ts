@@ -15,6 +15,11 @@ export const SUPPORT_CHAINID: ChainId[] = [
   ChainId.ARBITRIUM,
   ChainId.BNB_SMART_CHAIN,
 ];
+export const DONATION_SUPPORTED_CHAINID: ChainId[] = [
+  ChainId.SEPOLIA,
+  ChainId.BASE_SEPOLIA,
+];
+
 export const ChainKey = {
   [ChainId.SEPOLIA]: "Ethereum Sepolia",
   [ChainId.BASE_SEPOLIA]: "Base Sepolia",
