@@ -35,7 +35,7 @@ import { ChainId, DONATION_TOKENS } from "@/constants/config/chainId";
 import { Address, erc20Abi, formatUnits, parseEther } from "viem";
 import { useTokenAllowance } from "@/hooks/wagmi/approvals/useTokenAllowance";
 import { useSearchParams } from "next/navigation";
-import Web3Donation from "./web3-donation-panel";
+import Web3Donation from "./web3-donation";
 import ManualDonation from "./manual-donation";
 import { allowanceState, trxType } from "../utils";
 
@@ -56,7 +56,7 @@ const HeroSponsorPage = () => {
   } = useWriteContract();
   let toast = useToast();
   const { address, chainId } = useAccount();
-  const _donationToken = getDonationTokenAddress(searchParams);
+  const _donationToken = getDonationTokenAddress();
 
   //FETCH DONATION TOKEN BALANCE
   const {

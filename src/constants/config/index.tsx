@@ -27,31 +27,31 @@ const metadata = {
 };
 
 const chains = [
-  mainnet,
+  // mainnet,
   sepolia,
-  base,
+  // base,
   baseSepolia,
-  arbitrum,
-  polygon,
-  polygonMumbai,
-  arbitrumSepolia,
-  optimism,
-  optimismSepolia,
+  // arbitrum,
+  // polygon,
+  // polygonMumbai,
+  // arbitrumSepolia,
+  // optimism,
+  // optimismSepolia,
 ] as [Chain, ...Chain[]];
 
 export const config = createConfig({
   chains,
   transports: {
-    [mainnet.id]: http(),
+    // [mainnet.id]: http(),
     [sepolia.id]: http(),
-    [base.id]: http(),
+    // [base.id]: http(),
     [baseSepolia.id]: http(),
-    [arbitrum.id]: http(),
-    [arbitrumSepolia.id]: http(),
-    [polygon.id]: http(),
-    [polygonMumbai.id]: http(),
-    [optimism.id]: http(),
-    [optimismSepolia.id]: http(),
+    // [arbitrum.id]: http(),
+    // [arbitrumSepolia.id]: http(),
+    // [polygon.id]: http(),
+    // [polygonMumbai.id]: http(),
+    // [optimism.id]: http(),
+    // [optimismSepolia.id]: http(),
   },
   connectors: [
     walletConnect({ projectId, metadata, showQrModal: false }),

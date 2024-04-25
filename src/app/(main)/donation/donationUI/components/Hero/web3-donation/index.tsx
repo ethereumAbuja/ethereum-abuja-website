@@ -40,26 +40,14 @@ import {
 import donationAbi from "@/constants/abi/donation.abi.json";
 import useAddSponsor, { SponsorDetailsType } from "@/hooks/useAddSponsor";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
-
-//state to track allowance of inputed toke
-enum allowanceState {
-  UNKNOWN = "UNKNOWN",
-  APPROVED = "APPROVED",
-  UNAPPROVED = "UNAPPROVED",
-}
-
-enum trxType {
-  APPROVAL = "APPROVAL",
-  DONATION = "DONATION",
-  UNKNOWN = "UNKNOWN",
-}
+import { TransactionModal } from "./donation-modal";
+import { allowanceState, trxType } from "../../utils";
 
 interface Props {
   addName: boolean;
   _donationToken: Address;
   amount: string;
   setAmount: (val: string) => void;
-
   trxtype: trxType;
   setTrxtype: (trx: trxType) => void;
 }
@@ -481,102 +469,3 @@ function Web3Donation({
 }
 
 export default Web3Donation;
-
-type modalProps = {
-  isOpen: boolean;
-  onClose: () => void;
-
-  donationAmount: string;
-  donatefn: () => void;
-  approvefn: () => void;
-
-  //trx states
-
-  isSubmitted: boolean;
-  isPending: boolean;
-  isErred: boolean;
-
-  isDonationReady: boolean;
-
-  hash: Address | undefined;
-};
-const TransactionModal = ({
-  isOpen,
-  onClose,
-
-  donatefn,
-  approvefn,
-
-  donationAmount,
-
-  isSubmitted,
-  isPending,
-  isErred,
-
-  isDonationReady,
-
-  hash,
-}: modalProps) => {
-  const searchParams = useSearchParams();
-  const [userConfirmation, setUserConfirmation] = useState<boolean>(false);
-  return (
-    <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Review Transactions</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody pb={6}>
-          <Box w={"100%"}>
-            {isSubmitted ? (
-              <Flex alignItems={"center"} flexDir={"column"} gap={"1.5rem"}>
-                <IoCheckmarkCircleSharp size={100} color="#00FF00" />
-                <Text>Donation Successful. God Bless!</Text>
-              </Flex>
-            ) : (
-              <>
-                {userConfirmation && isPending ? (
-                  <Flex flexDir={"column"} alignItems={"center"} gap={"1.5rem"}>
-                    <SyncLoader color="#36d7b7" size={45} />
-                    <Text>Confirm Donation</Text>
-                    <Text>Proceed in Wallet</Text>
-                  </Flex>
-                ) : (
-                  <Flex flexDir={"column"} alignItems={"center"} gap={"2rem"}>
-                    <Text>You are about to DONATE</Text>
-                    <Text>
-                      {donationAmount} {searchParams.get("donationtoken")}
-                    </Text>
-                    <Text> to ETHABUJA MAINTENERS</Text>
-                  </Flex>
-                )}
-              </>
-            )}
-          </Box>
-
-          {/* <Button>
-            {isPending && "TRANSACTION PENDING"}
-            {isSubmitted && "TRANSACTION SUCCESFULL"}
-            {isErred && "TRANSACTION ERROR"}
-            {hash && hash}
-          </Button> */}
-        </ModalBody>
-
-        {!isPending && !userConfirmation && (
-          <ModalFooter>
-            <Button
-              bg={"green.500"}
-              textColor={"white"}
-              w={"100%"}
-              onClick={() => {
-                setUserConfirmation(true);
-                donatefn();
-              }}
-            >
-              Confirm Donation{" "}
-            </Button>
-          </ModalFooter>
-        )}
-      </ModalContent>
-    </Modal>
-  );
-};
