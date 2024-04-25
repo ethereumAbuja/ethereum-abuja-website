@@ -42,6 +42,9 @@ import useAddSponsor, { SponsorDetailsType } from "@/hooks/useAddSponsor";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { TransactionModal } from "./donation-modal";
 import { allowanceState, trxType } from "../../utils";
+import { RootState } from "@/store/store";
+import { useSelector } from "react-redux";
+import BalancePanel from "./balance-panel";
 
 interface Props {
   addName: boolean;
@@ -149,6 +152,11 @@ function Web3Donation({
       ],
     });
   };
+
+  const DONATIONTOKENBALANCE = useSelector(
+    (state: RootState) => state.donationTransactionSlice.DonationTokenBalance,
+  );
+  console.log("this is balance from redux", DONATIONTOKENBALANCE);
 
   // DONATE FUNCTION
   const donatefn = () => {
@@ -288,6 +296,7 @@ function Web3Donation({
 
   const donationReady: boolean =
     donationTokenApproval == allowanceState.APPROVED;
+  const isInsufficientBalance: boolean = Number(amount) > DONATIONTOKENBALANCE;
 
   return (
     <Box>
@@ -381,10 +390,7 @@ function Web3Donation({
               <Box marginLeft={"4px"}>
                 <Text whiteSpace={"nowrap"}>
                   {" "}
-                  Bal:{" "}
-                  <span>
-                    {Number(formatUnits(donationTokenBal, 18)).toFixed(2)}
-                  </span>{" "}
+                  Bal: <BalancePanel />
                 </Text>
               </Box>
             )}
@@ -400,10 +406,15 @@ function Web3Donation({
           />
         </VStack>
       </Flex>
+      <Text>
+        {/* {isInsufficientBalance
+          ? "INSDUFFICIENT BALANCE"
+          : "YOU CAN PROCEED WITH TRANSACTION"} */}
+      </Text>
 
       <Flex justifyContent={["center", "flex-end", "flex-end"]}>
         {!isConnected && <ConnectButton />}
-        {isConnected && donationReady ? (
+        {isConnected && !isInsufficientBalance ? (
           <Button
             display={"flex"}
             w={["100%", "160px", "160px"]}
@@ -415,6 +426,10 @@ function Web3Donation({
             border={"1px solid #8140CE"}
             bg={"#907EF4"}
             _hover={{ bg: "#907EF4" }}
+            color={"#FDFDFD"}
+            fontSize={"14px"}
+            fontWeight={"500"}
+            lineHeight={"23.1px"}
             disabled={
               donationTokenApproval == allowanceState.UNKNOWN ? true : false
             }
@@ -422,31 +437,23 @@ function Web3Donation({
               onOpen();
             }}
           >
-            <Text
-              color={"#FDFDFD"}
-              fontSize={"14px"}
-              fontWeight={"500"}
-              lineHeight={"23.1px"}
-            >
-              Contribute
-            </Text>
+            Contribute
           </Button>
         ) : (
-          isConnected && (
+          isConnected &&
+          isInsufficientBalance && (
             <Button
               display={"flex"}
               w={["100%", "160px", "160px"]}
               py={"11px"}
+              px={"3px"}
               justifyContent={"center"}
               alignItems={"center"}
               gap={"10px"}
               borderRadius={"8px"}
-              border={"1px solid #8140CE"}
-              bg={"#907EF4"}
-              _hover={{ bg: "#907EF4" }}
-              onClick={approveToken}
+              colorScheme="red"
             >
-              Approve
+              InSufficientBalance
             </Button>
           )
         )}
@@ -455,13 +462,15 @@ function Web3Donation({
           donationAmount={amount}
           isDonationReady={donationReady}
           approvefn={approveToken}
-          hash={hash}
+          // hash={hash}
           isPending={isPending}
           isSubmitted={isSubmitted}
           isErred={isWriteContractError}
           isOpen={isOpen}
           onClose={onClose}
           donatefn={donatefn}
+          addName={addName}
+          sponsorDetails={sponsorDetails}
         />
       </Flex>
     </Box>
