@@ -38,6 +38,8 @@ import { useSearchParams } from "next/navigation";
 import Web3Donation from "./web3-donation";
 import ManualDonation from "./manual-donation";
 import { allowanceState, trxType } from "../utils";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 const HeroSponsorPage = () => {
   const [copyAddress, setCopyAddress] = useState<boolean>(false);
@@ -56,7 +58,10 @@ const HeroSponsorPage = () => {
   } = useWriteContract();
   let toast = useToast();
   const { address, chainId } = useAccount();
-  const _donationToken = getDonationTokenAddress();
+
+  const _donationToken = useSelector(
+    (state: RootState) => state.donationTokenSlice.tokenAddress,
+  );
 
   //FETCH DONATION TOKEN BALANCE
   const {

@@ -2,6 +2,7 @@ import { useAccount } from "wagmi";
 import { ChainId, DONATION_TOKENS, SUPPORT_CHAINID } from "../config/chainId";
 import { useNetworkConnectorUpdater } from "@/hooks/useSwitchNetwork";
 import { DonationToken } from "./types";
+import { Address } from "viem";
 
 export const DONATION_CONTRACT_ADDRESS: {
   [chainId in ChainId]: string;
@@ -28,10 +29,13 @@ const DONATION_TOKENS_ADDRESSES: { [token in DonationToken]: donationTokens } =
     USDC: USDC_ADDRESS,
   };
 
-export const getDonationTokenAddress = (
-  chainId?: number | undefined,
-  donationTokenTicker?: DonationToken | undefined,
-): string => {
+export const getDonationTokenAddress = ({
+  chainId,
+  donationTokenTicker,
+}: {
+  chainId?: number;
+  donationTokenTicker?: DonationToken;
+}) => {
   const _chainId = chainId ?? ChainId.SEPOLIA;
 
   const _donationTokenTicker = donationTokenTicker ?? ("USDT" as DonationToken); // This is to make Use of USDT by default
@@ -39,5 +43,5 @@ export const getDonationTokenAddress = (
   const contractAddress =
     DONATION_TOKENS_ADDRESSES[_donationTokenTicker][_chainId as ChainId];
 
-  return contractAddress;
+  return contractAddress as Address;
 };
