@@ -50,6 +50,7 @@ const WallHeros = () => {
 
   const getheros = async () => {
     try {
+      setIsLoading(true);
       const response = await axios.get("/api/getallsponsors");
       if (response.status === 201) {
         console.log("heros list", response.data);
@@ -75,10 +76,7 @@ const WallHeros = () => {
   const marqueesData = Array.from(
     { length: Math.ceil(heroslist.length / namesPerMarquee) },
     (_, index) =>
-      heroslist.slice(
-        index * namesPerMarquee,
-        (index + 1) * namesPerMarquee,
-      ),
+      heroslist.slice(index * namesPerMarquee, (index + 1) * namesPerMarquee),
   );
 
   return (
@@ -86,7 +84,7 @@ const WallHeros = () => {
       <Box pt="5%" mb="3rem">
         <Text textAlign="center">WALL OF HEROES (Sponsors) 🧑‍🚒</Text>
       </Box>
-      {heroslist.length === 0 ? (
+      {heroslist.length === 0 || isLoading ? (
         <Box
           bgImage={"url('image/Wall-of-sponsor.png')"}
           textAlign="center"

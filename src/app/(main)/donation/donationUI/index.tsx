@@ -22,7 +22,7 @@ const WallHeros = dynamic(() => import("./components/WallHeros"), {
 });
 
 const DonationDapp = () => {
-  useNetworkConnectorUpdater();
+  // useNetworkConnectorUpdater();
   return (
     <Box py={"5%"}>
       <HeroSponsorPage />

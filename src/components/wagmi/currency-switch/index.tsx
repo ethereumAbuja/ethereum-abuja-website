@@ -29,45 +29,49 @@ import { useSwitchChain, useAccount } from "wagmi";
 import { ProviderRpcError, UserRejectedRequestError } from "viem";
 import { useIsMounted } from "@/hooks/useIsMounted";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import { useDonationToken } from "@/store/donationTokenSlice/hooks";
 
 export default function CurrencySwitch() {
   const { chain } = useAccount();
   let toast = useToast();
   const isMounted = useIsMounted();
   const [open, setOpen] = useState(false);
-  const [currency, setCurrency] = useState<DONATION_TOKENS>(DONATION_TOKENS.USDT);
+  const [currency, setCurrency] = useState<DONATION_TOKENS>(
+    DONATION_TOKENS.USDT,
+  );
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { push } = useRouter();
 
-  const createQueryString = useCallback(
-    (values: { name: string; value: string | null }[]) => {
-      const params = new URLSearchParams(searchParams);
-      values.forEach(({ name, value }) => {
-        if (value === null) {
-          params.delete(name);
-        } else {
-          params.set(name, value);
-        }
-      });
-      return params.toString();
-    },
-    [searchParams],
-  );
+  const xxx = useDonationToken();
 
-  const updateSearchParams = useCallback<{ (_donationToken: string): void }>(
-    (_donationToken) => {
-      console.log("set_donationToken", _donationToken);
-      push(
-        `${pathname}?${createQueryString([
-          { name: "donationtoken", value: _donationToken },
-        ])}`,
-        { scroll: false },
-      );
-    },
-    [createQueryString, pathname, push],
-  );
+  // const createQueryString = useCallback(
+  //   (values: { name: string; value: string | null }[]) => {
+  //     const params = new URLSearchParams(searchParams);
+  //     values.forEach(({ name, value }) => {
+  //       if (value === null) {
+  //         params.delete(name);
+  //       } else {
+  //         params.set(name, value);
+  //       }
+  //     });
+  //     return params.toString();
+  //   },
+  //   [searchParams],
+  // );
 
+  // const updateSearchParams = useCallback<{ (_donationToken: string): void }>(
+  //   (_donationToken) => {
+  //     console.log("set_donationToken", _donationToken);
+  //     push(
+  //       `${pathname}?${createQueryString([
+  //         { name: "donationtoken", value: _donationToken },
+  //       ])}`,
+  //       { scroll: false },
+  //     );
+  //   },
+  //   [createQueryString, pathname, push],
+  // );
 
   return (
     <div>
@@ -91,15 +95,15 @@ export default function CurrencySwitch() {
               <PopoverArrow />
               <PopoverHeader>Select Currency</PopoverHeader>
               <PopoverBody>
-                <VStack gap="0.2rem"  alignItems={"start"}>
+                <VStack gap="0.2rem" alignItems={"start"}>
                   {CURRENCIES.map((el) => (
                     <Button
                       variant={"secondary"}
                       cursor="pointer"
                       key={el}
                       onClick={() => {
-                        updateSearchParams(el);
-                        onClose()
+                        xxx(el);
+                        onClose();
                       }}
                     >
                       <Text>{el as string}</Text>
