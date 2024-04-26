@@ -136,60 +136,13 @@ function Web3Donation({
     scopeKey: "Donation tokenBalance",
   });
 
-  //APPROVE TOKEN FUNCTION
-  const approveToken = () => {
-    if (!chainId) return null;
 
-    setTrxtype(trxType.APPROVAL);
-
-    writeContract({
-      address: _donationToken as Address,
-      abi: erc20Abi,
-      functionName: "approve",
-      args: [
-        DONATION_CONTRACT_ADDRESS[chainId as ChainId] as Address,
-        parseEther(amount),
-      ],
-    });
-  };
 
   const DONATIONTOKENBALANCE = useSelector(
     (state: RootState) => state.donationTransactionSlice.DonationTokenBalance,
   );
   console.log("this is balance from redux", DONATIONTOKENBALANCE);
-
-  // DONATE FUNCTION
-  const donatefn = () => {
-    if (!chainId || !address) {
-      open({ view: "Account" });
-    }
-    if (
-      (addName && sponsorDetails.name == "") ||
-      (addName && sponsorDetails.twitter == "")
-    ) {
-      toast({
-        position: "top-right",
-        render: () => (
-          <Box color="white" p={3} bg="blue.500">
-            Please Fields "Name" and "Twitter" cannot be empty, kindly fill or
-            donate anonymously😊
-          </Box>
-        ),
-      });
-      return null;
-    }
-    setTrxtype(trxType.DONATION);
-
-    writeContract({
-      address: DONATION_CONTRACT_ADDRESS[chainId as ChainId] as Address,
-      abi: donationAbi,
-      functionName: "donate",
-      args: [_donationToken as Address, parseEther(amount)],
-    });
-  };
-
-  //TRANSACTIONS RECEIPT
-
+ 
   const {
     isLoading: isConfirming,
     isSuccess: isConfirmed,
@@ -199,19 +152,7 @@ function Web3Donation({
     hash,
   });
 
-  //RECOMPUTE ALLOWANCE STATE AFTER SUCCESSFUL APPROVAL
-  const recomputeAllowanceState = () => {
-    Number(formatUnits(PtokenAllowance ?? 0n, 18)) >= Number(amount) &&
-      setDonationTokenApproval(allowanceState.APPROVED);
-    toast({
-      position: "top-right",
-      render: () => (
-        <Box color="white" p={3} bg="blue.500">
-          STATE RECOMPUTED
-        </Box>
-      ),
-    });
-  };
+
 
   //INPUT BOXES HANDLE EVENTS
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -232,71 +173,7 @@ function Web3Donation({
     console.log(sponsorDetails);
   };
 
-  //Useeffect for approve function
-  useEffect(() => {
-    trxtype == trxType.APPROVAL && refetchAllowance();
-    refectBalance();
-    trxtype == trxType.APPROVAL &&
-      setDonationTokenApproval(allowanceState.APPROVED);
-    trxtype == trxType.APPROVAL && recomputeAllowanceState();
-  }, [isConfirmed]);
 
-  //Useeffect for general transaction events
-  useEffect(() => {
-    isWriteContractError &&
-      toast({
-        position: "top-right",
-        render: () => (
-          <Box color="white" p={3} bg="blue.500">
-            {WriteContractError?.message}
-          </Box>
-        ),
-      });
-    isConfirmed &&
-      toast({
-        position: "top-right",
-        render: () => (
-          <Box color="white" p={3} bg="blue.500">
-            confirmed
-          </Box>
-        ),
-      });
-
-    isConfirmed &&
-      trxtype == trxType.DONATION &&
-      addName &&
-      addSponsor({
-        name: sponsorDetails.name,
-        twitter: sponsorDetails.twitter,
-        amount: sponsorDetails.amount,
-      });
-
-    isConfirmed && trxtype == trxType.DONATION && setAmount("");
-
-    isConfirming &&
-      toast({
-        position: "top-right",
-        render: () => (
-          <Box color="white" p={3} bg="blue.500">
-            Transaction Submitted
-          </Box>
-        ),
-      });
-    isWaitTrxError &&
-      toast({
-        position: "top-right",
-        render: () => (
-          <Box color="white" p={3} bg="blue.500">
-            {WaitForTransactionReceiptError.name}
-            {WaitForTransactionReceiptError.message}
-          </Box>
-        ),
-      });
-  }, [isConfirming, isConfirmed, chainId, isWriteContractError]);
-
-  const donationReady: boolean =
-    donationTokenApproval == allowanceState.APPROVED;
-  const isInsufficientBalance: boolean = Number(amount) > DONATIONTOKENBALANCE;
 
   return (
     <Box>
@@ -406,11 +283,7 @@ function Web3Donation({
           />
         </VStack>
       </Flex>
-      <Text>
-        {/* {isInsufficientBalance
-          ? "INSDUFFICIENT BALANCE"
-          : "YOU CAN PROCEED WITH TRANSACTION"} */}
-      </Text>
+
 
       <Flex justifyContent={["center", "flex-end", "flex-end"]}>
         {!isConnected && <ConnectButton />}
@@ -430,9 +303,6 @@ function Web3Donation({
             fontSize={"14px"}
             fontWeight={"500"}
             lineHeight={"23.1px"}
-            disabled={
-              donationTokenApproval == allowanceState.UNKNOWN ? true : false
-            }
             onClick={() => {
               onOpen();
             }}
@@ -460,12 +330,11 @@ function Web3Donation({
 
         <TransactionModal
           donationAmount={amount}
-          isDonationReady={donationReady}
           approvefn={approveToken}
           // hash={hash}
-          isPending={isPending}
-          isSubmitted={isSubmitted}
-          isErred={isWriteContractError}
+          // isPending={isPending}
+          // isSubmitted={isSubmitted}
+          // isErred={isWriteContractError}
           isOpen={isOpen}
           onClose={onClose}
           donatefn={donatefn}

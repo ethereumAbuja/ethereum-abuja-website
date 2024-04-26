@@ -36,7 +36,7 @@ function BalancePanel() {
         setDonationBalance(Number(formatUnits(donationTokenBal ?? 0n, 18))),
       );
     refectBalance();
-  }, [isSuccessDonToken, chainId]);
+  }, [isSuccessDonToken, chainId, _donationToken]);
 
   return (
     <>
