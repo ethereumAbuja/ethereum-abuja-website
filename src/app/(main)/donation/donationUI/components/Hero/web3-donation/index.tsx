@@ -136,13 +136,11 @@ function Web3Donation({
     scopeKey: "Donation tokenBalance",
   });
 
-
-
   const DONATIONTOKENBALANCE = useSelector(
     (state: RootState) => state.donationTransactionSlice.DonationTokenBalance,
   );
   console.log("this is balance from redux", DONATIONTOKENBALANCE);
- 
+
   const {
     isLoading: isConfirming,
     isSuccess: isConfirmed,
@@ -151,8 +149,6 @@ function Web3Donation({
   } = useWaitForTransactionReceipt({
     hash,
   });
-
-
 
   //INPUT BOXES HANDLE EVENTS
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -173,8 +169,7 @@ function Web3Donation({
     console.log(sponsorDetails);
   };
 
-
-
+  const isInsufficientBalance: boolean = Number(amount) > DONATIONTOKENBALANCE;
   return (
     <Box>
       {addName && (
@@ -283,7 +278,11 @@ function Web3Donation({
           />
         </VStack>
       </Flex>
-
+      <Text>
+        {/* {isInsufficientBalance
+          ? "INSDUFFICIENT BALANCE"
+          : "YOU CAN PROCEED WITH TRANSACTION"} */}
+      </Text>
 
       <Flex justifyContent={["center", "flex-end", "flex-end"]}>
         {!isConnected && <ConnectButton />}
@@ -330,14 +329,14 @@ function Web3Donation({
 
         <TransactionModal
           donationAmount={amount}
-          approvefn={approveToken}
+          // approvefn={approveToken}
           // hash={hash}
           // isPending={isPending}
           // isSubmitted={isSubmitted}
           // isErred={isWriteContractError}
           isOpen={isOpen}
           onClose={onClose}
-          donatefn={donatefn}
+          // donatefn={donatefn}
           addName={addName}
           sponsorDetails={sponsorDetails}
         />

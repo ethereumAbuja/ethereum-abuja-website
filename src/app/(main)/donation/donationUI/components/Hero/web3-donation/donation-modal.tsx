@@ -38,8 +38,8 @@ type modalProps = {
   isOpen: boolean;
   onClose: () => void;
   donationAmount: string;
-  donatefn?: () => void;
-  approvefn: () => void;
+  // donatefn?: () => void;
+  // approvefn: () => void;
 
   //trx states
   // isSubmitted: boolean;
@@ -55,7 +55,7 @@ export const TransactionModal = ({
   onClose,
 
   // donatefn,
-  approvefn,
+  // approvefn,
 
   donationAmount,
 

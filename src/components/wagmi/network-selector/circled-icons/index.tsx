@@ -36,10 +36,10 @@ export * from "./ScrollCircle";
 export * from "./ZetaChainCircle";
 
 export const NETWORK_CIRCLE_ICON: Record<number, IconComponent> = {
-  [ChainId.ETHEREUM]: EthereumCircle,
-  [ChainId.BNB_SMART_CHAIN]: BinanceCircle,
-  [ChainId.ARBITRIUM]: ArbitrumCircle,
-  [ChainId.BASE]: BaseCircle,
+  // [ChainId.ETHEREUM]: EthereumCircle,
+  // [ChainId.BNB_SMART_CHAIN]: BinanceCircle,
+  // [ChainId.ARBITRIUM]: ArbitrumCircle,
+  // [ChainId.BASE]: BaseCircle,
 
   //testnet
   [ChainId.SEPOLIA]: EthereumCircle,
