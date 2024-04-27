@@ -41,9 +41,11 @@ import donationAbi from "@/constants/abi/donation.abi.json";
 import useAddSponsor, { SponsorDetailsType } from "@/hooks/useAddSponsor";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { TransactionModal } from "./donation-modal";
-import { allowanceState, trxType } from "../../utils";
+import { allowanceState, trxType } from "@/utils";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
+import { TokenQuantityInput } from "@/components/TokenQuantityInput";
+import { formatBalance } from "@/utils/formatBalance";
 import BalancePanel from "./balance-panel";
 
 interface Props {
@@ -64,7 +66,6 @@ function Web3Donation({
   setTrxtype,
 }: Props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { open } = useWeb3Modal();
   const {
     isLoading: addSponsorLoading,
     success: AddSponsorSuccess,
@@ -100,15 +101,15 @@ function Web3Donation({
   //Check approval state when inpute token value]
   const handleDonationAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    console.log("donation amount", e.target.value);
+    // console.log("donation amount", e.target.value);
     setAmount(e.target.value);
 
-    console.log("this is BigInt value", BigInt(e.target.value));
-    console.log(
-      "this is approved tokens",
-      Number(formatUnits(PtokenAllowance ?? 0n, 18)).toFixed(2),
-    );
-    console.log("this is value inputed", Number(e.target.value));
+    // console.log("this is BigInt value", BigInt(e.target.value));
+    // console.log(
+    //   "this is approved tokens",
+    //   Number(formatUnits(PtokenAllowance ?? 0n, 18)).toFixed(2)
+    // );
+    // console.log("this is value inputed", Number(e.target.value));
     setSponsorDetails((prevState) => ({
       ...prevState,
       amount: parseEther(amount).toString(),
@@ -118,7 +119,7 @@ function Web3Donation({
       ? setDonationTokenApproval(allowanceState.APPROVED)
       : setDonationTokenApproval(allowanceState.UNAPPROVED);
 
-    console.log(donationTokenApproval);
+    // console.log(donationTokenApproval);
   };
 
   //FETCH DONATION TOKEN BALANCE
@@ -137,9 +138,9 @@ function Web3Donation({
   });
 
   const DONATIONTOKENBALANCE = useSelector(
-    (state: RootState) => state.donationTransactionSlice.DonationTokenBalance,
+    (state: RootState) => state.donationTransactionSlice.DonationTokenBalance
   );
-  console.log("this is balance from redux", DONATIONTOKENBALANCE);
+  // console.log("this is balance from redux", DONATIONTOKENBALANCE);
 
   const {
     isLoading: isConfirming,
@@ -160,7 +161,7 @@ function Web3Donation({
   };
 
   const handleSponsorNameChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setSponsorDetails((prevState) => ({
       ...prevState,
@@ -267,6 +268,11 @@ function Web3Donation({
               </Box>
             )}
           </Flex>
+          <TokenQuantityInput
+            onChange={setAmount}
+            quantity={amount}
+            maxValue={formatBalance(donationTokenBal ?? BigInt(0))}
+          />
         </Box>
 
         <VStack w={"100%"} display={"flex"} gap="2" alignItems={"start"}>
@@ -279,11 +285,18 @@ function Web3Donation({
         </VStack>
       </Flex>
       <Text>
-        {/* {isInsufficientBalance
+        {/* {
           ? "INSDUFFICIENT BALANCE"
           : "YOU CAN PROCEED WITH TRANSACTION"} */}
       </Text>
 
+      {/* 
+     
+     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     // Connect Buttin and Contribute Button
+     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+     */}
       <Flex justifyContent={["center", "flex-end", "flex-end"]}>
         {!isConnected && <ConnectButton />}
         {isConnected && !isInsufficientBalance ? (
@@ -313,11 +326,11 @@ function Web3Donation({
           isInsufficientBalance && (
             <Button
               display={"flex"}
-              w={["100%", "160px", "160px"]}
-              py={"11px"}
-              px={"3px"}
+              w={["100%", "200px", "200px"]}
+              p="10px 20px"
               justifyContent={"center"}
               alignItems={"center"}
+              fontWeight={400}
               gap={"10px"}
               borderRadius={"8px"}
               colorScheme="red"

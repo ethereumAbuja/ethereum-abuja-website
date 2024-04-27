@@ -1,18 +1,8 @@
 import { ETHABJ_WALLET_ADDRESS } from "@/utils/config";
-import {
-  Box,
-  Button,
-  Checkbox,
-  Flex,
-  Input,
-  Text,
-  Tooltip,
-  useToast,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Input, Text, useToast } from "@chakra-ui/react";
 import React, { useState } from "react";
 import clipboardCopy from "clipboard-copy";
 import CustomToast from "@/components/CustomToast";
-import { ETHABJ_SVG } from "@/assets/svg";
 import CustomErrorToast from "@/components/CustomErrorToast";
 
 function ManualDonation() {
@@ -27,7 +17,7 @@ function ManualDonation() {
         toast,
         "Warning || address was unable to copy",
         4000,
-        "bottom-left",
+        "bottom-left"
       );
     } else {
       clipboardCopy(ETHABJ_WALLET_ADDRESS).then(() => {
@@ -35,7 +25,7 @@ function ManualDonation() {
           toast,
           "You just copied ETHAbuja Wallet Address!",
           5000,
-          "bottom",
+          "bottom"
         );
       });
     }

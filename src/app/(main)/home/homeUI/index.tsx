@@ -3,60 +3,12 @@
 import { Flex, Box, Text, Spinner } from "@chakra-ui/react";
 import { useAppSelector } from "@/hooks/rtkHooks";
 import dynamic from "next/dynamic";
-
-const Hero = dynamic(() => import("./components/hero"), {
-  ssr: false,
-  // loading: () => (
-  //   <Box>
-  //     <Spinner size={"sm"} />
-  //   </Box>
-  // ),
-});
-
-const SectionTwo = dynamic(() => import("./components/sectionTwo"), {
-  ssr: false,
-  // loading: () => (
-  //   <Box>
-  //     <Spinner size={"sm"} />
-  //   </Box>
-  // ),
-});
-
-const SectionFour = dynamic(() => import("./components/sectionFour"), {
-  ssr: false,
-  // loading: () => (
-  //   <Box>
-  //     <Spinner size={"sm"} />
-  //   </Box>
-  // ),
-});
-
-const SectionFive = dynamic(() => import("./components/sectionFive"), {
-  ssr: false,
-  // loading: () => (
-  //   <Box>
-  //     <Spinner size={"sm"} />
-  //   </Box>
-  // ),
-});
-
-const SectionSix = dynamic(() => import("./components/sectionSix"), {
-  ssr: false,
-  // loading: () => (
-  //   <Box>
-  //     <Spinner size={"sm"} />
-  //   </Box>
-  // ),
-});
-
-const SectionSeven = dynamic(() => import("./components/sectionSeven"), {
-  ssr: false,
-  // loading: () => (
-  //   <Box>
-  //     <Spinner size={"sm"} />
-  //   </Box>
-  // ),
-});
+import Hero from "./components/hero";
+import SectionTwo from "./components/sectionTwo";
+import SectionFour from "./components/sectionFour";
+import SectionFive from "./components/sectionFive";
+import SectionSix from "./components/sectionSix";
+import SectionSeven from "./components/sectionSeven";
 
 type Props = {};
 

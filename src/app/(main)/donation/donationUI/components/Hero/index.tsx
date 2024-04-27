@@ -1,16 +1,14 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Checkbox,
   Divider,
   Flex,
   Image,
-  Input,
   Text,
   Tooltip,
-  Button,
   useToast,
 } from "@chakra-ui/react";
 import { ETHABJ_SVG } from "@/assets/svg";
@@ -18,7 +16,6 @@ import "../../../../../globals.css";
 import CustomToast from "@/components/CustomToast";
 import CustomErrorToast from "@/components/CustomErrorToast";
 import clipboardCopy from "clipboard-copy";
-import { useWeb3Modal } from "@web3modal/wagmi/react";
 import {
   useAccount,
   useReadContract,
@@ -27,17 +24,14 @@ import {
 } from "wagmi";
 import { ETHABJ_WALLET_ADDRESS } from "@/utils/config";
 
-import {
-  DONATION_CONTRACT_ADDRESS,
-  getDonationTokenAddress,
-} from "@/constants/contract-address";
-import { ChainId, DONATION_TOKENS } from "@/constants/config/chainId";
+import { DONATION_CONTRACT_ADDRESS } from "@/constants/contract-address";
+import { ChainId } from "@/constants/config/chainId";
 import { Address, erc20Abi, formatUnits, parseEther } from "viem";
 import { useTokenAllowance } from "@/hooks/wagmi/approvals/useTokenAllowance";
 import { useSearchParams } from "next/navigation";
 import Web3Donation from "./web3-donation";
 import ManualDonation from "./manual-donation";
-import { allowanceState, trxType } from "../utils";
+import { allowanceState, trxType } from "@/utils";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
@@ -46,31 +40,19 @@ const HeroSponsorPage = () => {
   const [addName, setAddName] = useState<boolean>(false);
   const [donationTokenApproval, setDonationTokenApproval] =
     useState<allowanceState>(allowanceState.UNKNOWN);
-  const [amount, setAmount] = useState<string>("");
+  const [amount, setAmount] = useState<string>("0.01");
   const [trxtype, setTrxtype] = useState<trxType>(trxType.UNKNOWN);
-  const searchParams = useSearchParams();
-  const {
-    data: hash,
-    isPending,
-    isSuccess,
-    isError: mainIsError,
-    writeContract,
-  } = useWriteContract();
+
+  const { data: hash } = useWriteContract();
   let toast = useToast();
   const { address, chainId } = useAccount();
 
   const _donationToken = useSelector(
-    (state: RootState) => state.donationTokenSlice.tokenAddress,
+    (state: RootState) => state.donationTokenSlice.tokenAddress
   );
 
   //FETCH DONATION TOKEN BALANCE
-  const {
-    data: donationTokenBal,
-    isFetching: isFetchinDonTokenBal,
-    isError,
-    isSuccess: isSuccessDonToken,
-    refetch: refectBalance,
-  } = useReadContract({
+  const { refetch: refectBalance } = useReadContract({
     abi: erc20Abi,
     address: _donationToken as Address,
     functionName: "balanceOf",
@@ -96,12 +78,7 @@ const HeroSponsorPage = () => {
   };
 
   //TRANSACTIONS RECEIPT
-
-  const {
-    isLoading: isConfirming,
-    isSuccess: isConfirmed,
-    isError: trxErrors,
-  } = useWaitForTransactionReceipt({
+  const { isSuccess: isConfirmed } = useWaitForTransactionReceipt({
     hash,
   });
 
@@ -117,36 +94,11 @@ const HeroSponsorPage = () => {
     if (copyAddress) setCopyAddress(false);
   };
 
-  //***FN to handle copy button click
-  const handleCopyButtonClick = () => {
-    if (!ETHABJ_WALLET_ADDRESS) {
-      CustomErrorToast(
-        toast,
-        "Warning || address was unable to copy",
-        4000,
-        "bottom-left",
-      );
-    } else {
-      clipboardCopy(ETHABJ_WALLET_ADDRESS).then(() => {
-        CustomToast(
-          toast,
-          "You just copied ETHAbuja Wallet Address!",
-          5000,
-          "bottom",
-        );
-      });
-    }
-  };
-
   useEffect(() => {
     refectBalance();
     trxtype == trxType.APPROVAL && isConfirmed && refetchAllowance();
     recomputeAllowanceState();
   }, [chainId]);
-
-  const donationReady: boolean =
-    donationTokenApproval == allowanceState.APPROVED ||
-    donationTokenApproval == allowanceState.UNKNOWN;
 
   return (
     <Box

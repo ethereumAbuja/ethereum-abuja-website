@@ -17,7 +17,7 @@ import { COLORS } from "@/constants/theme/lightDarkTheme";
 import { ETHABJ_SVG2 } from "@/assets/svg/svgFile2";
 import { JOIN_COM_URL } from "@/utils/config";
 
-const SectionSix = () => {
+const SectionSeven = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   return (
@@ -87,4 +87,4 @@ const SectionSix = () => {
   );
 };
 
-export default SectionSix;
+export default SectionSeven;

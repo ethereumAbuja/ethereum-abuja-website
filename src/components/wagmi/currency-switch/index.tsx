@@ -1,32 +1,20 @@
 "use client";
 
 import {
-  ChainId,
-  ChainKey,
-  SUPPORT_CHAINID,
-  DONATION_TOKENS,
-  CURRENCIES,
-} from "@/constants/config/chainId";
-import React, { FC, Suspense, useCallback, useMemo, useState } from "react";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverHeader,
-  PopoverBody,
-  PopoverFooter,
-  PopoverArrow,
-  PopoverCloseButton,
-  PopoverAnchor,
   Button,
   useToast,
-  Box,
-  HStack,
   VStack,
   Text,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react";
-import { useSwitchChain, useAccount } from "wagmi";
-import { ProviderRpcError, UserRejectedRequestError } from "viem";
+import { DONATION_TOKENS, CURRENCIES } from "@/constants/config/chainId";
+import React, { useState } from "react";
+import { TiArrowSortedDown } from "react-icons/ti";
+
+import { useAccount } from "wagmi";
 import { useIsMounted } from "@/hooks/useIsMounted";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { useDonationToken } from "@/store/donationTokenSlice/hooks";
@@ -37,7 +25,7 @@ export default function CurrencySwitch() {
   const isMounted = useIsMounted();
   const [open, setOpen] = useState(false);
   const [currency, setCurrency] = useState<DONATION_TOKENS>(
-    DONATION_TOKENS.USDT,
+    DONATION_TOKENS.USDT
   );
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -75,46 +63,43 @@ export default function CurrencySwitch() {
 
   return (
     <div>
-      <Popover>
+      <Menu>
         {({ isOpen, onClose }) => (
           <>
-            <PopoverTrigger>
-              <Button
-                variant={"secondary"}
-                display="flex"
-                alignItems={"center"}
-                justifyContent={"center"}
-                gap=".5rem"
-                borderRadius="0.3rem"
-                padding="5px 10px"
-              >
-                <Text>{searchParams.get("donationtoken")}</Text>
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent>
-              <PopoverArrow />
-              <PopoverHeader>Select Currency</PopoverHeader>
-              <PopoverBody>
-                <VStack gap="0.2rem" alignItems={"start"}>
-                  {CURRENCIES.map((el) => (
-                    <Button
-                      variant={"secondary"}
-                      cursor="pointer"
-                      key={el}
-                      onClick={() => {
-                        xxx(el);
-                        onClose();
-                      }}
-                    >
-                      <Text>{el as string}</Text>
-                    </Button>
-                  ))}
-                </VStack>
-              </PopoverBody>
-            </PopoverContent>
+            <MenuButton
+              as={Button}
+              variant={"secondary"}
+              display="flex"
+              bgColor="rgba(241, 242, 254, 0.70)"
+              alignItems={"center"}
+              justifyContent={"center"}
+              h="27px"
+              borderRadius="20px"
+              padding="5px"
+              rightIcon={<TiArrowSortedDown />}
+            >
+              <Text fontSize={"14px"} fontWeight={"500"} color={"#1D2E32"}>
+                {searchParams.get("donationtoken")}
+              </Text>
+            </MenuButton>
+            <MenuList minW="100px">
+              <VStack gap="0.2rem" alignItems={"start"}>
+                {CURRENCIES.map((el) => (
+                  <MenuItem
+                    key={el}
+                    onClick={() => {
+                      xxx(el);
+                      onClose();
+                    }}
+                  >
+                    <Text>{el}</Text>
+                  </MenuItem>
+                ))}
+              </VStack>
+            </MenuList>
           </>
         )}
-      </Popover>
+      </Menu>
     </div>
   );
 }

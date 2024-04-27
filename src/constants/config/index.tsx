@@ -14,16 +14,22 @@ import {
   optimism,
 } from "wagmi/chains";
 import { walletConnect, injected, coinbaseWallet } from "wagmi/connectors";
+import { SITE_NAME, SITE_INFO, SITE_URL } from "@/utils/site";
 
-export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
+export const WALLETCONNECT_PROJECT_ID =
+  process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
 
-if (!projectId) throw new Error("Project ID is not defined");
+if (!WALLETCONNECT_PROJECT_ID) {
+  console.warn(
+    "You need to provide a NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID env variable"
+  );
+}
 
 const metadata = {
-  name: "ETHAbuja",
-  description: "ETHAbuja Donation-Dapp",
-  url: "https://www.ethabuja.com/",
-  icons: ["https://avatars.githubusercontent.com/u/37784886"],
+  name: SITE_NAME,
+  description: SITE_INFO,
+  url: SITE_URL,
+  icons: [],
 };
 
 const chains = [
@@ -39,7 +45,7 @@ const chains = [
   // optimismSepolia,
 ] as [Chain, ...Chain[]];
 
-export const config = createConfig({
+export const WALLETCONNECT_CONFIG = createConfig({
   chains,
   transports: {
     // [mainnet.id]: http(),
@@ -54,7 +60,12 @@ export const config = createConfig({
     // [optimismSepolia.id]: http(),
   },
   connectors: [
-    walletConnect({ projectId, metadata, showQrModal: false }),
+    walletConnect({
+      //@ts-ignore
+      projectId: WALLETCONNECT_PROJECT_ID,
+      metadata,
+      showQrModal: false,
+    }),
     injected({ shimDisconnect: true }),
     coinbaseWallet({
       appName: metadata.name,

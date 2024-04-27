@@ -1,18 +1,13 @@
 "use client";
 import { useSearchParams } from "next/navigation";
 import SyncLoader from "react-spinners/ClipLoader";
-import { IoCheckmarkCircleSharp } from "react-icons/io5";
 import {
   Box,
   Button,
   Flex,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalHeader,
-  ModalContent,
-  ModalOverlay,
-  ModalFooter,
+  Stack,
+  chakra,
+  Image,
   Text,
   useToast,
   VStack,
@@ -21,7 +16,7 @@ import React, { useEffect, useState } from "react";
 import { Address, erc20Abi, formatUnits, parseEther } from "viem";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
-import { trxType } from "../../utils";
+import { trxType } from "@/utils";
 import { useTokenAllowance } from "@/hooks/wagmi/approvals/useTokenAllowance";
 import { DONATION_CONTRACT_ADDRESS } from "@/constants/contract-address";
 import { ChainId } from "@/constants/config/chainId";
@@ -33,6 +28,9 @@ import {
 import { setOngoingTrxType } from "@/store/donationTransactionSlice";
 import useAddSponsor, { SponsorDetailsType } from "@/hooks/useAddSponsor";
 import donationAbi from "@/constants/abi/donation.abi.json";
+import ModalComponent from "@/components/ModalComponent";
+import CustomToast from "@/components/CustomToast";
+import CustomErrorToast from "@/components/CustomErrorToast";
 
 type modalProps = {
   isOpen: boolean;
@@ -53,18 +51,13 @@ type modalProps = {
 export const TransactionModal = ({
   isOpen,
   onClose,
-
   // donatefn,
   // approvefn,
-
   donationAmount,
-
   // isSubmitted,
   // isPending,
   // isErred,
-
   // hash,
-
   addName,
   sponsorDetails,
 }: modalProps) => {
@@ -92,11 +85,11 @@ export const TransactionModal = ({
   const { chainId, address } = useAccount();
 
   const currentTransactionType = useSelector(
-    (state: RootState) => state.donationTransactionSlice.OngoingTransactionType,
+    (state: RootState) => state.donationTransactionSlice.OngoingTransactionType
   );
 
   const _donationToken = useSelector(
-    (state: RootState) => state.donationTokenSlice.tokenAddress,
+    (state: RootState) => state.donationTokenSlice.tokenAddress
   );
 
   let toast = useToast();
@@ -132,21 +125,19 @@ export const TransactionModal = ({
       ],
     });
   };
+
   //DONATE FUNCTION
   const donatefn = () => {
     if (
       (addName && sponsorDetails.name == "") ||
       (addName && sponsorDetails.twitter == "")
     ) {
-      toast({
-        position: "top-right",
-        render: () => (
-          <Box color="white" p={3} bg="blue.500">
-            Please Fields "Name" and "Twitter" cannot be empty, kindly fill or
-            donate anonymously😊
-          </Box>
-        ),
-      });
+      CustomErrorToast(
+        toast,
+        `Please Fields "Name" and "Twitter" cannot be empty, kindly fill or donate anonymously😊`,
+        5000,
+        "bottom"
+      );
       return null;
     }
     dispatch(setOngoingTrxType(trxType.DONATION));
@@ -159,30 +150,20 @@ export const TransactionModal = ({
     });
   };
 
-  //USE EFFECT
   useEffect(() => {
     isConfirmed && refetchAllowance();
   }, [isConfirmed]);
 
   useEffect(() => {
     isWriteContractError &&
-      toast({
-        position: "top-right",
-        render: () => (
-          <Box color="white" p={3} bg="blue.500">
-            {WriteContractError?.message}
-          </Box>
-        ),
-      });
-    isConfirmed &&
-      toast({
-        position: "top-right",
-        render: () => (
-          <Box color="white" p={3} bg="blue.500">
-            confirmed
-          </Box>
-        ),
-      });
+      CustomErrorToast(
+        toast,
+        `${WriteContractError?.message}`,
+        5000,
+        "top-right"
+      );
+
+    isConfirmed && CustomToast(toast, "Confirmed", 4000, "top-right");
 
     isConfirmed &&
       currentTransactionType == trxType.DONATION &&
@@ -193,58 +174,75 @@ export const TransactionModal = ({
         amount: sponsorDetails.amount,
       });
 
-    // isConfirmed && currentTransactionType == trxType.DONATION && setAm/ount("");
-
     isConfirming &&
-      toast({
-        position: "top-right",
-        render: () => (
-          <Box color="white" p={3} bg="blue.500">
-            Transaction Submitted
-          </Box>
-        ),
-      });
+      CustomToast(toast, "Transaction Submitted", 4000, "top-right");
     isWaitTrxError &&
-      toast({
-        position: "top-right",
-        render: () => (
-          <Box color="white" p={3} bg="blue.500">
-            {WaitForTransactionReceiptError.name}
-            {WaitForTransactionReceiptError.message}
-          </Box>
-        ),
-      });
+      CustomErrorToast(
+        toast,
+        `${WaitForTransactionReceiptError.name}, ${WaitForTransactionReceiptError.message}`,
+        5000,
+        "top-right"
+      );
   }, [isConfirming, isConfirmed, chainId, isWriteContractError]);
 
   const hasEnoughAllowances: boolean =
     Number(formatUnits(allowances ?? 0n, 18)) >= Number(donationAmount);
 
   return (
-    <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Review Transactions</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody pb={6}>
+    <ModalComponent
+      closeOnOverlayClick={false}
+      isOpen={isOpen}
+      onClose={onClose}
+    >
+      <Stack w="100%">
+        <Flex justify="center" alignItems="center" flexDir="column">
+          <Image
+            src="image/transaction-successful.png"
+            w={"122px"}
+            alt="an image"
+          />
+
           <Box w={"100%"}>
             {isTrxSubmitted && currentTransactionType == trxType.DONATION ? (
               <Flex alignItems={"center"} flexDir={"column"} gap={"1.5rem"}>
-                <IoCheckmarkCircleSharp size={100} color="#00FF00" />
-                <Text>Donation Successful. God Bless!</Text>
+                <Text fontWeight={600} fontSize="18px">
+                  Transaction Successful
+                </Text>
+                <Text as="span" fontSize="14px">
+                  Thank you for supporting the ETHAbuja Community
+                </Text>
+
+                <Button
+                  mt="40px"
+                  w="300px"
+                  onClick={onClose}
+                  bgColor="black"
+                  _hover={{
+                    bgColor: "black",
+                  }}
+                >
+                  Close
+                </Button>
               </Flex>
             ) : (
               <>
                 {hasEnoughAllowances ? (
-                  <Box>
+                  <Box textAlign="center">
                     {" "}
-                    <Text>Donate now</Text>
+                    <Text fontWeight={600} fontSize="18px">
+                      Donate now
+                    </Text>
                     <Text>
-                      You are about to Donate {donationAmount}{" "}
-                      {searchParams.get("donationtoken")}
+                      You are about to Donate{" "}
+                      <chakra.span fontWeight={600}>
+                        {donationAmount} {searchParams.get("donationtoken")}
+                      </chakra.span>
                     </Text>
                   </Box>
                 ) : (
-                  <Text>Aprrove tokens</Text>
+                  <Text textAlign="center" fontWeight={600} fontSize="18px">
+                    Aprrove this transaction
+                  </Text>
                 )}
               </>
             )}
@@ -257,38 +255,54 @@ export const TransactionModal = ({
               </VStack>
             )}
           </Box>
-        </ModalBody>
+        </Flex>
 
-        {/* Buttons */}
+        {/*---------------------------------- Buttons ----------------------------------*/}
 
         {/* no approval. prompt user to approve tokens */}
         {!hasEnoughAllowances && (
-          <Button onClick={() => approveToken()}>Approve Tokens</Button>
+          <Flex flexDir="column" mt="40px">
+            <Button
+              onClick={() => approveToken()}
+              bgColor="black"
+              _hover={{
+                bgColor: "black",
+              }}
+            >
+              Approve
+            </Button>
+
+            <Button
+              mt="10px"
+              onClick={onClose}
+              bgColor="none"
+              border="1px solid"
+              _hover={{
+                bgColor: "black",
+              }}
+            >
+              Cancel
+            </Button>
+          </Flex>
         )}
 
-        {/* approval completed. donate tokens */}
+        {/* ------------------------------------ approval completed. donate tokens ------------------------------------*/}
         {hasEnoughAllowances && !userConfirmation && (
           <Button
+            mt="40px"
+            bgColor="black"
+            _hover={{
+              bgColor: "black",
+            }}
             onClick={() => {
               setUserConfirmation(true);
               donatefn();
             }}
           >
-            Confirm Donation
+            Confirm Your Donation
           </Button>
         )}
-      </ModalContent>
-    </Modal>
+      </Stack>
+    </ModalComponent>
   );
 };
-
-{
-  /* <Box>
-{hasEnoughAllowances ? "Enough Approval" : "Not enough aPRROVAL"}
-{currentTransactionType == trxType.UNKNOWN
-  ? "Trxtype Unknown"
-  : currentTransactionType == trxType.DONATION
-  ? "TRXTYPE = Donate"
-  : "Trx type is approval"}
-</Box> */
-}
