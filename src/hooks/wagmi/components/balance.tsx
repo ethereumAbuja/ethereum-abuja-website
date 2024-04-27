@@ -8,7 +8,7 @@ interface balanceProps {
 }
 function Balance({ donationToken }: balanceProps) {
   const { address, isConnected, chainId } = useAccount();
-  
+
   if (!address) return null;
 
   const balanceState = useAccountBalance({
@@ -16,7 +16,6 @@ function Balance({ donationToken }: balanceProps) {
     chainId: chainId ?? 1,
     address: address,
   });
-
 
   return <div></div>;
 }

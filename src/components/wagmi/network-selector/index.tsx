@@ -10,8 +10,6 @@ import {
   PopoverBody,
   PopoverFooter,
   PopoverArrow,
-  PopoverCloseButton,
-  PopoverAnchor,
   Button,
   useToast,
   Box,
@@ -59,7 +57,7 @@ export default function NetoworKSelector({
         }
       }
     },
-    [chain?.id, switchChain],
+    [chain?.id, switchChain]
   );
 
   const selected =
@@ -75,22 +73,32 @@ export default function NetoworKSelector({
             variant={"secondary"}
             display="flex"
             alignItems={"center"}
-            justifyContent={"center"}
-            gap=".5rem"
+            justifyContent={"space-between"}
+            // gap=".5rem"
             borderRadius="0.3rem"
             border="1px solid #E2E8F0"
             padding="5px 10px"
-            width={"100%"}
+            width={
+              chain && SUPPORT_CHAINID.includes(chain.id) ? "332px" : "100%"
+            }
             height={"3.2rem"}
           >
             <Suspense fallback={null}>
               {chain && SUPPORT_CHAINID.includes(chain.id) ? (
                 <>
-                  <NetworkIcon chainId={selected} width={20} height={20} />
                   <Text>{ChainKey[selected as ChainId]}</Text>
+                  <NetworkIcon chainId={selected} width={20} height={20} />
                 </>
               ) : (
-                <Button onClick={() => switchChain({ chainId: CHAINLISTS[0] })}>
+                <Button
+                  onClick={() => switchChain({ chainId: CHAINLISTS[0] })}
+                  bgColor="transparent"
+                  fontWeight={500}
+                  _hover={{
+                    bg: "transparent",
+                  }}
+                  w="100%"
+                >
                   Switch to Supported Chain
                 </Button>
               )}
@@ -124,5 +132,5 @@ export default function NetoworKSelector({
 
 export type NetworkSelectorOnSelectCallback<T extends number = ChainId> = (
   chainId: T,
-  close: () => void,
+  close: () => void
 ) => void;

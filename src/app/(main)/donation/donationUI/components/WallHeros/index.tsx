@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import { Box, Text } from "@chakra-ui/react";
 import Marquee from "react-fast-marquee";
@@ -53,15 +54,15 @@ const WallHeros = () => {
       setIsLoading(true);
       const response = await axios.get("/api/getallsponsors");
       if (response.status === 201) {
-        console.log("heros list", response.data);
+        // console.log("heros list", response.data);
         setHeroslist(response.data);
-        console.log("heros list from  state", heroslist);
+        // console.log("heros list from  state", heroslist);
       } else {
-        console.log("succesfully called api, error occured");
+        // console.log("succesfully called api, error occured");
         setError(new Error("Failed to add sponsor"));
       }
     } catch (error) {
-      console.log("succesfully called api, error occured");
+      // console.log("succesfully called api, error occured");
       console.error(error);
       setError(error as Error);
     } finally {
@@ -76,7 +77,7 @@ const WallHeros = () => {
   const marqueesData = Array.from(
     { length: Math.ceil(heroslist.length / namesPerMarquee) },
     (_, index) =>
-      heroslist.slice(index * namesPerMarquee, (index + 1) * namesPerMarquee),
+      heroslist.slice(index * namesPerMarquee, (index + 1) * namesPerMarquee)
   );
 
   return (
