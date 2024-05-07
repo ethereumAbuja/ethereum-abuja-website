@@ -85,11 +85,11 @@ export const TransactionModal = ({
   const { chainId, address } = useAccount();
 
   const currentTransactionType = useSelector(
-    (state: RootState) => state.donationTransactionSlice.OngoingTransactionType
+    (state: RootState) => state.donationTransactionSlice.OngoingTransactionType,
   );
 
   const _donationToken = useSelector(
-    (state: RootState) => state.donationTokenSlice.tokenAddress
+    (state: RootState) => state.donationTokenSlice.tokenAddress,
   );
 
   let toast = useToast();
@@ -136,7 +136,7 @@ export const TransactionModal = ({
         toast,
         `Please Fields "Name" and "Twitter" cannot be empty, kindly fill or donate anonymously😊`,
         5000,
-        "bottom"
+        "bottom",
       );
       return null;
     }
@@ -160,7 +160,7 @@ export const TransactionModal = ({
         toast,
         `${WriteContractError?.message}`,
         5000,
-        "top-right"
+        "top-right",
       );
 
     isConfirmed && CustomToast(toast, "Confirmed", 4000, "top-right");
@@ -181,7 +181,7 @@ export const TransactionModal = ({
         toast,
         `${WaitForTransactionReceiptError.name}, ${WaitForTransactionReceiptError.message}`,
         5000,
-        "top-right"
+        "top-right",
       );
   }, [isConfirming, isConfirmed, chainId, isWriteContractError]);
 

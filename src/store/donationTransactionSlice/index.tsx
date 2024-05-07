@@ -12,12 +12,14 @@ interface DonationTransactionState {
   DonationAmount: number;
   userCanDonate: boolean;
   OngoingTransactionType: trxType;
+  refetchHerosList: boolean;
 }
 const initialState: DonationTransactionState = {
   DonationTokenBalance: 0,
   DonationAmount: 0,
   userCanDonate: false,
   OngoingTransactionType: trxType.UNKNOWN,
+  refetchHerosList: false,
 };
 
 export const DonationTransactionSlice = createSlice({
@@ -40,6 +42,9 @@ export const DonationTransactionSlice = createSlice({
     setOngoingTrxType: (state, action: PayloadAction<trxType>) => {
       state.OngoingTransactionType = action.payload;
     },
+    setHerosList: (state, action: PayloadAction<boolean>) => {
+      state.refetchHerosList = action.payload;
+    },
   },
 });
 
@@ -48,5 +53,6 @@ export const {
   setDonationAmount,
   computeDonationTokenBalance,
   setOngoingTrxType,
+  setHerosList,
 } = DonationTransactionSlice.actions;
 export default DonationTransactionSlice.reducer;

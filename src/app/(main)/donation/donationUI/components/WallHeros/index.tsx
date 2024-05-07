@@ -1,10 +1,13 @@
 "use client";
-
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Box, Text } from "@chakra-ui/react";
 import Marquee from "react-fast-marquee";
 import sponsorNames from "./data";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { setHerosList } from "@/store/donationTransactionSlice";
+import { useHerosList } from "@/hooks/useHerosList";
 
 const backgroundColors = [
   "#0400DE",
@@ -44,40 +47,52 @@ const backgroundImages = [
 const namesPerMarquee = 20;
 
 const WallHeros = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<Error | null>(null);
-  const [success, setSuccess] = useState(false);
-  const [heroslist, setHeroslist] = useState<any[]>([]);
+  // const [isLoading, setIsLoading] = useState<boolean>(false);
+  // const [error, setError] = useState<Error | null>(null);
+  // const [success, setSuccess] = useState(false);
+  // const [heroslist, setHeroslist] = useState<any[]>([]);
 
-  const getheros = async () => {
-    try {
-      setIsLoading(true);
-      const response = await axios.get("/api/getallsponsors");
-      if (response.status === 201) {
-        // console.log("heros list", response.data);
-        setHeroslist(response.data);
-        // console.log("heros list from  state", heroslist);
-      } else {
-        // console.log("succesfully called api, error occured");
-        setError(new Error("Failed to add sponsor"));
-      }
-    } catch (error) {
-      // console.log("succesfully called api, error occured");
-      console.error(error);
-      setError(error as Error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // const getheros = async () => {
+  //   try {
+  //     setIsLoading(true);
+  //     const response = await axios.get("/api/getallsponsors");
+  //     if (response.status === 201) {
+  //       // console.log("heros list", response.data);
+  //       setHeroslist(response.data);
+  //       // console.log("heros list from  state", heroslist);
+  //     } else {
+  //       // console.log("succesfully called api, error occured");
+  //       setError(new Error("Failed to add sponsor"));
+  //     }
+  //   } catch (error) {
+  //     // console.log("succesfully called api, error occured");
+  //     console.error(error);
+  //     setError(error as Error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
-  useEffect(() => {
-    getheros();
-  });
+  // const refetchHerosList = useSelector(
+  //   (state: RootState) => state.donationTransactionSlice.refetchHerosList,
+  // );
+
+  // useEffect(() => {
+  //   getheros();
+  // }, [refetchHerosList]);
+  const {
+    data: heroslist,
+    isLoading,
+    isError,
+    // error,
+    isSuccess,
+    refetch,
+  } = useHerosList();
 
   const marqueesData = Array.from(
     { length: Math.ceil(heroslist.length / namesPerMarquee) },
     (_, index) =>
-      heroslist.slice(index * namesPerMarquee, (index + 1) * namesPerMarquee)
+      heroslist.slice(index * namesPerMarquee, (index + 1) * namesPerMarquee),
   );
 
   return (
