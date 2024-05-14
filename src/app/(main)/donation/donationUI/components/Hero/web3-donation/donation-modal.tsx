@@ -188,11 +188,13 @@ export const TransactionModal = ({
       addName &&
       dispatch(setReftchHerosList(true));
 
-
-      //restore initial states on successful transactions
-
+    //restore initial states on successful transactions
+    isConfirmed &&
+      currentTransactionType == trxType.DONATION &&
+      setUserConfirmation(false);
     isConfirmed && currentTransactionType == trxType.DONATION && reset();
 
+    //
     isConfirming &&
       CustomToast(toast, "Transaction Submitted", 4000, "top-right");
     isWaitTrxError &&
