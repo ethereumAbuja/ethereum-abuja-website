@@ -25,7 +25,10 @@ import {
   useWriteContract,
   useWaitForTransactionReceipt,
 } from "wagmi";
-import { setOngoingTrxType } from "@/store/donationTransactionSlice";
+import {
+  setOngoingTrxType,
+  setReftchHerosList,
+} from "@/store/donationTransactionSlice";
 import useAddSponsor, { SponsorDetailsType } from "@/hooks/useAddSponsor";
 import donationAbi from "@/constants/abi/donation.abi.json";
 import ModalComponent from "@/components/ModalComponent";
@@ -68,6 +71,7 @@ export const TransactionModal = ({
     isError: isWriteContractError,
     writeContract,
     error: WriteContractError,
+    reset,
   } = useWriteContract();
 
   const {
@@ -173,6 +177,18 @@ export const TransactionModal = ({
         twitter: sponsorDetails.twitter,
         amount: sponsorDetails.amount,
       });
+
+    isConfirmed &&
+      currentTransactionType == trxType.DONATION &&
+      addName &&
+      dispatch(setReftchHerosList(true));
+
+    isConfirmed &&
+      currentTransactionType == trxType.DONATION &&
+      addName &&
+      dispatch(setReftchHerosList(true));
+
+    isConfirmed && currentTransactionType == trxType.DONATION && reset();
 
     isConfirming &&
       CustomToast(toast, "Transaction Submitted", 4000, "top-right");

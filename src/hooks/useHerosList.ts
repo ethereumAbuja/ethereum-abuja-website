@@ -1,17 +1,29 @@
+import { Sponsor } from "@prisma/client";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useLocalStorage } from "./useLocalStorage";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
+import { setReftchHerosList } from "@/store/donationTransactionSlice";
 
 export const useHerosList = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
-  const [success, setSuccess] = useState(false);
-  const [heroslist, setHeroslist] = useState<any[]>([]);
-  const fetchData = async () => {
+  const dispatch = useDispatch<AppDispatch>();
+  // const [success, setSuccess] = useState(false); Success state can be included sometime
+
+  const [heroslist, setHeroslist] = useLocalStorage<Sponsor[]>("heroslist", []);
+
+  const fetchHerosList = async () => {
+    //Fetches and safe to local storage
     try {
       setIsLoading(true);
       const response = await axios.get("/api/getallsponsors");
       if (response.status === 201) {
-        setHeroslist(response.data);
+        const data = response.data;
+        setHeroslist(data);
+        //set refetch list to false incase it is on.
+        dispatch(setReftchHerosList(false));
       } else {
         setError(new Error("Failed to fetch sponsor list"));
       }
@@ -22,14 +34,6 @@ export const useHerosList = () => {
       setIsLoading(false);
     }
   };
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const refetch = async () => {
-    setError(null);
-    await fetchData();
-  };
 
   return {
     data: heroslist,
@@ -37,6 +41,6 @@ export const useHerosList = () => {
     isError: error !== null,
     Error,
     isSuccess: heroslist.length > 0 && error === null,
-    refetch,
+    fetchHerosList,
   };
 };

@@ -6,7 +6,7 @@ import sponsorNames from "./data";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { setHerosList } from "@/store/donationTransactionSlice";
+// import { setHerosList } from "@/store/donationTransactionSlice";
 import { useHerosList } from "@/hooks/useHerosList";
 
 const backgroundColors = [
@@ -47,47 +47,50 @@ const backgroundImages = [
 const namesPerMarquee = 20;
 
 const WallHeros = () => {
-  // const [isLoading, setIsLoading] = useState<boolean>(false);
-  // const [error, setError] = useState<Error | null>(null);
-  // const [success, setSuccess] = useState(false);
-  // const [heroslist, setHeroslist] = useState<any[]>([]);
+  const refetchHerosList = useSelector(
+    (state: RootState) =>
+      state.donationTransactionSlice.heroslistSlice.refetchHerosList,
+  );
 
-  // const getheros = async () => {
-  //   try {
-  //     setIsLoading(true);
-  //     const response = await axios.get("/api/getallsponsors");
-  //     if (response.status === 201) {
-  //       // console.log("heros list", response.data);
-  //       setHeroslist(response.data);
-  //       // console.log("heros list from  state", heroslist);
-  //     } else {
-  //       // console.log("succesfully called api, error occured");
-  //       setError(new Error("Failed to add sponsor"));
-  //     }
-  //   } catch (error) {
-  //     // console.log("succesfully called api, error occured");
-  //     console.error(error);
-  //     setError(error as Error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-  // const refetchHerosList = useSelector(
-  //   (state: RootState) => state.donationTransactionSlice.refetchHerosList,
-  // );
-
-  // useEffect(() => {
-  //   getheros();
-  // }, [refetchHerosList]);
   const {
     data: heroslist,
     isLoading,
     isError,
     // error,
     isSuccess,
-    refetch,
+    fetchHerosList,
   } = useHerosList();
+
+  //fetch when list is empty or null
+  useEffect(() => {
+    const fetchData = async () => {
+      const _herosList = localStorage.getItem("heroslist");
+      console.log("this is heros List", _herosList, _herosList?.length);
+      if (_herosList === null || _herosList.length == 0) {
+        await fetchHerosList();
+        console.log("this is heros List", _herosList, _herosList?.length);
+      } else if (_herosList) {
+        return;
+      }
+    };
+
+    fetchData();
+  });
+
+  //refetch when "refetchHerosList" is true and when list is not null
+  useEffect(() => {
+    const fetchData = async () => {
+      const _herosList = localStorage.getItem("heroslist");
+      console.log("this is heros List", _herosList, _herosList?.length);
+      if (_herosList !== null && refetchHerosList) {
+        await fetchHerosList();
+        console.log("this is heros List", _herosList, _herosList?.length);
+      } else if (_herosList) {
+        return;
+      }
+    };
+    fetchData();
+  }, [refetchHerosList]);
 
   const marqueesData = Array.from(
     { length: Math.ceil(heroslist.length / namesPerMarquee) },
