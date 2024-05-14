@@ -188,6 +188,9 @@ export const TransactionModal = ({
       addName &&
       dispatch(setReftchHerosList(true));
 
+
+      //restore initial states on successful transactions
+
     isConfirmed && currentTransactionType == trxType.DONATION && reset();
 
     isConfirming &&

@@ -47,9 +47,14 @@ const backgroundImages = [
 const namesPerMarquee = 20;
 
 const WallHeros = () => {
+  // refetchHerosList is updated in the donation modal each time a donation occurs where the sponsor decided to add name
   const refetchHerosList = useSelector(
     (state: RootState) =>
       state.donationTransactionSlice.heroslistSlice.refetchHerosList,
+  );
+  const localHerosList = useSelector(
+    (state: RootState) =>
+      state.donationTransactionSlice.heroslistSlice.heroslist,
   );
 
   const {
@@ -66,7 +71,7 @@ const WallHeros = () => {
     const fetchData = async () => {
       const _herosList = localStorage.getItem("heroslist");
       console.log("this is heros List", _herosList, _herosList?.length);
-      if (_herosList === null || _herosList.length == 0) {
+      if (localHerosList.length === null || localHerosList.length == 0) {
         await fetchHerosList();
         console.log("this is heros List", _herosList, _herosList?.length);
       } else if (_herosList) {
@@ -77,12 +82,14 @@ const WallHeros = () => {
     fetchData();
   });
 
-  //refetch when "refetchHerosList" is true and when list is not null
+  //refetch from api when "refetchHerosList" is true and when list has been fetch previously
   useEffect(() => {
     const fetchData = async () => {
       const _herosList = localStorage.getItem("heroslist");
-      console.log("this is heros List", _herosList, _herosList?.length);
-      if (_herosList !== null && refetchHerosList) {
+      console.log("localHerosList", localHerosList, localHerosList.length);
+
+      // console.log("this is heros List", _herosList, _herosList?.length);
+      if (localHerosList.length !== 0 && refetchHerosList) {
         await fetchHerosList();
         console.log("this is heros List", _herosList, _herosList?.length);
       } else if (_herosList) {

@@ -86,5 +86,6 @@ export const {
   computeDonationTokenBalance,
   setOngoingTrxType,
   setReftchHerosList,
+  setHerosList,
 } = DonationTransactionSlice.actions;
 export default DonationTransactionSlice.reducer;
