@@ -1,10 +1,8 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect } from "react";
 import { Box, Text } from "@chakra-ui/react";
 import Marquee from "react-fast-marquee";
-import sponsorNames from "./data";
-import axios from "axios";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/hooks/rtkHooks";
 import { RootState } from "@/store/store";
 // import { setHerosList } from "@/store/donationTransactionSlice";
 import { useHerosList } from "@/hooks/useHerosList";
@@ -48,11 +46,11 @@ const namesPerMarquee = 20;
 
 const WallHeros = () => {
   // refetchHerosList is updated in the donation modal each time a donation occurs where the sponsor decided to add name
-  const refetchHerosList = useSelector(
+  const refetchHerosList = useAppSelector(
     (state: RootState) =>
-      state.donationTransactionSlice.heroslistSlice.refetchHerosList,
+      state.donationTransactionSlice?.heroslistSlice?.refetchHerosList
   );
-  // const localHerosList = useSelector(
+  // const localHerosList = useAppSelector(
   //   (state: RootState) =>
   //     state.donationTransactionSlice.heroslistSlice.heroslist,
   // );
@@ -69,10 +67,10 @@ const WallHeros = () => {
   //fetch when list is empty or null
   useEffect(() => {
     const fetchData = async () => {
-      console.log("this is heros List", heroslist, heroslist?.length);
-      if (heroslist.length === null || heroslist.length == 0) {
+      // console.log("this is heros List", heroslist, heroslist?.length);
+      if (heroslist?.length === null || heroslist?.length == 0) {
         await fetchHerosList();
-        console.log("this is heros List", heroslist, heroslist?.length);
+        // console.log("this is heros List", heroslist, heroslist?.length);
       } else if (heroslist) {
         return;
       }
@@ -84,9 +82,9 @@ const WallHeros = () => {
   //refetch from api when "refetchHerosList" is true and when list has been fetch previously
   useEffect(() => {
     const fetchData = async () => {
-      if (heroslist.length !== 0 && refetchHerosList) {
+      if (heroslist?.length !== 0 && refetchHerosList) {
         await fetchHerosList();
-        console.log("this is heros List", heroslist, heroslist?.length);
+        // console.log("this is heros List", heroslist, heroslist?.length);
       } else if (heroslist) {
         return;
       }
@@ -95,9 +93,9 @@ const WallHeros = () => {
   }, [refetchHerosList]);
 
   const marqueesData = Array.from(
-    { length: Math.ceil(heroslist.length / namesPerMarquee) },
+    { length: Math.ceil(heroslist?.length / namesPerMarquee) },
     (_, index) =>
-      heroslist.slice(index * namesPerMarquee, (index + 1) * namesPerMarquee),
+      heroslist.slice(index * namesPerMarquee, (index + 1) * namesPerMarquee)
   );
 
   return (
@@ -105,7 +103,7 @@ const WallHeros = () => {
       <Box pt="5%" mb="3rem">
         <Text textAlign="center">WALL OF HEROES (Sponsors) 🧑‍🚒</Text>
       </Box>
-      {heroslist.length === 0 || isLoading ? (
+      {heroslist?.length === 0 || isLoading ? (
         <Box
           bgImage={"url('image/Wall-of-sponsor.png')"}
           textAlign="center"

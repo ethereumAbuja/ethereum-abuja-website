@@ -1,23 +1,22 @@
-import { Sponsor } from "@prisma/client";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useLocalStorage } from "./useLocalStorage";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/store/store";
+import { useAppDispatch, useAppSelector } from "./rtkHooks";
+import { RootState } from "@/store/store";
 import {
   setReftchHerosList,
   setHerosList,
 } from "@/store/donationTransactionSlice";
 
 export const useHerosList = () => {
+    const localHerosList = useAppSelector(
+    (state: RootState) =>
+      state.donationTransactionSlice?.heroslistSlice?.heroslist,
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   // const [success, setSuccess] = useState(false); Success state can be included sometime
-  const localHerosList = useSelector(
-    (state: RootState) =>
-      state.donationTransactionSlice.heroslistSlice.heroslist,
-  );
   // const [heroslist, setHeroslist] = useLocalStorage<Sponsor[]>("heroslist", []);
 
   const fetchHerosList = async () => {
@@ -47,7 +46,7 @@ export const useHerosList = () => {
     isLoading,
     isError: error !== null,
     Error,
-    isSuccess: localHerosList.length > 0 && error === null,
+    isSuccess: localHerosList?.length > 0 && error === null,
     fetchHerosList,
   };
 };

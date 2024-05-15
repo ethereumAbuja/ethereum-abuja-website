@@ -14,8 +14,8 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { Address, erc20Abi, formatUnits, parseEther } from "viem";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/store/store";
+import { useAppSelector, useAppDispatch } from "@/hooks/rtkHooks";
+import { RootState } from "@/store/store";
 import { trxType } from "@/utils";
 import { useTokenAllowance } from "@/hooks/wagmi/approvals/useTokenAllowance";
 import { DONATION_CONTRACT_ADDRESS } from "@/constants/contract-address";
@@ -43,12 +43,24 @@ type modalProps = {
   addName: boolean;
   sponsorDetails: SponsorDetailsType;
 };
+
 export const TransactionModal = ({
   isOpen,
   onClose,
   addName,
   sponsorDetails,
 }: modalProps) => {
+  const currentTransactionType = useAppSelector(
+    (state: RootState) => state.donationTransactionSlice.OngoingTransactionType
+  );
+  const donationAmount = useAppSelector(
+    (state: RootState) => state.donationTransactionSlice.DonationAmount
+  );
+
+  const _donationToken = useAppSelector(
+    (state: RootState) => state.donationTokenSlice.tokenAddress
+  );
+
   const {
     data: hash,
     isPending,
@@ -69,20 +81,10 @@ export const TransactionModal = ({
   });
   const searchParams = useSearchParams();
 
-  const [userConfirmation, setUserConfirmation] = useState<boolean>(false); //The state is to remove donation token from the screen when Donation tranaction begins
-  const dispatch = useDispatch<AppDispatch>();
+  const [userConfirmation, setUserConfirmation] = useState<boolean>(false);
+  //The state is to remove donation token from the screen when Donation tranaction begins
+  const dispatch = useAppDispatch();
   const { chainId, address } = useAccount();
-
-  const currentTransactionType = useSelector(
-    (state: RootState) => state.donationTransactionSlice.OngoingTransactionType,
-  );
-  const donationAmount = useSelector(
-    (state: RootState) => state.donationTransactionSlice.DonationAmount,
-  );
-
-  const _donationToken = useSelector(
-    (state: RootState) => state.donationTokenSlice.tokenAddress,
-  );
 
   let toast = useToast();
 
@@ -123,7 +125,7 @@ export const TransactionModal = ({
         toast,
         `Please Fields "Name" and "Twitter" cannot be empty, kindly fill or donate anonymously😊`,
         5000,
-        "bottom",
+        "bottom"
       );
       return null;
     }
@@ -154,10 +156,13 @@ export const TransactionModal = ({
     isWriteContractError &&
       CustomErrorToast(
         toast,
-        `${WriteContractError?.message}`,
+        `You can not donate with 0.00 amount!`,
+        //${WriteContractError?.message}
         5000,
-        "top-right",
+        "top-right"
       );
+
+    onClose();
 
     isConfirmed && CustomToast(toast, "Confirmed", 4000, "top-right");
 
@@ -188,7 +193,7 @@ export const TransactionModal = ({
         toast,
         `${WaitForTransactionReceiptError.name}, ${WaitForTransactionReceiptError.message}`,
         5000,
-        "top-right",
+        "top-right"
       );
   }, [isConfirming, isConfirmed, chainId, isWriteContractError]);
 
@@ -252,7 +257,7 @@ export const TransactionModal = ({
                   </Box>
                 ) : (
                   <Text textAlign="center" fontWeight={600} fontSize="18px">
-                    Aprrove this transaction
+                    Approve this transaction
                   </Text>
                 )}
               </>

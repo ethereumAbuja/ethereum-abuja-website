@@ -63,7 +63,7 @@ function Web3Donation({ addName, _donationToken }: Props) {
   let toast = useToast();
 
   const amount = useSelector(
-    (state: RootState) => state.donationTransactionSlice.DonationAmount,
+    (state: RootState) => state.donationTransactionSlice.DonationAmount
   );
 
   const {
@@ -106,7 +106,7 @@ function Web3Donation({ addName, _donationToken }: Props) {
   });
 
   const DONATIONTOKENBALANCE = useSelector(
-    (state: RootState) => state.donationTransactionSlice.DonationTokenBalance,
+    (state: RootState) => state.donationTransactionSlice.DonationTokenBalance
   );
 
   const {
@@ -124,17 +124,17 @@ function Web3Donation({ addName, _donationToken }: Props) {
       ...prevState,
       name: event.target.value,
     }));
-    console.log(sponsorDetails);
+    // console.log(sponsorDetails);
   };
 
   const handleSponsorNameChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setSponsorDetails((prevState) => ({
       ...prevState,
       twitter: event.target.value,
     }));
-    console.log(sponsorDetails);
+    // console.log(sponsorDetails);
   };
 
   const isInsufficientBalance: boolean = Number(amount) > DONATIONTOKENBALANCE;

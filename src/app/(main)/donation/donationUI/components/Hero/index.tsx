@@ -15,16 +15,16 @@ import "../../../../../globals.css";
 import { Address } from "viem";
 import Web3Donation from "./web3-donation";
 import ManualDonation from "./manual-donation";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/hooks/rtkHooks";
 import { RootState } from "@/store/store";
 
 const HeroSponsorPage = () => {
+  const _donationToken = useAppSelector(
+    (state: RootState) => state.donationTokenSlice.tokenAddress
+  );
+
   const [copyAddress, setCopyAddress] = useState<boolean>(false);
   const [addName, setAddName] = useState<boolean>(false);
-
-  const _donationToken = useSelector(
-    (state: RootState) => state.donationTokenSlice.tokenAddress,
-  );
 
   ///***FN to handle the Checkbox of Copy Address
   const handleCopyAddress = () => {
@@ -37,7 +37,6 @@ const HeroSponsorPage = () => {
     setAddName((prevAddName) => !prevAddName);
     if (copyAddress) setCopyAddress(false);
   };
-
 
   return (
     <Box
