@@ -26,6 +26,7 @@ import {
   useWaitForTransactionReceipt,
 } from "wagmi";
 import {
+  setDonationAmount,
   setOngoingTrxType,
   setReftchHerosList,
 } from "@/store/donationTransactionSlice";
@@ -39,28 +40,12 @@ type modalProps = {
   isOpen: boolean;
   onClose: () => void;
   donationAmount: string;
-  // donatefn?: () => void;
-  // approvefn: () => void;
-
-  //trx states
-  // isSubmitted: boolean;
-  // isPending?: boolean;
-  // isErred: boolean;
-
-  // hash: Address | undefined;
   addName: boolean;
   sponsorDetails: SponsorDetailsType;
 };
 export const TransactionModal = ({
   isOpen,
   onClose,
-  // donatefn,
-  // approvefn,
-  donationAmount,
-  // isSubmitted,
-  // isPending,
-  // isErred,
-  // hash,
   addName,
   sponsorDetails,
 }: modalProps) => {
@@ -91,6 +76,9 @@ export const TransactionModal = ({
   const currentTransactionType = useSelector(
     (state: RootState) => state.donationTransactionSlice.OngoingTransactionType,
   );
+  const donationAmount = useSelector(
+    (state: RootState) => state.donationTransactionSlice.DonationAmount,
+  );
 
   const _donationToken = useSelector(
     (state: RootState) => state.donationTokenSlice.tokenAddress,
@@ -98,12 +86,7 @@ export const TransactionModal = ({
 
   let toast = useToast();
 
-  const {
-    isLoading: addSponsorLoading,
-    success: AddSponsorSuccess,
-    error: addSponsorError,
-    addSponsor,
-  } = useAddSponsor();
+  const { addSponsor } = useAddSponsor();
 
   //check Allowance
   const { data: allowances, refetch: refetchAllowance } = useTokenAllowance({
@@ -159,6 +142,8 @@ export const TransactionModal = ({
       currentTransactionType == trxType.DONATION &&
       setUserConfirmation(false);
     isConfirmed && currentTransactionType == trxType.DONATION && reset();
+    dispatch(setDonationAmount("0.00"));
+    dispatch(setOngoingTrxType(trxType.UNKNOWN));
   };
 
   useEffect(() => {
@@ -195,15 +180,9 @@ export const TransactionModal = ({
       addName &&
       dispatch(setReftchHerosList(true));
 
-    //restore initial states on successful transactions
-    // isConfirmed &&
-    //   currentTransactionType == trxType.DONATION &&
-    //   setUserConfirmation(false);
-    // isConfirmed && currentTransactionType == trxType.DONATION && reset();
-
-    //
     isConfirming &&
       CustomToast(toast, "Transaction Submitted", 4000, "top-right");
+
     isWaitTrxError &&
       CustomErrorToast(
         toast,
@@ -243,7 +222,11 @@ export const TransactionModal = ({
                 <Button
                   mt="40px"
                   w="300px"
-                  onClick={onClose}
+                  color="white"
+                  onClick={() => {
+                    resetDonationState();
+                    onClose();
+                  }}
                   bgColor="black"
                   _hover={{
                     bgColor: "black",
@@ -288,37 +271,42 @@ export const TransactionModal = ({
         {/*---------------------------------- Buttons ----------------------------------*/}
 
         {/* no approval. prompt user to approve tokens */}
-        {!hasEnoughAllowances && (
-          <Flex flexDir="column" mt="40px">
-            <Button
-              onClick={() => approveToken()}
-              bgColor="black"
-              _hover={{
-                bgColor: "black",
-              }}
-            >
-              Approve
-            </Button>
+        {!hasEnoughAllowances &&
+          (currentTransactionType == trxType.UNKNOWN ||
+            currentTransactionType == trxType.APPROVAL) && (
+            <Flex flexDir="column" mt="40px">
+              <Button
+                onClick={() => approveToken()}
+                bgColor="black"
+                color="white"
+                _hover={{
+                  bgColor: "black",
+                }}
+              >
+                Approve
+              </Button>
 
-            <Button
-              mt="10px"
-              onClick={onClose}
-              bgColor="none"
-              border="1px solid"
-              _hover={{
-                bgColor: "black",
-              }}
-            >
-              Cancel
-            </Button>
-          </Flex>
-        )}
+              <Button
+                mt="10px"
+                onClick={onClose}
+                bgColor="none"
+                color="white"
+                border="1px solid"
+                _hover={{
+                  bgColor: "black",
+                }}
+              >
+                Cancel
+              </Button>
+            </Flex>
+          )}
 
         {/* ------------------------------------ approval completed. donate tokens ------------------------------------*/}
         {hasEnoughAllowances && !userConfirmation && (
           <Button
             mt="40px"
             bgColor="black"
+            color="white"
             _hover={{
               bgColor: "black",
             }}

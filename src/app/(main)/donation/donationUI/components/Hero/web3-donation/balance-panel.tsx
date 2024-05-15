@@ -15,6 +15,8 @@ function BalancePanel() {
     (state: RootState) => state.donationTokenSlice.tokenAddress,
   );
 
+  console.log("token address", _donationToken);
+
   const donationTokenBalance = useSelector(
     (state: RootState) => state.donationTransactionSlice.DonationTokenBalance,
   );
@@ -35,21 +37,23 @@ function BalancePanel() {
   });
 
   useEffect(() => {
-    isSuccessDonToken &&
+    const refetchBalance = async () => {
+      refectBalance();
       dispatch(
         setDonationBalance(Number(formatUnits(donationTokenBal ?? 0n, 18))),
       );
-    refectBalance();
-  }, [isSuccessDonToken, chainId, _donationToken]);
+    };
+    refetchBalance();
+  }, [chainId, _donationToken, chainId, address]);
 
   return (
     <>
       {isFetchinDonTokenBal ? (
         <Skeleton height="15px" />
       ) : isSuccessDonToken ? (
-        // <span>{Number(formatUnits(donationTokenBal, 18)).toFixed(2)}</span>
-        <span>{donationTokenBalance}</span>
-      ) : isError ? (
+        <span>{Number(formatUnits(donationTokenBal, 18)).toFixed(2)}</span>
+      ) : // <span>{donationTokenBalance}</span>
+      isError ? (
         <span>0.00</span>
       ) : null}
     </>
