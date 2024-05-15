@@ -1,10 +1,13 @@
 "use client";
-
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Box, Text } from "@chakra-ui/react";
 import Marquee from "react-fast-marquee";
 import sponsorNames from "./data";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+// import { setHerosList } from "@/store/donationTransactionSlice";
+import { useHerosList } from "@/hooks/useHerosList";
 
 const backgroundColors = [
   "#0400DE",
@@ -44,40 +47,57 @@ const backgroundImages = [
 const namesPerMarquee = 20;
 
 const WallHeros = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<Error | null>(null);
-  const [success, setSuccess] = useState(false);
-  const [heroslist, setHeroslist] = useState<any[]>([]);
+  // refetchHerosList is updated in the donation modal each time a donation occurs where the sponsor decided to add name
+  const refetchHerosList = useSelector(
+    (state: RootState) =>
+      state.donationTransactionSlice.heroslistSlice.refetchHerosList,
+  );
+  // const localHerosList = useSelector(
+  //   (state: RootState) =>
+  //     state.donationTransactionSlice.heroslistSlice.heroslist,
+  // );
 
-  const getheros = async () => {
-    try {
-      setIsLoading(true);
-      const response = await axios.get("/api/getallsponsors");
-      if (response.status === 201) {
-        // console.log("heros list", response.data);
-        setHeroslist(response.data);
-        // console.log("heros list from  state", heroslist);
-      } else {
-        // console.log("succesfully called api, error occured");
-        setError(new Error("Failed to add sponsor"));
-      }
-    } catch (error) {
-      // console.log("succesfully called api, error occured");
-      console.error(error);
-      setError(error as Error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const {
+    data: heroslist,
+    isLoading,
+    isError,
+    // error,
+    isSuccess,
+    fetchHerosList,
+  } = useHerosList();
 
+  //fetch when list is empty or null
   useEffect(() => {
-    getheros();
+    const fetchData = async () => {
+      console.log("this is heros List", heroslist, heroslist?.length);
+      if (heroslist.length === null || heroslist.length == 0) {
+        await fetchHerosList();
+        console.log("this is heros List", heroslist, heroslist?.length);
+      } else if (heroslist) {
+        return;
+      }
+    };
+
+    fetchData();
   });
+
+  //refetch from api when "refetchHerosList" is true and when list has been fetch previously
+  useEffect(() => {
+    const fetchData = async () => {
+      if (heroslist.length !== 0 && refetchHerosList) {
+        await fetchHerosList();
+        console.log("this is heros List", heroslist, heroslist?.length);
+      } else if (heroslist) {
+        return;
+      }
+    };
+    fetchData();
+  }, [refetchHerosList]);
 
   const marqueesData = Array.from(
     { length: Math.ceil(heroslist.length / namesPerMarquee) },
     (_, index) =>
-      heroslist.slice(index * namesPerMarquee, (index + 1) * namesPerMarquee)
+      heroslist.slice(index * namesPerMarquee, (index + 1) * namesPerMarquee),
   );
 
   return (

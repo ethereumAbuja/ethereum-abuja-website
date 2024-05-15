@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Checkbox,
@@ -9,78 +9,22 @@ import {
   Image,
   Text,
   Tooltip,
-  useToast,
 } from "@chakra-ui/react";
 import { ETHABJ_SVG } from "@/assets/svg";
 import "../../../../../globals.css";
-import CustomToast from "@/components/CustomToast";
-import CustomErrorToast from "@/components/CustomErrorToast";
-import clipboardCopy from "clipboard-copy";
-import {
-  useAccount,
-  useReadContract,
-  useWaitForTransactionReceipt,
-  useWriteContract,
-} from "wagmi";
-import { ETHABJ_WALLET_ADDRESS } from "@/utils/config";
-
-import { DONATION_CONTRACT_ADDRESS } from "@/constants/contract-address";
-import { ChainId } from "@/constants/config/chainId";
-import { Address, erc20Abi, formatUnits, parseEther } from "viem";
-import { useTokenAllowance } from "@/hooks/wagmi/approvals/useTokenAllowance";
-import { useSearchParams } from "next/navigation";
+import { Address } from "viem";
 import Web3Donation from "./web3-donation";
 import ManualDonation from "./manual-donation";
-import { allowanceState, trxType } from "@/utils";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
 const HeroSponsorPage = () => {
   const [copyAddress, setCopyAddress] = useState<boolean>(false);
   const [addName, setAddName] = useState<boolean>(false);
-  const [donationTokenApproval, setDonationTokenApproval] =
-    useState<allowanceState>(allowanceState.UNKNOWN);
-  const [amount, setAmount] = useState<string>("0.01");
-  const [trxtype, setTrxtype] = useState<trxType>(trxType.UNKNOWN);
-
-  const { data: hash } = useWriteContract();
-  let toast = useToast();
-  const { address, chainId } = useAccount();
 
   const _donationToken = useSelector(
-    (state: RootState) => state.donationTokenSlice.tokenAddress
+    (state: RootState) => state.donationTokenSlice.tokenAddress,
   );
-
-  //FETCH DONATION TOKEN BALANCE
-  const { refetch: refectBalance } = useReadContract({
-    abi: erc20Abi,
-    address: _donationToken as Address,
-    functionName: "balanceOf",
-    args: [address as Address],
-    scopeKey: "Donation tokenBalance",
-  });
-
-  //DONATION AMOUNT APPROVAL CHECK AND FUNCTION
-
-  const { data: PtokenAllowance, refetch: refetchAllowance } =
-    useTokenAllowance({
-      chainId,
-      token: _donationToken as Address,
-      owner: address,
-      spender: DONATION_CONTRACT_ADDRESS[chainId as ChainId] as Address,
-    });
-
-  //RECOMPUTE ALLOWANCE STATE AFTER SUCCESSFUL APPROVAL
-
-  const recomputeAllowanceState = () => {
-    Number(formatUnits(PtokenAllowance ?? 0n, 18)) >= Number(amount) &&
-      setDonationTokenApproval(allowanceState.APPROVED);
-  };
-
-  //TRANSACTIONS RECEIPT
-  const { isSuccess: isConfirmed } = useWaitForTransactionReceipt({
-    hash,
-  });
 
   ///***FN to handle the Checkbox of Copy Address
   const handleCopyAddress = () => {
@@ -94,11 +38,6 @@ const HeroSponsorPage = () => {
     if (copyAddress) setCopyAddress(false);
   };
 
-  useEffect(() => {
-    refectBalance();
-    trxtype == trxType.APPROVAL && isConfirmed && refetchAllowance();
-    recomputeAllowanceState();
-  }, [chainId]);
 
   return (
     <Box
@@ -268,10 +207,6 @@ const HeroSponsorPage = () => {
                     <Web3Donation
                       addName={addName}
                       _donationToken={_donationToken as Address}
-                      amount={amount}
-                      setAmount={setAmount}
-                      trxtype={trxtype}
-                      setTrxtype={setTrxtype}
                     />
                   </Box>
                 )}

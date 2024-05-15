@@ -3,27 +3,17 @@ import CurrencySwitch from "@/components/wagmi/currency-switch";
 import NetoworKSelector from "@/components/wagmi/network-selector";
 import { DONATION_CONTRACT_ADDRESS } from "@/constants/contract-address";
 import { useTokenAllowance } from "@/hooks/wagmi/approvals/useTokenAllowance";
-import { useSearchParams } from "next/navigation";
-import SyncLoader from "react-spinners/ClipLoader";
-import { IoCheckmarkCircleSharp } from "react-icons/io5";
 import {
   Box,
   Button,
   Flex,
   Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalHeader,
-  ModalContent,
-  ModalOverlay,
-  ModalFooter,
   Text,
   VStack,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Address, erc20Abi, formatUnits, parseEther } from "viem";
 import {
   useAccount,
@@ -34,44 +24,24 @@ import {
 import {
   ChainId,
   DONATION_SUPPORTED_CHAINID,
-  DONATION_TOKENS,
 } from "@/constants/config/chainId";
-
-import donationAbi from "@/constants/abi/donation.abi.json";
-import useAddSponsor, { SponsorDetailsType } from "@/hooks/useAddSponsor";
-import { useWeb3Modal } from "@web3modal/wagmi/react";
+import { SponsorDetailsType } from "@/hooks/useAddSponsor";
 import { TransactionModal } from "./donation-modal";
 import { allowanceState, trxType } from "@/utils";
-import { RootState } from "@/store/store";
-import { useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
+import { useDispatch, useSelector } from "react-redux";
 import { TokenQuantityInput } from "@/components/TokenQuantityInput";
 import { formatBalance } from "@/utils/formatBalance";
 import BalancePanel from "./balance-panel";
+import { setDonationAmount } from "@/store/donationTransactionSlice";
 
 interface Props {
   addName: boolean;
   _donationToken: Address;
-  amount: string;
-  setAmount: (val: string) => void;
-  trxtype: trxType;
-  setTrxtype: (trx: trxType) => void;
 }
 
-function Web3Donation({
-  addName,
-  _donationToken,
-  amount,
-  setAmount,
-  trxtype,
-  setTrxtype,
-}: Props) {
+function Web3Donation({ addName, _donationToken }: Props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const {
-    isLoading: addSponsorLoading,
-    success: AddSponsorSuccess,
-    error: addSponsorError,
-    addSponsor,
-  } = useAddSponsor();
   const { address, isConnected, chainId } = useAccount();
   const [donationTokenApproval, setDonationTokenApproval] =
     useState<allowanceState>(allowanceState.UNKNOWN);
@@ -81,6 +51,7 @@ function Web3Donation({
     twitter: "",
     amount: "",
   });
+  const dispatch = useDispatch<AppDispatch>();
 
   const { data: PtokenAllowance, refetch: refetchAllowance } =
     useTokenAllowance({
@@ -90,6 +61,11 @@ function Web3Donation({
       spender: DONATION_CONTRACT_ADDRESS[chainId as ChainId] as Address,
     });
   let toast = useToast();
+
+  const amount = useSelector(
+    (state: RootState) => state.donationTransactionSlice.DonationAmount,
+  );
+
   const {
     data: hash,
     isPending,
@@ -98,18 +74,12 @@ function Web3Donation({
     writeContract,
     error: WriteContractError,
   } = useWriteContract();
+
   //Check approval state when inpute token value]
   const handleDonationAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    // console.log("donation amount", e.target.value);
-    setAmount(e.target.value);
-
-    // console.log("this is BigInt value", BigInt(e.target.value));
-    // console.log(
-    //   "this is approved tokens",
-    //   Number(formatUnits(PtokenAllowance ?? 0n, 18)).toFixed(2)
-    // );
-    // console.log("this is value inputed", Number(e.target.value));
+    // setAmount(e.target.value);
+    dispatch(setDonationAmount(e.target.value));
     setSponsorDetails((prevState) => ({
       ...prevState,
       amount: parseEther(amount).toString(),
@@ -118,8 +88,6 @@ function Web3Donation({
     Number(formatUnits(PtokenAllowance ?? 0n, 18)) >= Number(e.target.value)
       ? setDonationTokenApproval(allowanceState.APPROVED)
       : setDonationTokenApproval(allowanceState.UNAPPROVED);
-
-    // console.log(donationTokenApproval);
   };
 
   //FETCH DONATION TOKEN BALANCE
@@ -138,9 +106,8 @@ function Web3Donation({
   });
 
   const DONATIONTOKENBALANCE = useSelector(
-    (state: RootState) => state.donationTransactionSlice.DonationTokenBalance
+    (state: RootState) => state.donationTransactionSlice.DonationTokenBalance,
   );
-  // console.log("this is balance from redux", DONATIONTOKENBALANCE);
 
   const {
     isLoading: isConfirming,
@@ -161,7 +128,7 @@ function Web3Donation({
   };
 
   const handleSponsorNameChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setSponsorDetails((prevState) => ({
       ...prevState,
@@ -269,7 +236,6 @@ function Web3Donation({
             )}
           </Flex>
           <TokenQuantityInput
-            onChange={setAmount}
             quantity={amount}
             maxValue={formatBalance(donationTokenBal ?? BigInt(0))}
           />
