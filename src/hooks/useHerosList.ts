@@ -28,8 +28,8 @@ export const useHerosList = () => {
       if (response.status === 201) {
         const data = response.data;
         // setHeroslist(data);
-        setHerosList(data);
-        //set refetch list to false incase it is on.
+        console.log("the data", data);
+        dispatch(setHerosList(data));
         dispatch(setReftchHerosList(false));
       } else {
         setError(new Error("Failed to fetch sponsor list"));

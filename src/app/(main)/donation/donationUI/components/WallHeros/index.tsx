@@ -52,10 +52,10 @@ const WallHeros = () => {
     (state: RootState) =>
       state.donationTransactionSlice.heroslistSlice.refetchHerosList,
   );
-  const localHerosList = useSelector(
-    (state: RootState) =>
-      state.donationTransactionSlice.heroslistSlice.heroslist,
-  );
+  // const localHerosList = useSelector(
+  //   (state: RootState) =>
+  //     state.donationTransactionSlice.heroslistSlice.heroslist,
+  // );
 
   const {
     data: heroslist,
@@ -69,12 +69,11 @@ const WallHeros = () => {
   //fetch when list is empty or null
   useEffect(() => {
     const fetchData = async () => {
-      const _herosList = localStorage.getItem("heroslist");
-      console.log("this is heros List", _herosList, _herosList?.length);
-      if (localHerosList.length === null || localHerosList.length == 0) {
+      console.log("this is heros List", heroslist, heroslist?.length);
+      if (heroslist.length === null || heroslist.length == 0) {
         await fetchHerosList();
-        console.log("this is heros List", _herosList, _herosList?.length);
-      } else if (_herosList) {
+        console.log("this is heros List", heroslist, heroslist?.length);
+      } else if (heroslist) {
         return;
       }
     };
@@ -85,14 +84,10 @@ const WallHeros = () => {
   //refetch from api when "refetchHerosList" is true and when list has been fetch previously
   useEffect(() => {
     const fetchData = async () => {
-      const _herosList = localStorage.getItem("heroslist");
-      console.log("localHerosList", localHerosList, localHerosList.length);
-
-      // console.log("this is heros List", _herosList, _herosList?.length);
-      if (localHerosList.length !== 0 && refetchHerosList) {
+      if (heroslist.length !== 0 && refetchHerosList) {
         await fetchHerosList();
-        console.log("this is heros List", _herosList, _herosList?.length);
-      } else if (_herosList) {
+        console.log("this is heros List", heroslist, heroslist?.length);
+      } else if (heroslist) {
         return;
       }
     };
