@@ -20,7 +20,7 @@ interface heroslistSlice {
 }
 interface DonationTransactionState {
   DonationTokenBalance: number;
-  DonationAmount: number;
+  DonationAmount: string;
   userCanDonate: boolean;
   OngoingTransactionType: trxType;
   heroslistSlice: heroslistSlice;
@@ -37,7 +37,7 @@ const initialHeroslistState: heroslistSlice = {
 };
 const initialState: DonationTransactionState = {
   DonationTokenBalance: 0,
-  DonationAmount: 0,
+  DonationAmount: "10",
   userCanDonate: false,
   OngoingTransactionType: trxType.UNKNOWN,
   heroslistSlice: initialHeroslistState,
@@ -50,7 +50,7 @@ export const DonationTransactionSlice = createSlice({
     computeDonationTokenBalance: (state, action: PayloadAction<number>) => {
       state.DonationTokenBalance = state.DonationTokenBalance;
     },
-    setDonationAmount: (state, action: PayloadAction<number>) => {
+    setDonationAmount: (state, action: PayloadAction<string>) => {
       state.DonationAmount = action.payload;
     },
     setDonationBalance: (state, action: PayloadAction<number>) => {

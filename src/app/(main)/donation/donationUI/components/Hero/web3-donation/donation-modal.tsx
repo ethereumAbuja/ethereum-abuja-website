@@ -154,8 +154,15 @@ export const TransactionModal = ({
     });
   };
 
+  const resetDonationState = () => {
+    isConfirmed &&
+      currentTransactionType == trxType.DONATION &&
+      setUserConfirmation(false);
+    isConfirmed && currentTransactionType == trxType.DONATION && reset();
+  };
+
   useEffect(() => {
-    isConfirmed && refetchAllowance();
+    isConfirmed && trxType.APPROVAL && refetchAllowance();
   }, [isConfirmed]);
 
   useEffect(() => {
@@ -189,10 +196,10 @@ export const TransactionModal = ({
       dispatch(setReftchHerosList(true));
 
     //restore initial states on successful transactions
-    isConfirmed &&
-      currentTransactionType == trxType.DONATION &&
-      setUserConfirmation(false);
-    isConfirmed && currentTransactionType == trxType.DONATION && reset();
+    // isConfirmed &&
+    //   currentTransactionType == trxType.DONATION &&
+    //   setUserConfirmation(false);
+    // isConfirmed && currentTransactionType == trxType.DONATION && reset();
 
     //
     isConfirming &&
