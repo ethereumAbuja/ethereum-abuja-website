@@ -35,23 +35,30 @@ const useAddSponsor = (): {
     try {
       const response = await axios.post<AddSponsorResponse>(
         "/api/addsponsor",
-        sponsor
+        sponsor,
       );
 
       if (response.status === 201) {
         setSuccess(true);
         console.log("succesfully called api, posted sponsor details");
-        CustomToast(toast, "Transaction Submitted", 4000, "top-right");
+        CustomToast(
+          toast,
+          "You have been successfully added to the HerosList",
+          4000,
+          "top-right",
+        );
       } else {
-        console.log("succesfully called api, error occured");
+        console.log(
+          "Something went wrong while add you to the heros list, contact team",
+        );
         setError(new Error("Failed to add sponsor"));
       }
     } catch (error) {
       CustomErrorToast(
         toast,
-        `Errror occured, sponsor name`,
+        `Something went wrong while add you to the heros list, contact team`,
         4000,
-        "top-right"
+        "top-right",
       );
       console.log("succesfully called api, error occured");
       console.error(error);

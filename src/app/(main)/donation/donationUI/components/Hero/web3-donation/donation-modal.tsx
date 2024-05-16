@@ -166,8 +166,6 @@ export const TransactionModal = ({
         "top-right"
       );
 
-    // onClose();
-
     isConfirmed && CustomToast(toast, "Confirmed", 4000, "top-right");
 
     isConfirmed &&
@@ -264,17 +262,6 @@ export const TransactionModal = ({
                     <Text textAlign="center" fontWeight={600} fontSize="18px">
                       Approve this transaction
                     </Text>
-
-                    <Button
-                      onClick={() => approveToken()}
-                      bgColor="black"
-                      color="white"
-                      _hover={{
-                        bgColor: "black",
-                      }}
-                    >
-                      Approve
-                    </Button>
                   </>
                 )}
               </>
