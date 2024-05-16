@@ -55,14 +55,14 @@ export const TransactionModal = ({
   sponsorDetails,
 }: modalProps) => {
   const currentTransactionType = useAppSelector(
-    (state: RootState) => state.donationTransactionSlice.OngoingTransactionType
+    (state: RootState) => state.donationTransactionSlice.OngoingTransactionType,
   );
   const donationAmount = useAppSelector(
-    (state: RootState) => state.donationTransactionSlice.DonationAmount
+    (state: RootState) => state.donationTransactionSlice.DonationAmount,
   );
 
   const _donationToken = useAppSelector(
-    (state: RootState) => state.donationTokenSlice.tokenAddress
+    (state: RootState) => state.donationTokenSlice.tokenAddress,
   );
 
   const {
@@ -88,6 +88,7 @@ export const TransactionModal = ({
   const [userConfirmation, setUserConfirmation] = useState<boolean>(false);
   //The state is to remove donation token from the screen when Donation tranaction begins
   const dispatch = useAppDispatch();
+
   const { chainId, address } = useAccount();
 
   let toast = useToast();
@@ -129,7 +130,7 @@ export const TransactionModal = ({
         toast,
         `Please Fields "Name" and "Twitter" cannot be empty, kindly fill or donate anonymously😊`,
         5000,
-        "bottom"
+        "bottom",
       );
       return null;
     }
@@ -163,7 +164,7 @@ export const TransactionModal = ({
         `You can not donate with 0.00 amount!`,
         //${WriteContractError?.message}
         5000,
-        "top-right"
+        "top-right",
       );
 
     isConfirmed && CustomToast(toast, "Confirmed", 4000, "top-right");
@@ -177,10 +178,17 @@ export const TransactionModal = ({
         amount: sponsorDetails.amount,
       });
 
-    isConfirmed &&
-      currentTransactionType == trxType.DONATION &&
-      addName &&
-      dispatch(setReftchHerosList(true));
+    // isConfirmed &&
+    //   currentTransactionType == trxType.DONATION &&
+    //   addName &&
+    //   dispatch(setReftchHerosList(true));
+
+    if (isConfirmed && currentTransactionType == trxType.DONATION && addName) {
+      const timeoutId = setTimeout(() => {
+        dispatch(setReftchHerosList(true));
+      }, 5000);
+      return () => clearTimeout(timeoutId);
+    }
 
     isConfirmed &&
       currentTransactionType == trxType.DONATION &&
@@ -195,7 +203,7 @@ export const TransactionModal = ({
         toast,
         `${WaitForTransactionReceiptError.name}, ${WaitForTransactionReceiptError.message}`,
         5000,
-        "top-right"
+        "top-right",
       );
   }, [isConfirming, isConfirmed, chainId, isWriteContractError]);
 
@@ -217,7 +225,7 @@ export const TransactionModal = ({
           />
 
           <Box w={"100%"}>
-            {isTrxSubmitted && currentTransactionType == trxType.DONATION ? (
+            {isConfirming && currentTransactionType == trxType.DONATION ? (
               <Flex alignItems={"center"} flexDir={"column"} gap={"1.5rem"}>
                 <Text fontWeight={600} fontSize="18px">
                   Transaction Successful
@@ -274,6 +282,12 @@ export const TransactionModal = ({
                 <Text>Confirm transaction in Wallet...</Text>
               </VStack>
             )}
+            {isConfirming && (
+              <VStack>
+                <SyncLoader size={45} color="#0000FF" />
+                <Text>Confirm transaction in Wallet...</Text>
+              </VStack>
+            )}
           </Box>
         </Flex>
 
@@ -282,33 +296,39 @@ export const TransactionModal = ({
         {/* no approval. prompt user to approve tokens */}
         {!hasEnoughAllowances &&
           currentTransactionType !== trxType.DONATION && (
-            <Flex flexDir="column" mt="40px">
-              <Button
-                onClick={() => approveToken()}
-                bgColor="black"
-                color="white"
-                _hover={{
-                  bgColor: "black",
-                }}
-              >
-                Approve
-              </Button>
+            <>
+              {isConfirming || isPending ? (
+                ""
+              ) : (
+                <Flex flexDir="column" mt="40px">
+                  <Button
+                    onClick={() => approveToken()}
+                    bgColor="black"
+                    color="white"
+                    _hover={{
+                      bgColor: "black",
+                    }}
+                  >
+                    Approve
+                  </Button>
 
-              <Button
-                mt="10px"
-                onClick={onClose}
-                bgColor="none"
-                border="1px solid"
-                _hover={{
-                  bgColor: "black",
-                  color: "white",
-                }}
-              >
-                Cancel
-              </Button>
-            </Flex>
+                  <Button
+                    mt="10px"
+                    onClick={onClose}
+                    bgColor="none"
+                    border="1px solid"
+                    _hover={{
+                      bgColor: "black",
+                      color: "white",
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </Flex>
+              )}
+            </>
           )}
-
+          
         {/* ------------------------------------ approval completed. donate tokens ------------------------------------*/}
         {hasEnoughAllowances && !userConfirmation && (
           <Button
