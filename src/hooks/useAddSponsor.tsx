@@ -1,6 +1,8 @@
 import { useState, useCallback } from "react";
 import axios from "axios";
 import { useToast, Box } from "@chakra-ui/react";
+import CustomToast from "@/components/CustomToast";
+import CustomErrorToast from "@/components/CustomErrorToast";
 
 export interface SponsorDetailsType {
   name: string;
@@ -33,34 +35,25 @@ const useAddSponsor = (): {
     try {
       const response = await axios.post<AddSponsorResponse>(
         "/api/addsponsor",
-        sponsor,
+        sponsor
       );
 
       if (response.status === 201) {
         setSuccess(true);
-        console.log("succesfully called api, posted sponsor details")
-        toast({
-          position: "top-right",
-          render: () => (
-            <Box color="white" p={3} bg="blue.500">
-              Transaction Submitted
-            </Box>
-          ),
-        });
+        console.log("succesfully called api, posted sponsor details");
+        CustomToast(toast, "Transaction Submitted", 4000, "top-right");
       } else {
-        console.log("succesfully called api, error occured")
+        console.log("succesfully called api, error occured");
         setError(new Error("Failed to add sponsor"));
       }
     } catch (error) {
-      toast({
-        position: "top-right",
-        render: () => (
-          <Box color="white" p={3} bg="blue.500">
-           errror occured, asponsor name
-          </Box>
-        ),
-      });
-      console.log("succesfully called api, error occured")
+      CustomErrorToast(
+        toast,
+        `Errror occured, sponsor name`,
+        4000,
+        "top-right"
+      );
+      console.log("succesfully called api, error occured");
       console.error(error);
       setError(error as AddSponsorError);
     } finally {

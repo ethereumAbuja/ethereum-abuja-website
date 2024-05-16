@@ -28,8 +28,8 @@ import {
 import { SponsorDetailsType } from "@/hooks/useAddSponsor";
 import { TransactionModal } from "./donation-modal";
 import { allowanceState, trxType } from "@/utils";
-import { AppDispatch, RootState } from "@/store/store";
-import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { useAppDispatch, useAppSelector } from "@/hooks/rtkHooks";
 import { TokenQuantityInput } from "@/components/TokenQuantityInput";
 import { formatBalance } from "@/utils/formatBalance";
 import BalancePanel from "./balance-panel";
@@ -41,6 +41,14 @@ interface Props {
 }
 
 function Web3Donation({ addName, _donationToken }: Props) {
+  const DONATIONTOKENBALANCE = useAppSelector(
+    (state: RootState) => state.donationTransactionSlice.DonationTokenBalance
+  );
+
+  const amount = useAppSelector(
+    (state: RootState) => state.donationTransactionSlice.DonationAmount
+  );
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { address, isConnected, chainId } = useAccount();
   const [donationTokenApproval, setDonationTokenApproval] =
@@ -51,7 +59,7 @@ function Web3Donation({ addName, _donationToken }: Props) {
     twitter: "",
     amount: "",
   });
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
 
   const { data: PtokenAllowance, refetch: refetchAllowance } =
     useTokenAllowance({
@@ -61,10 +69,6 @@ function Web3Donation({ addName, _donationToken }: Props) {
       spender: DONATION_CONTRACT_ADDRESS[chainId as ChainId] as Address,
     });
   let toast = useToast();
-
-  const amount = useSelector(
-    (state: RootState) => state.donationTransactionSlice.DonationAmount
-  );
 
   const {
     data: hash,
@@ -105,10 +109,6 @@ function Web3Donation({ addName, _donationToken }: Props) {
     scopeKey: "Donation tokenBalance",
   });
 
-  const DONATIONTOKENBALANCE = useSelector(
-    (state: RootState) => state.donationTransactionSlice.DonationTokenBalance
-  );
-
   const {
     isLoading: isConfirming,
     isSuccess: isConfirmed,
@@ -137,7 +137,9 @@ function Web3Donation({ addName, _donationToken }: Props) {
     // console.log(sponsorDetails);
   };
 
-  const isInsufficientBalance: boolean = Number(amount) > DONATIONTOKENBALANCE;
+  const isInsufficientBalance =
+    address && Number(amount) > DONATIONTOKENBALANCE;
+
   return (
     <Box>
       {addName && (
