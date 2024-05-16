@@ -2,7 +2,6 @@
 
 import {
   Button,
-  useToast,
   VStack,
   Text,
   Menu,
@@ -13,23 +12,15 @@ import {
 import { DONATION_TOKENS, CURRENCIES } from "@/constants/config/chainId";
 import React, { useState } from "react";
 import { TiArrowSortedDown } from "react-icons/ti";
-
-import { useAccount } from "wagmi";
-import { useIsMounted } from "@/hooks/useIsMounted";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { useDonationToken } from "@/store/donationTokenSlice/hooks";
 
 export default function CurrencySwitch() {
-  const { chain } = useAccount();
-  let toast = useToast();
-  const isMounted = useIsMounted();
-  const [open, setOpen] = useState(false);
   const [currency, setCurrency] = useState<DONATION_TOKENS>(
     DONATION_TOKENS.USDT
   );
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const { push } = useRouter();
 
   const xxx = useDonationToken();
 
