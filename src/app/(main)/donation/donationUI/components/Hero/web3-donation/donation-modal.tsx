@@ -225,7 +225,7 @@ export const TransactionModal = ({
           />
 
           <Box w={"100%"}>
-            {isConfirming && currentTransactionType == trxType.DONATION ? (
+            {isConfirmed && currentTransactionType == trxType.DONATION ? (
               <Flex alignItems={"center"} flexDir={"column"} gap={"1.5rem"}>
                 <Text fontWeight={600} fontSize="18px">
                   Transaction Successful
@@ -270,30 +270,19 @@ export const TransactionModal = ({
                     <Text textAlign="center" fontWeight={600} fontSize="18px">
                       Approve this transaction
                     </Text>
-
-                    <Button
-                      onClick={() => approveToken()}
-                      bgColor="black"
-                      color="white"
-                      _hover={{
-                        bgColor: "black",
-                      }}
-                    >
-                      Approve
-                    </Button>
                   </>
                 )}
               </>
             )}
           </Box>
           <Box>
-            {isPending && (
+            {isPending && !isTrxSubmitted && (
               <VStack>
                 <SyncLoader size={45} color="#0000FF" />
                 <Text>Confirm transaction in Wallet...</Text>
               </VStack>
             )}
-            {isConfirming && (
+            {isConfirming && !isConfirmed && (
               <VStack>
                 <SyncLoader size={45} color="#0000FF" />
                 <Text>Confirm transaction in Wallet...</Text>
@@ -339,7 +328,7 @@ export const TransactionModal = ({
               )}
             </>
           )}
-          
+
         {/* ------------------------------------ approval completed. donate tokens ------------------------------------*/}
         {hasEnoughAllowances && !userConfirmation && (
           <Button
