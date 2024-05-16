@@ -1,4 +1,8 @@
 "use client";
+
+// TODO
+//Fetch Balance here so it can be refetch on successfull donation
+
 import { useSearchParams } from "next/navigation";
 import SyncLoader from "react-spinners/ClipLoader";
 import {
@@ -142,7 +146,7 @@ export const TransactionModal = ({
       currentTransactionType == trxType.DONATION &&
       setUserConfirmation(false);
     isConfirmed && currentTransactionType == trxType.DONATION && reset();
-    dispatch(setDonationAmount("0.00"));
+    dispatch(setDonationAmount("0.10"));
     dispatch(setOngoingTrxType(trxType.UNKNOWN));
   };
 
@@ -272,8 +276,7 @@ export const TransactionModal = ({
 
         {/* no approval. prompt user to approve tokens */}
         {!hasEnoughAllowances &&
-          (currentTransactionType == trxType.UNKNOWN ||
-            currentTransactionType == trxType.APPROVAL) && (
+          currentTransactionType !== trxType.DONATION && (
             <Flex flexDir="column" mt="40px">
               <Button
                 onClick={() => approveToken()}
@@ -290,10 +293,10 @@ export const TransactionModal = ({
                 mt="10px"
                 onClick={onClose}
                 bgColor="none"
-                color="white"
                 border="1px solid"
                 _hover={{
                   bgColor: "black",
+                  color: "white",
                 }}
               >
                 Cancel

@@ -37,7 +37,7 @@ const initialHeroslistState: heroslistSlice = {
 };
 const initialState: DonationTransactionState = {
   DonationTokenBalance: 0,
-  DonationAmount: "0.00",
+  DonationAmount: "0.10",
   userCanDonate: false,
   OngoingTransactionType: trxType.UNKNOWN,
   heroslistSlice: initialHeroslistState,

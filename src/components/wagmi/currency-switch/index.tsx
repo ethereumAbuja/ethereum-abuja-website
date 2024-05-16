@@ -33,33 +33,6 @@ export default function CurrencySwitch() {
 
   const xxx = useDonationToken();
 
-  // const createQueryString = useCallback(
-  //   (values: { name: string; value: string | null }[]) => {
-  //     const params = new URLSearchParams(searchParams);
-  //     values.forEach(({ name, value }) => {
-  //       if (value === null) {
-  //         params.delete(name);
-  //       } else {
-  //         params.set(name, value);
-  //       }
-  //     });
-  //     return params.toString();
-  //   },
-  //   [searchParams],
-  // );
-
-  // const updateSearchParams = useCallback<{ (_donationToken: string): void }>(
-  //   (_donationToken) => {
-  //     console.log("set_donationToken", _donationToken);
-  //     push(
-  //       `${pathname}?${createQueryString([
-  //         { name: "donationtoken", value: _donationToken },
-  //       ])}`,
-  //       { scroll: false },
-  //     );
-  //   },
-  //   [createQueryString, pathname, push],
-  // );
 
   return (
     <div>

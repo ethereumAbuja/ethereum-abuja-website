@@ -137,7 +137,8 @@ function Web3Donation({ addName, _donationToken }: Props) {
     console.log(sponsorDetails);
   };
 
-  const isInsufficientBalance: boolean = Number(amount) > DONATIONTOKENBALANCE;
+  const isInsufficientBalance =
+    address && Number(amount) > DONATIONTOKENBALANCE;
   return (
     <Box>
       {addName && (
