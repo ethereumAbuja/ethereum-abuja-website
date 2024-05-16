@@ -6,5 +6,5 @@ export const SITE_DESCRIPTION =
 export const SITE_URL = 'https://ethabuja.com/'
 
 export const SOCIAL_TWITTER = 'EthAbuja_'
-export const SOCIAL_DISCORD = 'https://discord.gg/4t9ycap5'
+export const SOCIAL_DISCORD = 'https://discord.gg/8fm8sM3hUw'
 export const SOCIAL_GITHUB = 'ethereumAbuja/ethereum-abuja-website'

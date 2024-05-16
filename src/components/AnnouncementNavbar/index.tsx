@@ -29,11 +29,15 @@ const AnnoucementNavbar = () => {
               repeatType: "reverse",
             }}
           >
-            <Text color="white" fontSize="20px" textAlign="center">
-              The EthAbuja Donation DAPP is now live on the Testnet - Explore it
-              now and feel free to share your{" "}
-              <chakra.span as={Link} target="_blank" href={SOCIAL_DISCORD}>
-                feedback!
+            <Text color="white" fontSize="14px" textAlign="center">
+              The EthAbuja Donation DAPP is now live on the Testnet - Share your{" "}
+              <chakra.span
+                textDecor="underline"
+                as={Link}
+                target="_blank"
+                href={SOCIAL_DISCORD}
+              >
+                feedback with us!
               </chakra.span>
             </Text>
           </motion.div>
