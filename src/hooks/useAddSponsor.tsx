@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import axios from "axios";
-import { useToast, Box } from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/react";
 import CustomToast from "@/components/CustomToast";
 import CustomErrorToast from "@/components/CustomErrorToast";
 
@@ -35,7 +35,7 @@ const useAddSponsor = (): {
     try {
       const response = await axios.post<AddSponsorResponse>(
         "/api/addsponsor",
-        sponsor,
+        sponsor
       );
 
       if (response.status === 201) {
@@ -45,11 +45,11 @@ const useAddSponsor = (): {
           toast,
           "You have been successfully added to the HerosList",
           4000,
-          "top-right",
+          "top-right"
         );
       } else {
         console.log(
-          "Something went wrong while add you to the heros list, contact team",
+          "Something went wrong while add you to the heros list, contact team"
         );
         setError(new Error("Failed to add sponsor"));
       }
@@ -58,7 +58,7 @@ const useAddSponsor = (): {
         toast,
         `Something went wrong while add you to the heros list, contact team`,
         4000,
-        "top-right",
+        "top-right"
       );
       console.log("succesfully called api, error occured");
       console.error(error);
