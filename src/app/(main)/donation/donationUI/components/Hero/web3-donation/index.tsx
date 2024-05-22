@@ -33,7 +33,6 @@ import { useAppDispatch, useAppSelector } from "@/hooks/rtkHooks";
 import { TokenQuantityInput } from "@/components/TokenQuantityInput";
 import { formatBalance } from "@/utils/formatBalance";
 import BalancePanel from "./balance-panel";
-import { setDonationAmount } from "@/store/donationTransactionSlice";
 
 interface Props {
   addName: boolean;
@@ -42,12 +41,10 @@ interface Props {
 
 function Web3Donation({ addName, _donationToken }: Props) {
   const DONATIONTOKENBALANCE = useAppSelector(
-    (state: RootState) => state.donationTransactionSlice.DonationTokenBalance
+    (state: RootState) => state.donationTransactionSlice.DonationTokenBalance,
   );
 
-  const amount = useAppSelector(
-    (state: RootState) => state.donationTransactionSlice.DonationAmount
-  );
+  const [amount, setAmount] = useState("0.10");
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { address, isConnected, chainId } = useAccount();
@@ -82,8 +79,8 @@ function Web3Donation({ addName, _donationToken }: Props) {
   //Check approval state when inpute token value]
   const handleDonationAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    // setAmount(e.target.value);
-    dispatch(setDonationAmount(e.target.value));
+    setAmount(e.target.value);
+    // dispatch(setDonationAmount(e.target.value));
     setSponsorDetails((prevState) => ({
       ...prevState,
       amount: parseEther(amount).toString(),
@@ -97,9 +94,9 @@ function Web3Donation({ addName, _donationToken }: Props) {
   //FETCH DONATION TOKEN BALANCE
   const {
     data: donationTokenBal,
-    isFetching: isFetchinDonTokenBal,
-    isError,
-    isSuccess: isSuccessDonToken,
+    isFetching: isFetchingBalance,
+    isError: isFetchBalanceError,
+    isSuccess: isFetchBalanceSuccess,
     refetch: refectBalance,
   } = useReadContract({
     abi: erc20Abi,
@@ -128,7 +125,7 @@ function Web3Donation({ addName, _donationToken }: Props) {
   };
 
   const handleSponsorNameChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setSponsorDetails((prevState) => ({
       ...prevState,
@@ -228,18 +225,22 @@ function Web3Donation({ addName, _donationToken }: Props) {
             <Box>
               <CurrencySwitch />
             </Box>
-            {isSuccessDonToken && (
-              <Box marginLeft={"4px"}>
-                <Text whiteSpace={"nowrap"}>
-                  {" "}
-                  Bal: <BalancePanel />
-                </Text>
-              </Box>
-            )}
+            <Box marginLeft={"4px"}>
+              <Text whiteSpace={"nowrap"}>
+                {" "}
+                <BalancePanel
+                  balance={donationTokenBal}
+                  isFetchingBalance={isFetchingBalance}
+                  isFetchBalanceError={isFetchBalanceError}
+                  isFetchBalanceSuccess={isFetchBalanceSuccess}
+                />
+              </Text>
+            </Box>
           </Flex>
           <TokenQuantityInput
             quantity={amount}
             maxValue={formatBalance(donationTokenBal ?? BigInt(0))}
+            onChange={setAmount}
           />
         </Box>
 
@@ -309,15 +310,10 @@ function Web3Donation({ addName, _donationToken }: Props) {
         )}
 
         <TransactionModal
-          donationAmount={amount}
-          // approvefn={approveToken}
-          // hash={hash}
-          // isPending={isPending}
-          // isSubmitted={isSubmitted}
-          // isErred={isWriteContractError}
+          setAmount={setAmount}
+          amount={amount}
           isOpen={isOpen}
           onClose={onClose}
-          // donatefn={donatefn}
           addName={addName}
           sponsorDetails={sponsorDetails}
         />
