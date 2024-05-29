@@ -32,19 +32,16 @@ export function TokenQuantityInput({
     }
     setAmount(e.target.value);
     onChange(e.target.value);
-    // onChange(e.target.value);
   };
 
   const handleSetMax = () => {
     setAmount(maxValue ?? "0.00");
     onChange(maxValue ?? "0.00");
-    // onChange(maxValue ?? "0.00");
   };
 
   const handleClear = () => {
     setAmount("0.00");
     onChange("0.00");
-    // onChange("0.00");
   };
 
   useEffect(() => {

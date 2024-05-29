@@ -32,14 +32,6 @@ interface Props {
 }
 
 function Web3Donation({ addName, _donationToken }: Props) {
-  const DONATIONTOKENBALANCE = useAppSelector(
-    (state: RootState) => state.donationTransactionSlice.DonationTokenBalance
-  );
-
-  const amount = useAppSelector(
-    (state: RootState) => state.donationTransactionSlice.DonationAmount
-  );
-
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { address, isConnected, chainId } = useAccount();
   const [donationTokenApproval, setDonationTokenApproval] =
@@ -63,8 +55,7 @@ function Web3Donation({ addName, _donationToken }: Props) {
   //Check approval state when inpute token value
   const handleDonationAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    // setAmount(e.target.value);
-    dispatch(setDonationAmount(e.target.value));
+    setAmount(e.target.value);
     setSponsorDetails((prevState) => ({
       ...prevState,
       amount: parseEther(amount).toString(),
@@ -78,10 +69,10 @@ function Web3Donation({ addName, _donationToken }: Props) {
   //FETCH DONATION TOKEN BALANCE
   const {
     data: donationTokenBal,
-    isFetching: isFetchinDonTokenBal,
-    isError,
-    isSuccess: isSuccessDonToken,
-    refetch: refectBalance,
+    isFetching: isFetchingBalance,
+    isError: isFetchBalanceError,
+    isSuccess: isFetchBalanceSuccess,
+    refetch: refetchBalance,
   } = useReadContract({
     abi: erc20Abi,
     address: _donationToken as Address,
@@ -279,12 +270,9 @@ function Web3Donation({ addName, _donationToken }: Props) {
         )}
 
         <TransactionModal
-          donationAmount={amount}
-          // approvefn={approveToken}
-          // hash={hash}
-          // isPending={isPending}
-          // isSubmitted={isSubmitted}
-          // isErred={isWriteContractError}
+          setAmount={setAmount}
+          amount={amount}
+          refetchBalance={refetchBalance}
           isOpen={isOpen}
           onClose={onClose}
           addName={addName}

@@ -63,8 +63,6 @@ export const TransactionModal = ({
   const currentTransactionType = useAppSelector(
     (state: RootState) => state.donationTransactionSlice.OngoingTransactionType
   );
-    (state: RootState) => state.donationTransactionSlice.OngoingTransactionType,
-  );
 
   const _donationToken = useAppSelector(
     (state: RootState) => state.donationTokenSlice.tokenAddress
