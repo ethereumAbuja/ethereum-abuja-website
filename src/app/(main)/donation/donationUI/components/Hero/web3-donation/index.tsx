@@ -32,6 +32,14 @@ interface Props {
 }
 
 function Web3Donation({ addName, _donationToken }: Props) {
+  const DONATIONTOKENBALANCE = useAppSelector(
+    (state: RootState) => state.donationTransactionSlice.DonationTokenBalance
+  );
+
+  const amount = useAppSelector(
+    (state: RootState) => state.donationTransactionSlice.DonationAmount
+  );
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { address, isConnected, chainId } = useAccount();
   const [donationTokenApproval, setDonationTokenApproval] =
@@ -55,7 +63,8 @@ function Web3Donation({ addName, _donationToken }: Props) {
   //Check approval state when inpute token value
   const handleDonationAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    setAmount(e.target.value);
+    // setAmount(e.target.value);
+    dispatch(setDonationAmount(e.target.value));
     setSponsorDetails((prevState) => ({
       ...prevState,
       amount: parseEther(amount).toString(),
@@ -69,8 +78,10 @@ function Web3Donation({ addName, _donationToken }: Props) {
   //FETCH DONATION TOKEN BALANCE
   const {
     data: donationTokenBal,
+    isFetching: isFetchinDonTokenBal,
+    isError,
     isSuccess: isSuccessDonToken,
-    refetch: refetchBalance,
+    refetch: refectBalance,
   } = useReadContract({
     abi: erc20Abi,
     address: _donationToken as Address,
@@ -187,18 +198,22 @@ function Web3Donation({ addName, _donationToken }: Props) {
             <Box>
               <CurrencySwitch />
             </Box>
-            {isSuccessDonToken && (
-              <Box marginLeft={"4px"}>
-                <Text whiteSpace={"nowrap"}>
-                  {" "}
-                  Bal: <BalancePanel />
-                </Text>
-              </Box>
-            )}
+            <Box marginLeft={"4px"}>
+              <Text whiteSpace={"nowrap"}>
+                {" "}
+                <BalancePanel
+                  balance={donationTokenBal}
+                  isFetchingBalance={isFetchingBalance}
+                  isFetchBalanceError={isFetchBalanceError}
+                  isFetchBalanceSuccess={isFetchBalanceSuccess}
+                />
+              </Text>
+            </Box>
           </Flex>
           <TokenQuantityInput
             quantity={amount}
             maxValue={formatBalance(donationTokenBal ?? BigInt(0))}
+            onChange={setAmount}
           />
         </Box>
 
@@ -264,9 +279,12 @@ function Web3Donation({ addName, _donationToken }: Props) {
         )}
 
         <TransactionModal
-          amount={amount}
-          setAmount={setAmount}
-          refetchBalance={refetchBalance}
+          donationAmount={amount}
+          // approvefn={approveToken}
+          // hash={hash}
+          // isPending={isPending}
+          // isSubmitted={isSubmitted}
+          // isErred={isWriteContractError}
           isOpen={isOpen}
           onClose={onClose}
           addName={addName}

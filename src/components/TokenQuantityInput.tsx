@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Input, Button, HStack } from "@chakra-ui/react";
 
 interface TokenQuantityInputProps {
-  // onChange: (amount: string) => void;
+  onChange: (amount: string) => void;
   quantity: string;
   maxValue?: string;
   displayRangeInput?: boolean;
@@ -12,7 +12,7 @@ interface TokenQuantityInputProps {
 }
 
 export function TokenQuantityInput({
-  // onChange,
+  onChange,
   quantity,
   maxValue,
   displayRangeInput = true,
@@ -31,16 +31,19 @@ export function TokenQuantityInput({
       return;
     }
     setAmount(e.target.value);
+    onChange(e.target.value);
     // onChange(e.target.value);
   };
 
   const handleSetMax = () => {
     setAmount(maxValue ?? "0.00");
+    onChange(maxValue ?? "0.00");
     // onChange(maxValue ?? "0.00");
   };
 
   const handleClear = () => {
     setAmount("0.00");
+    onChange("0.00");
     // onChange("0.00");
   };
 

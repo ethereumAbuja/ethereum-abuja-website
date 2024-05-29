@@ -7,6 +7,10 @@ import { RootState } from "@/store/store";
 import { useIsMounted } from "@/hooks/useIsMounted";
 
 function BalancePanel() {
+  const donationTokenBalance = useAppSelector(
+    (state: RootState) => state.donationTransactionSlice.DonationTokenBalance
+  );
+
   const _donationToken = useAppSelector(
     (state: RootState) => state.donationTokenSlice.tokenAddress
   );
@@ -14,8 +18,9 @@ function BalancePanel() {
   const { address, chainId } = useAccount();
   const dispatch = useAppDispatch();
   const isMounted = useIsMounted();
+  //I added the useState to solve the issue with balance not coming up when user connects wallet on first visit/load
   const [balance, setBalance] = useState<Number>();
-  const [donationBalance, setDonationBalance] = useState<Number>(0);
+  // console.log("token address", _donationToken);
 
   //FETCH DONATION TOKEN BALANCtE
   const {
@@ -23,7 +28,7 @@ function BalancePanel() {
     isFetching: isFetchinDonTokenBal,
     isError,
     isSuccess: isSuccessDonToken,
-    refetch: refetcBalance,
+    refetch: refectBalance,
   } = useReadContract({
     abi: erc20Abi,
     address: _donationToken as Address,
@@ -38,23 +43,23 @@ function BalancePanel() {
 
   useEffect(() => {
     const refetchBalance = async () => {
-      refetcBalance();
-      setDonationBalance(Number(formatUnits(donationTokenBal ?? 0n, 18)));
+      refectBalance();
+      dispatch(
+        setDonationBalance(Number(formatUnits(donationTokenBal ?? 0n, 18)))
+      );
     };
     refetchBalance();
   }, [chainId, _donationToken, address, isMounted]);
 
   return (
     <>
-      {isFetchinDonTokenBal || !isMounted ? (
+      {isFetchingBalance || !isMounted ? (
         <Skeleton height="15px" />
-      ) : isSuccessDonToken && balance ? (
-        <span>{balance.toString()}</span>
-      ) : // <span>{Number(formatUnits(donationTokenBal, 18)).toFixed(2)}</span>
-      isError ? (
+      ) : isFetchBalanceSuccess && balance ? (
+        <span>Bal: {Number(formatUnits(balance ?? 0n, 18))}</span>
+      ) : isFetchBalanceError ? (
         <span></span>
-      ) : // <span>0.00</span>
-      null}
+      ) : null}
     </>
   );
 }

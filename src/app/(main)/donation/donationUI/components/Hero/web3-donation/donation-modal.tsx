@@ -12,6 +12,7 @@ import {
   Text,
   useToast,
   VStack,
+  Link,
 } from "@chakra-ui/react";
 import React, { useEffect, useState, Dispatch, SetStateAction } from "react";
 import { Address, erc20Abi, formatUnits, parseEther } from "viem";
@@ -30,35 +31,39 @@ import {
   setOngoingTrxType,
   setReftchHerosList,
 } from "@/store/donationTransactionSlice";
+
 import useAddSponsor, { SponsorDetailsType } from "@/hooks/useAddSponsor";
 import donationAbi from "@/constants/abi/donation.abi.json";
 import ModalComponent from "@/components/ModalComponent";
 import CustomToast from "@/components/CustomToast";
 import CustomErrorToast from "@/components/CustomErrorToast";
+import { ExternalLinkIcon } from "@chakra-ui/icons";
 
 interface modalProps {
-  amount: string;
-  setAmount: any;
   refetchBalance: any;
   isOpen: boolean;
   onClose: () => void;
+  amount: string;
+  setAmount: (val: string) => void;
   addName: boolean;
   sponsorDetails: SponsorDetailsType;
   setSponsorDetails: Dispatch<SetStateAction<SponsorDetailsType>>;
 }
 
 export const TransactionModal = ({
-  amount,
-  setAmount,
   refetchBalance,
   isOpen,
   onClose,
   addName,
   sponsorDetails,
+  amount,
+  setAmount,
   setSponsorDetails,
 }: modalProps) => {
   const currentTransactionType = useAppSelector(
     (state: RootState) => state.donationTransactionSlice.OngoingTransactionType
+  );
+    (state: RootState) => state.donationTransactionSlice.OngoingTransactionType,
   );
 
   const _donationToken = useAppSelector(
@@ -86,12 +91,19 @@ export const TransactionModal = ({
 
   const searchParams = useSearchParams();
 
-  const [userConfirmation, setUserConfirmation] = useState<boolean>(false);
+  const [confirmApproval, setConfirmApproval] = useState<boolean>(false);
+  const [confirmDonation, setConfirmeDonation] = useState<boolean>(false);
+
   const dispatch = useAppDispatch();
 
-  const { chainId, address } = useAccount();
+  const { chainId, address, chain } = useAccount();
 
   let toast = useToast();
+
+  // console.log(
+  //   "this is the current chain block explorer",
+  //   chain?.blockExplorers,
+  // );
 
   const { addSponsor } = useAddSponsor();
 
@@ -129,8 +141,8 @@ export const TransactionModal = ({
       CustomErrorToast(
         toast,
         `Please Fields "Name" and "Twitter" cannot be empty, kindly fill or donate anonymously😊`,
-        5000,
-        "bottom"
+        3000,
+        "top-right"
       );
       return null;
     }
@@ -145,19 +157,17 @@ export const TransactionModal = ({
   };
 
   const resetDonationState = () => {
-    isConfirmed &&
-      currentTransactionType == trxType.DONATION &&
-      setUserConfirmation(false);
-    isConfirmed && currentTransactionType == trxType.DONATION && reset();
-    setAmount("");
-    refetchBalance();
-    setSponsorDetails({
-      amount: "",
-      name: "",
-      twitter: "",
-    });
+    setConfirmApproval(false);
+    setConfirmeDonation(false);
+    reset();
+    setAmount("0.00");
     dispatch(setOngoingTrxType(trxType.UNKNOWN));
   };
+
+  // rest states on initial load
+  useEffect(() => {
+    resetDonationState();
+  }, []);
 
   useEffect(() => {
     isConfirmed && trxType.APPROVAL && refetchAllowance();
@@ -167,8 +177,8 @@ export const TransactionModal = ({
     isWriteContractError &&
       CustomErrorToast(
         toast,
-        `${WriteContractError?.message}`,
-        //
+        `An error occured, try again`,
+        //${WriteContractError?.message}
         3000,
         "top-right"
       );
@@ -211,7 +221,7 @@ export const TransactionModal = ({
   }, [isConfirming, isConfirmed, chainId, isWriteContractError]);
 
   const hasEnoughAllowances: boolean =
-    Number(formatUnits(allowances ?? 0n, 18)) >= Number(amount || "0");
+    Number(formatUnits(allowances ?? 0n, 18)) >= Number(amount);
 
   return (
     <ModalComponent
@@ -236,7 +246,18 @@ export const TransactionModal = ({
                 <Text as="span" fontSize="14px">
                   Thank you for supporting the ETHAbuja Community
                 </Text>
-
+                {/* --------------------------- Show Blockexplorer ------------------------- */}
+                {
+                  <Link
+                    href={`${
+                      chain && chain?.blockExplorers?.default.url
+                    }/tx/${hash}`}
+                    isExternal
+                  >
+                    View transaction on blockexplorer{" "}
+                    <ExternalLinkIcon mx="2px" />
+                  </Link>
+                }
                 <Button
                   mt="40px"
                   w="300px"
@@ -296,44 +317,68 @@ export const TransactionModal = ({
 
         {/*---------------------------------- Buttons ----------------------------------*/}
 
-        {/* no approval. prompt user to approve tokens */}
-        {!hasEnoughAllowances &&
-          currentTransactionType !== trxType.DONATION && (
-            <>
-              {isConfirming || isPending ? (
-                ""
-              ) : (
-                <Flex flexDir="column" mt="40px">
-                  <Button
-                    onClick={() => approveToken()}
-                    bgColor="black"
-                    color="white"
-                    _hover={{
-                      bgColor: "black",
-                    }}
-                  >
-                    Approve
-                  </Button>
+        {/* close button when an error occured */}
 
-                  <Button
-                    mt="10px"
-                    onClick={onClose}
-                    bgColor="none"
-                    border="1px solid"
-                    _hover={{
-                      bgColor: "black",
-                      color: "white",
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                </Flex>
-              )}
-            </>
+        {isWriteContractError && (
+          <Button
+            mt="40px"
+            w="100%"
+            textAlign="center"
+            mx="auto"
+            color="white"
+            onClick={() => {
+              resetDonationState();
+              onClose();
+            }}
+            bgColor="black"
+            _hover={{
+              bgColor: "black",
+            }}
+          >
+            Close
+          </Button>
+        )}
+
+        {/* ---------------------------- no approval. prompt user to approve tokens ----------------------------- */}
+
+        {!hasEnoughAllowances &&
+          !confirmApproval &&
+          currentTransactionType !== trxType.DONATION && (
+            <Flex flexDir="column" mt="40px">
+              <Button
+                onClick={() => {
+                  setConfirmApproval(true);
+                  approveToken();
+                }}
+                bgColor="black"
+                color="white"
+                _hover={{
+                  bgColor: "black",
+                }}
+              >
+                Approve
+              </Button>
+
+              <Button
+                mt="10px"
+                onClick={() => {
+                  resetDonationState();
+                  onClose();
+                }}
+                bgColor="none"
+                border="1px solid"
+                _hover={{
+                  bgColor: "black",
+                  color: "white",
+                }}
+              >
+                Cancel
+              </Button>
+            </Flex>
           )}
 
         {/* ------------------------------------ approval completed. donate tokens ------------------------------------*/}
-        {hasEnoughAllowances && !userConfirmation && (
+        {hasEnoughAllowances && !confirmDonation && (
           <Button
             mt="40px"
             bgColor="black"
@@ -342,7 +387,7 @@ export const TransactionModal = ({
               bgColor: "black",
             }}
             onClick={() => {
-              setUserConfirmation(true);
+              setConfirmeDonation(true);
               donatefn();
             }}
           >
