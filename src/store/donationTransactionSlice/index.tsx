@@ -13,6 +13,9 @@ interface heroslistSlice {
   isSuccess: boolean;
 }
 interface DonationTransactionState {
+  DonationTokenBalance: number;
+  DonationAmount: string;
+  userCanDonate: boolean;
   OngoingTransactionType: trxType;
   heroslistSlice: heroslistSlice;
 }
@@ -28,6 +31,9 @@ const initialHeroslistState: heroslistSlice = {
 };
 
 const initialState: DonationTransactionState = {
+  DonationTokenBalance: 0,
+  DonationAmount: "0.10",
+  userCanDonate: false,
   OngoingTransactionType: trxType.UNKNOWN,
   heroslistSlice: initialHeroslistState,
 };
@@ -36,6 +42,9 @@ export const DonationTransactionSlice = createSlice({
   name: "donationTransaction",
   initialState,
   reducers: {
+    setDonationBalance: (state, action: PayloadAction<number>) => {
+      state.DonationTokenBalance = action.payload;
+    },
     setOngoingTrxType: (state, action: PayloadAction<trxType>) => {
       state.OngoingTransactionType = action.payload;
     },
@@ -60,6 +69,10 @@ export const DonationTransactionSlice = createSlice({
   },
 });
 
-export const { setOngoingTrxType, setReftchHerosList, setHerosList } =
-  DonationTransactionSlice.actions;
+export const {
+  setOngoingTrxType,
+  setReftchHerosList,
+  setHerosList,
+  setDonationBalance,
+} = DonationTransactionSlice.actions;
 export default DonationTransactionSlice.reducer;

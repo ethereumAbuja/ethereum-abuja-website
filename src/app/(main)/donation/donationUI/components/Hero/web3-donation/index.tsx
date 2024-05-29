@@ -42,7 +42,7 @@ function Web3Donation({ addName, _donationToken }: Props) {
     twitter: "",
     amount: "",
   });
-  const [amount, setAmount] = useState<string>("");
+  const [amount, setAmount] = useState<string>("0.10");
 
   const { data: PtokenAllowance, refetch: refetchAllowance } =
     useTokenAllowance({
@@ -122,7 +122,8 @@ function Web3Donation({ addName, _donationToken }: Props) {
             </Text>
             <Box border={"1px solid #E2E8F0"} p={"5px"} borderRadius={"md"}>
               <Input
-                p={"0"}
+                py="10px"
+                px="10px"
                 _focus={{
                   boxShadow: "none",
                 }}
@@ -145,13 +146,14 @@ function Web3Donation({ addName, _donationToken }: Props) {
             </Text>
             <Box border={"1px solid #E2E8F0"} p={"5px"} borderRadius={"md"}>
               <Input
-                p={"0"}
+                py="10px"
+                px="10px"
                 _focus={{
                   boxShadow: "none",
                 }}
                 border={"none"}
                 type="text"
-                placeholder="twitter(username)"
+                placeholder="x(username)"
                 onChange={handleSponsorNameChange}
               />
             </Box>

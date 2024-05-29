@@ -158,7 +158,7 @@ export const TransactionModal = ({
     setConfirmApproval(false);
     setConfirmeDonation(false);
     reset();
-    setAmount("0.00");
+    setAmount("");
     dispatch(setOngoingTrxType(trxType.UNKNOWN));
   };
 
