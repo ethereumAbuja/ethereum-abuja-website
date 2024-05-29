@@ -1,4 +1,3 @@
-import { setDonationBalance } from "@/store/donationTransactionSlice";
 import React, { useEffect, useState } from "react";
 import { Address, erc20Abi, formatUnits } from "viem";
 import { useAccount, useReadContract } from "wagmi";
@@ -7,13 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/rtkHooks";
 import { RootState } from "@/store/store";
 import { useIsMounted } from "@/hooks/useIsMounted";
 
-//THis to display donation token balance, Did this to make code more readable.
-
 function BalancePanel() {
-  const donationTokenBalance = useAppSelector(
-    (state: RootState) => state.donationTransactionSlice.DonationTokenBalance
-  );
-
   const _donationToken = useAppSelector(
     (state: RootState) => state.donationTokenSlice.tokenAddress
   );
@@ -21,9 +14,8 @@ function BalancePanel() {
   const { address, chainId } = useAccount();
   const dispatch = useAppDispatch();
   const isMounted = useIsMounted();
-  //I added the useState to solve the issue with balance not coming up when user connects wallet on first visit/load
   const [balance, setBalance] = useState<Number>();
-  // console.log("token address", _donationToken);
+  const [donationBalance, setDonationBalance] = useState<Number>(0);
 
   //FETCH DONATION TOKEN BALANCtE
   const {
@@ -31,7 +23,7 @@ function BalancePanel() {
     isFetching: isFetchinDonTokenBal,
     isError,
     isSuccess: isSuccessDonToken,
-    refetch: refectBalance,
+    refetch: refetcBalance,
   } = useReadContract({
     abi: erc20Abi,
     address: _donationToken as Address,
@@ -46,10 +38,8 @@ function BalancePanel() {
 
   useEffect(() => {
     const refetchBalance = async () => {
-      refectBalance();
-      dispatch(
-        setDonationBalance(Number(formatUnits(donationTokenBal ?? 0n, 18)))
-      );
+      refetcBalance();
+      setDonationBalance(Number(formatUnits(donationTokenBal ?? 0n, 18)));
     };
     refetchBalance();
   }, [chainId, _donationToken, address, isMounted]);

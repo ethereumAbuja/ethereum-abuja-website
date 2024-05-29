@@ -27,7 +27,7 @@ export const useHerosList = () => {
       if (response.status === 201) {
         const data = response.data;
         // setHeroslist(data);
-        console.log("the data", data);
+        // console.log("the data", data);
         dispatch(setHerosList(data));
         dispatch(setReftchHerosList(false));
       } else {

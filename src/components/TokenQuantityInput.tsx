@@ -2,9 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { Input, Button, HStack } from "@chakra-ui/react";
-import { setDonationAmount } from "@/store/donationTransactionSlice";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/store/store";
 
 interface TokenQuantityInputProps {
   // onChange: (amount: string) => void;
@@ -23,8 +20,6 @@ export function TokenQuantityInput({
 }: TokenQuantityInputProps) {
   const [amount, setAmount] = useState("0.00");
 
-  const dispatch = useDispatch<AppDispatch>();
-
   const smallestStep =
     parseFloat(amount) < 1
       ? 1 / Math.pow(10, maxValue?.split(".")[1].length ?? 1)
@@ -37,22 +32,16 @@ export function TokenQuantityInput({
     }
     setAmount(e.target.value);
     // onChange(e.target.value);
-
-    dispatch(setDonationAmount(e.target.value));
   };
 
   const handleSetMax = () => {
     setAmount(maxValue ?? "0.00");
     // onChange(maxValue ?? "0.00");
-
-    dispatch(setDonationAmount(maxValue ?? "0.00"));
   };
 
   const handleClear = () => {
     setAmount("0.00");
     // onChange("0.00");
-
-    dispatch(setDonationAmount("0.00"));
   };
 
   useEffect(() => {

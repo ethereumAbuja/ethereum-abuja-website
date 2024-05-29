@@ -5,9 +5,9 @@ import CustomToast from "@/components/CustomToast";
 import CustomErrorToast from "@/components/CustomErrorToast";
 
 export interface SponsorDetailsType {
-  name: string;
-  twitter: string;
-  amount: string;
+  name?: string;
+  twitter?: string;
+  amount?: string;
 }
 
 interface AddSponsorResponse {

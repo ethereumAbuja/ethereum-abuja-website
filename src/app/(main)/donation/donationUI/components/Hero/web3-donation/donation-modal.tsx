@@ -1,8 +1,5 @@
 "use client";
 
-// TODO
-//Fetch Balance here so it can be refetch on successfull donation
-
 import { useSearchParams } from "next/navigation";
 import SyncLoader from "react-spinners/ClipLoader";
 import {
@@ -16,7 +13,7 @@ import {
   useToast,
   VStack,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Dispatch, SetStateAction } from "react";
 import { Address, erc20Abi, formatUnits, parseEther } from "viem";
 import { useAppSelector, useAppDispatch } from "@/hooks/rtkHooks";
 import { RootState } from "@/store/store";
@@ -30,7 +27,6 @@ import {
   useWaitForTransactionReceipt,
 } from "wagmi";
 import {
-  setDonationAmount,
   setOngoingTrxType,
   setReftchHerosList,
 } from "@/store/donationTransactionSlice";
@@ -40,29 +36,33 @@ import ModalComponent from "@/components/ModalComponent";
 import CustomToast from "@/components/CustomToast";
 import CustomErrorToast from "@/components/CustomErrorToast";
 
-type modalProps = {
+interface modalProps {
+  amount: string;
+  setAmount: any;
+  refetchBalance: any;
   isOpen: boolean;
   onClose: () => void;
-  donationAmount: string;
   addName: boolean;
   sponsorDetails: SponsorDetailsType;
-};
+  setSponsorDetails: Dispatch<SetStateAction<SponsorDetailsType>>;
+}
 
 export const TransactionModal = ({
+  amount,
+  setAmount,
+  refetchBalance,
   isOpen,
   onClose,
   addName,
   sponsorDetails,
+  setSponsorDetails,
 }: modalProps) => {
   const currentTransactionType = useAppSelector(
-    (state: RootState) => state.donationTransactionSlice.OngoingTransactionType,
-  );
-  const donationAmount = useAppSelector(
-    (state: RootState) => state.donationTransactionSlice.DonationAmount,
+    (state: RootState) => state.donationTransactionSlice.OngoingTransactionType
   );
 
   const _donationToken = useAppSelector(
-    (state: RootState) => state.donationTokenSlice.tokenAddress,
+    (state: RootState) => state.donationTokenSlice.tokenAddress
   );
 
   const {
@@ -83,10 +83,10 @@ export const TransactionModal = ({
   } = useWaitForTransactionReceipt({
     hash,
   });
+
   const searchParams = useSearchParams();
 
   const [userConfirmation, setUserConfirmation] = useState<boolean>(false);
-  //The state is to remove donation token from the screen when Donation tranaction begins
   const dispatch = useAppDispatch();
 
   const { chainId, address } = useAccount();
@@ -95,7 +95,6 @@ export const TransactionModal = ({
 
   const { addSponsor } = useAddSponsor();
 
-  //check Allowance
   const { data: allowances, refetch: refetchAllowance } = useTokenAllowance({
     chainId,
     token: _donationToken as Address,
@@ -106,6 +105,7 @@ export const TransactionModal = ({
   //APPROVE FUNCTION
   const approveToken = () => {
     if (!chainId) return null;
+    if (!amount) return;
 
     dispatch(setOngoingTrxType(trxType.APPROVAL));
 
@@ -115,7 +115,7 @@ export const TransactionModal = ({
       functionName: "approve",
       args: [
         DONATION_CONTRACT_ADDRESS[chainId as ChainId] as Address,
-        parseEther(donationAmount),
+        parseEther(amount),
       ],
     });
   };
@@ -130,7 +130,7 @@ export const TransactionModal = ({
         toast,
         `Please Fields "Name" and "Twitter" cannot be empty, kindly fill or donate anonymously😊`,
         5000,
-        "bottom",
+        "bottom"
       );
       return null;
     }
@@ -140,7 +140,7 @@ export const TransactionModal = ({
       address: DONATION_CONTRACT_ADDRESS[chainId as ChainId] as Address,
       abi: donationAbi,
       functionName: "donate",
-      args: [_donationToken as Address, parseEther(donationAmount)],
+      args: [_donationToken as Address, parseEther(amount)],
     });
   };
 
@@ -149,7 +149,13 @@ export const TransactionModal = ({
       currentTransactionType == trxType.DONATION &&
       setUserConfirmation(false);
     isConfirmed && currentTransactionType == trxType.DONATION && reset();
-    dispatch(setDonationAmount("0.10"));
+    setAmount("");
+    refetchBalance();
+    setSponsorDetails({
+      amount: "",
+      name: "",
+      twitter: "",
+    });
     dispatch(setOngoingTrxType(trxType.UNKNOWN));
   };
 
@@ -161,13 +167,15 @@ export const TransactionModal = ({
     isWriteContractError &&
       CustomErrorToast(
         toast,
-        `You can not donate with 0.00 amount!`,
-        //${WriteContractError?.message}
-        5000,
-        "top-right",
+        `${WriteContractError?.message}`,
+        //
+        3000,
+        "top-right"
       );
 
-    isConfirmed && CustomToast(toast, "Confirmed", 4000, "top-right");
+    isConfirmed &&
+      CustomToast(toast, "Transaction Confirmed", 3000, "top-right");
+    setAmount("");
 
     isConfirmed &&
       currentTransactionType == trxType.DONATION &&
@@ -177,11 +185,6 @@ export const TransactionModal = ({
         twitter: sponsorDetails.twitter,
         amount: sponsorDetails.amount,
       });
-
-    // isConfirmed &&
-    //   currentTransactionType == trxType.DONATION &&
-    //   addName &&
-    //   dispatch(setReftchHerosList(true));
 
     if (isConfirmed && currentTransactionType == trxType.DONATION && addName) {
       const timeoutId = setTimeout(() => {
@@ -196,19 +199,19 @@ export const TransactionModal = ({
       dispatch(setReftchHerosList(true));
 
     isConfirming &&
-      CustomToast(toast, "Transaction Submitted", 4000, "top-right");
+      CustomToast(toast, "Transaction Submitted", 3000, "top-right");
 
     isWaitTrxError &&
       CustomErrorToast(
         toast,
         `${WaitForTransactionReceiptError.name}, ${WaitForTransactionReceiptError.message}`,
         5000,
-        "top-right",
+        "top-right"
       );
   }, [isConfirming, isConfirmed, chainId, isWriteContractError]);
 
   const hasEnoughAllowances: boolean =
-    Number(formatUnits(allowances ?? 0n, 18)) >= Number(donationAmount);
+    Number(formatUnits(allowances ?? 0n, 18)) >= Number(amount || "0");
 
   return (
     <ModalComponent
@@ -261,7 +264,7 @@ export const TransactionModal = ({
                     <Text>
                       You are about to Donate{" "}
                       <chakra.span fontWeight={600}>
-                        {donationAmount} {searchParams.get("donationtoken")}
+                        {amount} {searchParams.get("donationtoken")}
                       </chakra.span>
                     </Text>
                   </Box>

@@ -1,13 +1,11 @@
 import { ETHABJ_WALLET_ADDRESS } from "@/utils/config";
 import { Box, Button, Flex, Input, Text, useToast } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React from "react";
 import clipboardCopy from "clipboard-copy";
 import CustomToast from "@/components/CustomToast";
 import CustomErrorToast from "@/components/CustomErrorToast";
 
 function ManualDonation() {
-  const [copyAddress, setCopyAddress] = useState<boolean>(false);
-  const [addName, setAddName] = useState<boolean>(false);
   let toast = useToast();
 
   //***FN to handle copy button click
@@ -29,18 +27,6 @@ function ManualDonation() {
         );
       });
     }
-  };
-
-  ///***FN to handle the Checkbox of Copy Address
-  const handleCopyAddress = () => {
-    setCopyAddress((prevCopyAddress) => !prevCopyAddress);
-    if (addName) setAddName(false);
-  };
-
-  //***FN to handle the Checkbox of AddName
-  const handleAddName = () => {
-    setAddName((prevAddName) => !prevAddName);
-    if (copyAddress) setCopyAddress(false);
   };
 
   return (
