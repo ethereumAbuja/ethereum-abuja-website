@@ -12,7 +12,7 @@ import {
 import { DONATION_TOKENS, CURRENCIES } from "@/constants/config/chainId";
 import React, { useState } from "react";
 import { TiArrowSortedDown } from "react-icons/ti";
-import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import { useSearchParams, usePathname } from "next/navigation";
 import { useDonationToken } from "@/store/donationTokenSlice/hooks";
 
 export default function CurrencySwitch() {
@@ -23,34 +23,6 @@ export default function CurrencySwitch() {
   const pathname = usePathname();
 
   const xxx = useDonationToken();
-
-  // const createQueryString = useCallback(
-  //   (values: { name: string; value: string | null }[]) => {
-  //     const params = new URLSearchParams(searchParams);
-  //     values.forEach(({ name, value }) => {
-  //       if (value === null) {
-  //         params.delete(name);
-  //       } else {
-  //         params.set(name, value);
-  //       }
-  //     });
-  //     return params.toString();
-  //   },
-  //   [searchParams],
-  // );
-
-  // const updateSearchParams = useCallback<{ (_donationToken: string): void }>(
-  //   (_donationToken) => {
-  //     console.log("set_donationToken", _donationToken);
-  //     push(
-  //       `${pathname}?${createQueryString([
-  //         { name: "donationtoken", value: _donationToken },
-  //       ])}`,
-  //       { scroll: false },
-  //     );
-  //   },
-  //   [createQueryString, pathname, push],
-  // );
 
   return (
     <div>

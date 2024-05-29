@@ -1,6 +1,6 @@
 import ConnectButton from "@/components/wagmi/connectButton";
 import CurrencySwitch from "@/components/wagmi/currency-switch";
-import NetoworKSelector from "@/components/wagmi/network-selector";
+import NetoworkSelector from "@/components/wagmi/network-selector";
 import { DONATION_CONTRACT_ADDRESS } from "@/constants/contract-address";
 import { useTokenAllowance } from "@/hooks/wagmi/approvals/useTokenAllowance";
 import {
@@ -11,25 +11,17 @@ import {
   Text,
   VStack,
   useDisclosure,
-  useToast,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { Address, erc20Abi, formatUnits, parseEther } from "viem";
-import {
-  useAccount,
-  useReadContract,
-  useWriteContract,
-  useWaitForTransactionReceipt,
-} from "wagmi";
+import { useAccount, useReadContract } from "wagmi";
 import {
   ChainId,
   DONATION_SUPPORTED_CHAINID,
 } from "@/constants/config/chainId";
 import { SponsorDetailsType } from "@/hooks/useAddSponsor";
 import { TransactionModal } from "./donation-modal";
-import { allowanceState, trxType } from "@/utils";
-import { RootState } from "@/store/store";
-import { useAppDispatch, useAppSelector } from "@/hooks/rtkHooks";
+import { allowanceState } from "@/utils";
 import { TokenQuantityInput } from "@/components/TokenQuantityInput";
 import { formatBalance } from "@/utils/formatBalance";
 import BalancePanel from "./balance-panel";
@@ -40,12 +32,6 @@ interface Props {
 }
 
 function Web3Donation({ addName, _donationToken }: Props) {
-  const DONATIONTOKENBALANCE = useAppSelector(
-    (state: RootState) => state.donationTransactionSlice.DonationTokenBalance,
-  );
-
-  const [amount, setAmount] = useState("0.10");
-
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { address, isConnected, chainId } = useAccount();
   const [donationTokenApproval, setDonationTokenApproval] =
@@ -56,7 +42,7 @@ function Web3Donation({ addName, _donationToken }: Props) {
     twitter: "",
     amount: "",
   });
-  const dispatch = useAppDispatch();
+  const [amount, setAmount] = useState<string>("0.10");
 
   const { data: PtokenAllowance, refetch: refetchAllowance } =
     useTokenAllowance({
@@ -65,22 +51,11 @@ function Web3Donation({ addName, _donationToken }: Props) {
       owner: address,
       spender: DONATION_CONTRACT_ADDRESS[chainId as ChainId] as Address,
     });
-  let toast = useToast();
 
-  const {
-    data: hash,
-    isPending,
-    isSuccess: isSubmitted,
-    isError: isWriteContractError,
-    writeContract,
-    error: WriteContractError,
-  } = useWriteContract();
-
-  //Check approval state when inpute token value]
+  //Check approval state when inpute token value
   const handleDonationAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setAmount(e.target.value);
-    // dispatch(setDonationAmount(e.target.value));
     setSponsorDetails((prevState) => ({
       ...prevState,
       amount: parseEther(amount).toString(),
@@ -97,7 +72,7 @@ function Web3Donation({ addName, _donationToken }: Props) {
     isFetching: isFetchingBalance,
     isError: isFetchBalanceError,
     isSuccess: isFetchBalanceSuccess,
-    refetch: refectBalance,
+    refetch: refetchBalance,
   } = useReadContract({
     abi: erc20Abi,
     address: _donationToken as Address,
@@ -106,26 +81,16 @@ function Web3Donation({ addName, _donationToken }: Props) {
     scopeKey: "Donation tokenBalance",
   });
 
-  const {
-    isLoading: isConfirming,
-    isSuccess: isConfirmed,
-    isError: isWaitTrxError,
-    error: WaitForTransactionReceiptError,
-  } = useWaitForTransactionReceipt({
-    hash,
-  });
-
   //INPUT BOXES HANDLE EVENTS
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSponsorDetails((prevState) => ({
       ...prevState,
       name: event.target.value,
     }));
-    // console.log(sponsorDetails);
   };
 
   const handleSponsorNameChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setSponsorDetails((prevState) => ({
       ...prevState,
@@ -134,8 +99,7 @@ function Web3Donation({ addName, _donationToken }: Props) {
     // console.log(sponsorDetails);
   };
 
-  const isInsufficientBalance =
-    address && Number(amount) > DONATIONTOKENBALANCE;
+  const isInsufficientBalance = address && Number(amount) < 0;
 
   return (
     <Box>
@@ -158,7 +122,8 @@ function Web3Donation({ addName, _donationToken }: Props) {
             </Text>
             <Box border={"1px solid #E2E8F0"} p={"5px"} borderRadius={"md"}>
               <Input
-                p={"0"}
+                py="10px"
+                px="10px"
                 _focus={{
                   boxShadow: "none",
                 }}
@@ -177,17 +142,18 @@ function Web3Donation({ addName, _donationToken }: Props) {
               mb={"5px"}
               whiteSpace={"nowrap"}
             >
-              X(Twitter) handle
+              X (Twitter) handle
             </Text>
             <Box border={"1px solid #E2E8F0"} p={"5px"} borderRadius={"md"}>
               <Input
-                p={"0"}
+                py="10px"
+                px="10px"
                 _focus={{
                   boxShadow: "none",
                 }}
                 border={"none"}
                 type="text"
-                placeholder="twitter(username)"
+                placeholder="x(username)"
                 onChange={handleSponsorNameChange}
               />
             </Box>
@@ -213,7 +179,7 @@ function Web3Donation({ addName, _donationToken }: Props) {
             alignItems={"center"}
           >
             <Input
-              p={"0"}
+              placeholder="0.10"
               type="number"
               _focus={{
                 boxShadow: "none",
@@ -248,21 +214,17 @@ function Web3Donation({ addName, _donationToken }: Props) {
           <Text color={"#3A3A3A"} fontSize={"14px"} fontWeight={"500"}>
             Select Chain
           </Text>
-          <NetoworKSelector
+          <NetoworkSelector
             CHAINS_LIST_TO_SELECT_FROM={DONATION_SUPPORTED_CHAINID}
           />
         </VStack>
       </Flex>
-      <Text>
-        {/* {
-          ? "INSDUFFICIENT BALANCE"
-          : "YOU CAN PROCEED WITH TRANSACTION"} */}
-      </Text>
+      <Text></Text>
 
       {/* 
      
      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-     // Connect Buttin and Contribute Button
+     // Connect Button and Contribute Button
      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
      */}
@@ -312,10 +274,12 @@ function Web3Donation({ addName, _donationToken }: Props) {
         <TransactionModal
           setAmount={setAmount}
           amount={amount}
+          refetchBalance={refetchBalance}
           isOpen={isOpen}
           onClose={onClose}
           addName={addName}
           sponsorDetails={sponsorDetails}
+          setSponsorDetails={setSponsorDetails}
         />
       </Flex>
     </Box>

@@ -29,6 +29,7 @@ const initialHeroslistState: heroslistSlice = {
   Error: null,
   isSuccess: false,
 };
+
 const initialState: DonationTransactionState = {
   DonationTokenBalance: 0,
   DonationAmount: "0.10",
@@ -41,12 +42,6 @@ export const DonationTransactionSlice = createSlice({
   name: "donationTransaction",
   initialState,
   reducers: {
-    computeDonationTokenBalance: (state, action: PayloadAction<number>) => {
-      state.DonationTokenBalance = state.DonationTokenBalance;
-    },
-    setDonationAmount: (state, action: PayloadAction<string>) => {
-      state.DonationAmount = action.payload;
-    },
     setDonationBalance: (state, action: PayloadAction<number>) => {
       state.DonationTokenBalance = action.payload;
     },
@@ -75,11 +70,9 @@ export const DonationTransactionSlice = createSlice({
 });
 
 export const {
-  setDonationBalance,
-  setDonationAmount,
-  computeDonationTokenBalance,
   setOngoingTrxType,
   setReftchHerosList,
   setHerosList,
+  setDonationBalance,
 } = DonationTransactionSlice.actions;
 export default DonationTransactionSlice.reducer;

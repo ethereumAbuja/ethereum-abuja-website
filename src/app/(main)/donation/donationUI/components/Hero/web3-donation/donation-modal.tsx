@@ -1,8 +1,5 @@
 "use client";
 
-// TODO
-//Fetch Balance here so it can be refetch on successfull donation
-
 import { useSearchParams } from "next/navigation";
 import SyncLoader from "react-spinners/ClipLoader";
 import {
@@ -17,7 +14,7 @@ import {
   VStack,
   Link,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Dispatch, SetStateAction } from "react";
 import { Address, erc20Abi, formatUnits, parseEther } from "viem";
 import { useAppSelector, useAppDispatch } from "@/hooks/rtkHooks";
 import { RootState } from "@/store/store";
@@ -42,29 +39,33 @@ import CustomToast from "@/components/CustomToast";
 import CustomErrorToast from "@/components/CustomErrorToast";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 
-type modalProps = {
+interface modalProps {
+  refetchBalance: any;
   isOpen: boolean;
   onClose: () => void;
   amount: string;
   setAmount: (val: string) => void;
   addName: boolean;
   sponsorDetails: SponsorDetailsType;
-};
+  setSponsorDetails: Dispatch<SetStateAction<SponsorDetailsType>>;
+}
 
 export const TransactionModal = ({
+  refetchBalance,
   isOpen,
   onClose,
   addName,
   sponsorDetails,
   amount,
   setAmount,
+  setSponsorDetails,
 }: modalProps) => {
   const currentTransactionType = useAppSelector(
-    (state: RootState) => state.donationTransactionSlice.OngoingTransactionType,
+    (state: RootState) => state.donationTransactionSlice.OngoingTransactionType
   );
 
   const _donationToken = useAppSelector(
-    (state: RootState) => state.donationTokenSlice.tokenAddress,
+    (state: RootState) => state.donationTokenSlice.tokenAddress
   );
 
   const {
@@ -85,23 +86,25 @@ export const TransactionModal = ({
   } = useWaitForTransactionReceipt({
     hash,
   });
+
   const searchParams = useSearchParams();
 
   const [confirmApproval, setConfirmApproval] = useState<boolean>(false);
   const [confirmDonation, setConfirmeDonation] = useState<boolean>(false);
-  //The state is to remove donation token from the screen when Donation tranaction begins
+
   const dispatch = useAppDispatch();
 
   const { chainId, address, chain } = useAccount();
 
   let toast = useToast();
-  console.log(
-    "this is the current chain block explorer",
-    chain?.blockExplorers,
-  );
+
+  // console.log(
+  //   "this is the current chain block explorer",
+  //   chain?.blockExplorers,
+  // );
+
   const { addSponsor } = useAddSponsor();
 
-  //check Allowance
   const { data: allowances, refetch: refetchAllowance } = useTokenAllowance({
     chainId,
     token: _donationToken as Address,
@@ -112,6 +115,7 @@ export const TransactionModal = ({
   //APPROVE FUNCTION
   const approveToken = () => {
     if (!chainId) return null;
+    if (!amount) return;
 
     dispatch(setOngoingTrxType(trxType.APPROVAL));
 
@@ -135,8 +139,8 @@ export const TransactionModal = ({
       CustomErrorToast(
         toast,
         `Please Fields "Name" and "Twitter" cannot be empty, kindly fill or donate anonymously😊`,
-        5000,
-        "top-right",
+        3000,
+        "top-right"
       );
       return null;
     }
@@ -154,7 +158,7 @@ export const TransactionModal = ({
     setConfirmApproval(false);
     setConfirmeDonation(false);
     reset();
-    setAmount("0.10");
+    setAmount("");
     dispatch(setOngoingTrxType(trxType.UNKNOWN));
   };
 
@@ -173,11 +177,13 @@ export const TransactionModal = ({
         toast,
         `An error occured, try again`,
         //${WriteContractError?.message}
-        5000,
-        "top-right",
+        3000,
+        "top-right"
       );
 
-    isConfirmed && CustomToast(toast, "Confirmed", 4000, "top-right");
+    isConfirmed &&
+      CustomToast(toast, "Transaction Confirmed", 3000, "top-right");
+    setAmount("");
 
     isConfirmed &&
       currentTransactionType == trxType.DONATION &&
@@ -201,14 +207,14 @@ export const TransactionModal = ({
       dispatch(setReftchHerosList(true));
 
     isConfirming &&
-      CustomToast(toast, "Transaction Submitted", 4000, "top-right");
+      CustomToast(toast, "Transaction Submitted", 3000, "top-right");
 
     isWaitTrxError &&
       CustomErrorToast(
         toast,
         `${WaitForTransactionReceiptError.name}, ${WaitForTransactionReceiptError.message}`,
         5000,
-        "top-right",
+        "top-right"
       );
   }, [isConfirming, isConfirmed, chainId, isWriteContractError]);
 
@@ -238,7 +244,7 @@ export const TransactionModal = ({
                 <Text as="span" fontSize="14px">
                   Thank you for supporting the ETHAbuja Community
                 </Text>
-                {/* Show Blockexplorer */}
+                {/* --------------------------- Show Blockexplorer ------------------------- */}
                 {
                   <Link
                     href={`${
@@ -330,7 +336,9 @@ export const TransactionModal = ({
             Close
           </Button>
         )}
-        {/* no approval. prompt user to approve tokens */}
+
+        {/* ---------------------------- no approval. prompt user to approve tokens ----------------------------- */}
+
         {!hasEnoughAllowances &&
           !confirmApproval &&
           currentTransactionType !== trxType.DONATION && (

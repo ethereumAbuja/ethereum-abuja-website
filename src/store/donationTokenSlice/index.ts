@@ -3,7 +3,6 @@ import { getDonationTokenAddress } from "@/constants/contract-address";
 import { DonationToken } from "@/constants/contract-address/types";
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Address } from "viem";
-import { useAccount } from "wagmi";
 
 type DonationTokenPayload = {
   tokenTicker: DonationToken;

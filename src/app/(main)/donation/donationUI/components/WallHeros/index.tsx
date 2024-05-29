@@ -4,7 +4,6 @@ import { Box, Text } from "@chakra-ui/react";
 import Marquee from "react-fast-marquee";
 import { useAppSelector } from "@/hooks/rtkHooks";
 import { RootState } from "@/store/store";
-// import { setHerosList } from "@/store/donationTransactionSlice";
 import { useHerosList } from "@/hooks/useHerosList";
 
 const backgroundColors = [
@@ -50,19 +49,8 @@ const WallHeros = () => {
     (state: RootState) =>
       state.donationTransactionSlice?.heroslistSlice?.refetchHerosList
   );
-  // const localHerosList = useAppSelector(
-  //   (state: RootState) =>
-  //     state.donationTransactionSlice.heroslistSlice.heroslist,
-  // );
 
-  const {
-    data: heroslist,
-    isLoading,
-    isError,
-    // error,
-    isSuccess,
-    fetchHerosList,
-  } = useHerosList();
+  const { data: heroslist, isLoading, fetchHerosList } = useHerosList();
 
   //fetch when list is empty or null
   useEffect(() => {
@@ -84,7 +72,6 @@ const WallHeros = () => {
     const fetchData = async () => {
       if (heroslist?.length !== 0 && refetchHerosList) {
         await fetchHerosList();
-        // console.log("this is heros List", heroslist, heroslist?.length);
       } else if (heroslist) {
         return;
       }
