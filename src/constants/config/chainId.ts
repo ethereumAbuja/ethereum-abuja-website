@@ -1,11 +1,4 @@
-export enum ChainId {
-  SEPOLIA = 11155111,
-  BASE_SEPOLIA = 84532,
-  // ETHEREUM = 1,
-  // BASE = 8453,
-  // ARBITRIUM = 42161,
-  // BNB_SMART_CHAIN = 56,
-}
+F
 
 export const SUPPORT_CHAINID: ChainId[] = [
   ChainId.SEPOLIA,

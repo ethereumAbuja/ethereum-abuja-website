@@ -17,41 +17,7 @@ function BalancePanel({
   isFetchBalanceError: boolean;
   isFetchBalanceSuccess: boolean;
 }) {
-  const _donationToken = useAppSelector(
-    (state: RootState) => state.donationTokenSlice.tokenAddress
-  );
-
-  const [donationBalance, setDonationBalance] = useState<Number>(0);
-
-  const { address, chainId } = useAccount();
   const isMounted = useIsMounted();
-
-  //FETCH DONATION TOKEN BALANCtE
-  const {
-    data: donationTokenBal,
-    isFetching: isFetchinDonTokenBal,
-    isError,
-    isSuccess: isSuccessDonToken,
-    refetch: refectBalance,
-  } = useReadContract({
-    abi: erc20Abi,
-    address: _donationToken as Address,
-    functionName: "balanceOf",
-    args: [address as Address],
-    scopeKey: "Donation tokenBalance",
-  });
-
-  useEffect(() => {
-    setDonationBalance(Number(formatUnits(donationTokenBal ?? 0n, 18)));
-  }, []);
-
-  useEffect(() => {
-    const refetchBalance = async () => {
-      refectBalance();
-      setDonationBalance(Number(formatUnits(donationTokenBal ?? 0n, 18)));
-    };
-    refetchBalance();
-  }, [chainId, _donationToken, address, isMounted]);
 
   return (
     <>

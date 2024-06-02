@@ -12,7 +12,7 @@ import {
   VStack,
   useDisclosure,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Address, erc20Abi, formatUnits, parseEther } from "viem";
 import { useAccount, useReadContract } from "wagmi";
 import {
@@ -81,6 +81,10 @@ function Web3Donation({ addName, _donationToken }: Props) {
     scopeKey: "Donation tokenBalance",
   });
 
+  useEffect(() => {
+    address && refetchBalance();
+  }, [address, chainId]);
+
   //INPUT BOXES HANDLE EVENTS
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSponsorDetails((prevState) => ({
@@ -90,7 +94,7 @@ function Web3Donation({ addName, _donationToken }: Props) {
   };
 
   const handleSponsorNameChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setSponsorDetails((prevState) => ({
       ...prevState,
