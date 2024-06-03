@@ -17,8 +17,17 @@ import {
   Button,
   VStack,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import abi from "@/constants/abi/faucetAbi.json";
+import { useAccount, useReadContract } from "wagmi";
+import { baseSepoliaFaucet, sepoliaFaucet } from "@/constants/contract-address";
+import { Address, isAddress } from "viem";
+import { useDebounce } from "@/hooks/useDebounce";
+
 export default async function Facuet() {
+  const [faucetChainId, setFaucetChainId] = useState<ChainId>(
+    ChainId.BASE_SEPOLIA,
+  );
   return (
     <Box py={"5%"}>
       <Box
@@ -114,10 +123,10 @@ export default async function Facuet() {
                       </TabList>
                       <TabPanels>
                         <TabPanel>
-                          <FaucetForm />
+                          <FaucetForm chainId={faucetChainId as ChainId} />
                         </TabPanel>
                         <TabPanel>
-                          <FaucetForm />
+                          <FaucetForm chainId={faucetChainId as ChainId} />
                         </TabPanel>
                       </TabPanels>
                     </Tabs>
@@ -132,21 +141,68 @@ export default async function Facuet() {
   );
 }
 
-const FaucetForm = () => {
+enum addressEligibilityStatus {
+  UNKNOWN,
+  ELIGIBLE,
+  NOTELIGIBLE,
+  LOADING_STATUS,
+}
 
-    const [faucetChain, setFaucetChain] = useState<ChainId>()
+const FaucetForm = ({ chainId }: { chainId: ChainId }) => {
+  const [faucetCollector, setFaucetCollector] = useState(
+    "0xbFEaDb211974Ce290A0d8bc51b6FB230bde6bf5A",
+  );
+  const [faucetChain, setFaucetChain] = useState<ChainId>();
+  const [isAddressElligible, setAddressEligible] =
+    useState<addressEligibilityStatus>();
+
+  const actualAddressToQuery = useDebounce(faucetChain, 2000);
+
+  const { data, refetch, isLoading, isSuccess } = useReadContract({
+    abi,
+    address:
+      chainId == ChainId.BASE_SEPOLIA ? baseSepoliaFaucet : sepoliaFaucet,
+    functionName: "isTesterEligible",
+    args: [faucetCollector as Address],
+  });
+  useEffect(() => {
+    refetch();
+    console.log(
+      "this is data in useEffect",
+      data,
+      refetch,
+      isLoading,
+      isSuccess,
+    );
+  }, [actualAddressToQuery]);
+
+  const handleAddressInput = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    //get input from handler
+    const input = event.target.value;
+    setFaucetCollector(input);
+    if (isAddress(input)) {
+      // setAddressEligible(addressEligibilityStatus.LOADING_STATUS);
+      // await refetch();
+      // data && console.log("this is data from read eligibility", data);
+    } else {
+      setAddressEligible(addressEligibilityStatus.NOTELIGIBLE);
+    }
+  };
   return (
     <VStack alignItems="flex-start" gap="8px">
       <Input
         border={"1px solid #E2E8F0"}
         placeholder="Enter Your Wallet Address (0x...)"
-        type="number"
+        // type="number"
         _focus={{
           boxShadow: "none",
         }}
-        // value={amount}
-        // onChange={handleDonationAmount}
+        value={faucetCollector}
+        onChange={handleAddressInput}
       />
+      {data && data}
       <Button width="100%">Send me Test Tokens</Button>
     </VStack>
   );
