@@ -23,7 +23,8 @@ import { useAccount, useReadContract } from "wagmi";
 import { baseSepoliaFaucet, sepoliaFaucet } from "@/constants/contract-address";
 import { Address, isAddress } from "viem";
 import { useDebounce } from "@/hooks/useDebounce";
-
+import { readContract } from "@wagmi/core";
+import { getUserEligibility } from "@/utils/helpers/faucet";
 export default async function Facuet() {
   const [faucetChainId, setFaucetChainId] = useState<ChainId>(
     ChainId.BASE_SEPOLIA,
@@ -202,8 +203,10 @@ const FaucetForm = ({ chainId }: { chainId: ChainId }) => {
         value={faucetCollector}
         onChange={handleAddressInput}
       />
-      {data && data}
-      <Button width="100%">Send me Test Tokens</Button>
+
+<Button width="100%" onClick={()=>getUserEligibility(address: actualAddressToQuery, chainId:chainId)}> Send me Test Tokens
+      </Button>
+      
     </VStack>
   );
 };
