@@ -276,14 +276,14 @@ const FaucetForm = ({ chainId }: { chainId: ChainId }) => {
             {istransactionLoading && <ClipLoader color="#36d7b7" />}
           </Button>
 
-          <SuccessFaucetModal onOpen={onOpen} />
+          <SuccessFaucetModal onOpen={onOpen} isOpen={isOpen} />
         </VStack>
       )}
     </>
   );
 };
 
-const SuccessFaucetModal = ({ onOpen }: { onOpen: () => void }) => {
+const SuccessFaucetModal = ({ onOpen, isOpen }: { onOpen: () => void; isOpen={isOpen} }) => {
   return (
     <Modal closeOnOverlayClick={false} isOpen={isOpen}>
       <ModalOverlay />
