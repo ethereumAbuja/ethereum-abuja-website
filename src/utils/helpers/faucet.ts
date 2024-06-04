@@ -1,7 +1,7 @@
 import { ChainId } from "@/constants/config/chainId";
 import { baseSepoliaFaucet, sepoliaFaucet } from "@/constants/contract-address";
 import abi from "@/constants/abi/faucetAbi.json";
-import { writeContract } from "@wagmi/core";
+import { readContract, writeContract } from "@wagmi/core";
 
 import { http, createConfig } from "@wagmi/core";
 import { baseSepolia, sepolia } from "@wagmi/core/chains";
@@ -21,6 +21,7 @@ export async function dripFaucet(address: string, chainId: ChainId) {
       chainId == ChainId.BASE_SEPOLIA ? baseSepoliaFaucet : sepoliaFaucet,
     functionName: "dripTokens",
     args: [address],
+    chainId,
   });
 
   return result;
@@ -32,6 +33,7 @@ export const getUserEligibility = async (address: string, chainId: ChainId) => {
       chainId == ChainId.BASE_SEPOLIA ? baseSepoliaFaucet : sepoliaFaucet,
     functionName: "isTesterEligible",
     args: [address],
+    chainId,
   });
 
   return result;

@@ -98,10 +98,7 @@ export const TransactionModal = ({
 
   let toast = useToast();
 
-  // console.log(
-  //   "this is the current chain block explorer",
-  //   chain?.blockExplorers,
-  // );
+
 
   const { addSponsor } = useAddSponsor();
 

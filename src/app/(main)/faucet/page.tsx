@@ -16,19 +16,36 @@ import {
   Input,
   Button,
   VStack,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import abi from "@/constants/abi/faucetAbi.json";
-import { useAccount, useReadContract } from "wagmi";
+import {
+  useAccount,
+  useReadContract,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
 import { baseSepoliaFaucet, sepoliaFaucet } from "@/constants/contract-address";
 import { Address, isAddress } from "viem";
 import { useDebounce } from "@/hooks/useDebounce";
 import { readContract } from "@wagmi/core";
-import { getUserEligibility } from "@/utils/helpers/faucet";
+import { getUserEligibility, dripFaucet } from "@/utils/helpers/faucet";
+import ConnectButton from "@/components/wagmi/connectButton";
+import ClipLoader from "react-spinners/ClipLoader";
 export default async function Facuet() {
   const [faucetChainId, setFaucetChainId] = useState<ChainId>(
     ChainId.BASE_SEPOLIA,
   );
+
+  const { chainId } = useAccount();
+
   return (
     <Box py={"5%"}>
       <Box
@@ -150,31 +167,29 @@ enum addressEligibilityStatus {
 }
 
 const FaucetForm = ({ chainId }: { chainId: ChainId }) => {
-  const [faucetCollector, setFaucetCollector] = useState(
-    "0xbFEaDb211974Ce290A0d8bc51b6FB230bde6bf5A",
-  );
-  const [faucetChain, setFaucetChain] = useState<ChainId>();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { address, isConnected } = useAccount();
+  const [faucetCollector, setFaucetCollector] = useState("");
   const [isAddressElligible, setAddressEligible] =
     useState<addressEligibilityStatus>();
 
-  const actualAddressToQuery = useDebounce(faucetChain, 2000);
+  const actualAddressToQuery = useDebounce(faucetCollector, 200);
 
-  const { data, refetch, isLoading, isSuccess } = useReadContract({
-    abi,
-    address:
-      chainId == ChainId.BASE_SEPOLIA ? baseSepoliaFaucet : sepoliaFaucet,
-    functionName: "isTesterEligible",
-    args: [faucetCollector as Address],
-  });
+  const handleEligibilityCheck = async () => {
+    setAddressEligible(addressEligibilityStatus.LOADING_STATUS);
+    try {
+      const isEligible = await getUserEligibility(faucetCollector, chainId);
+      isEligible
+        ? setAddressEligible(addressEligibilityStatus.ELIGIBLE)
+        : setAddressEligible(addressEligibilityStatus.NOTELIGIBLE);
+      console.log("Eligibility:", isEligible);
+    } catch (error) {
+      console.error("Error checking eligibility:", error);
+      setAddressEligible(addressEligibilityStatus.UNKNOWN);
+    }
+  };
   useEffect(() => {
-    refetch();
-    console.log(
-      "this is data in useEffect",
-      data,
-      refetch,
-      isLoading,
-      isSuccess,
-    );
+    handleEligibilityCheck();
   }, [actualAddressToQuery]);
 
   const handleAddressInput = async (
@@ -191,22 +206,99 @@ const FaucetForm = ({ chainId }: { chainId: ChainId }) => {
       setAddressEligible(addressEligibilityStatus.NOTELIGIBLE);
     }
   };
-  return (
-    <VStack alignItems="flex-start" gap="8px">
-      <Input
-        border={"1px solid #E2E8F0"}
-        placeholder="Enter Your Wallet Address (0x...)"
-        // type="number"
-        _focus={{
-          boxShadow: "none",
-        }}
-        value={faucetCollector}
-        onChange={handleAddressInput}
-      />
 
-<Button width="100%" onClick={()=>getUserEligibility(address: actualAddressToQuery, chainId:chainId)}> Send me Test Tokens
-      </Button>
-      
-    </VStack>
+  const {
+    data: hash,
+    isPending,
+    isSuccess: isTrxSubmitted,
+    isError: isWriteContractError,
+    writeContract,
+    error: WriteContractError,
+    reset,
+  } = useWriteContract();
+
+  const {
+    isLoading: isConfirming,
+    isSuccess: isConfirmed,
+    isError: isWaitTrxError,
+    error: WaitForTransactionReceiptError,
+  } = useWaitForTransactionReceipt({
+    hash,
+  });
+
+  const dripit = () => {
+    if (!chainId) return null;
+    writeContract({
+      address:
+        chainId == ChainId.BASE_SEPOLIA ? baseSepoliaFaucet : sepoliaFaucet,
+      abi,
+      functionName: "dripTokens",
+      args: [faucetCollector],
+    });
+  };
+
+  const istransactionLoading = isPending || isConfirming;
+  const cannotRequestTokens =
+    isAddressElligible == addressEligibilityStatus.NOTELIGIBLE ||
+    isAddressElligible == addressEligibilityStatus.LOADING_STATUS;
+  return (
+    <>
+      {!isConnected ? (
+        <ConnectButton />
+      ) : (
+        <VStack alignItems="flex-start" gap="8px">
+          {isAddressElligible == addressEligibilityStatus.NOTELIGIBLE && (
+            <Box backgroundColor="red" textColor="white" padding="8px">
+              <Text>
+                This wallet has enough test tokens for the app testing, try a
+                diffrent one.
+              </Text>
+              <Button>Close</Button>
+            </Box>
+          )}
+          <Input
+            border={"1px solid #E2E8F0"}
+            placeholder="Enter Your Wallet Address (0x...)"
+            // type="number"
+            _focus={{
+              boxShadow: "none",
+            }}
+            value={faucetCollector}
+            onChange={handleAddressInput}
+          />
+
+          <Button
+            disabled={cannotRequestTokens}
+            width="100%"
+            onClick={() => dripit()}
+          >
+            Send me Test Tokens{" "}
+            {istransactionLoading && <ClipLoader color="#36d7b7" />}
+          </Button>
+
+          <SuccessFaucetModal onOpen={onOpen} />
+        </VStack>
+      )}
+    </>
+  );
+};
+
+const SuccessFaucetModal = ({ onOpen }: { onOpen: () => void }) => {
+  return (
+    <Modal closeOnOverlayClick={false} isOpen={isOpen}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Success</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody pb={6}>
+          <Text>You can Now proceed to test the donation DAPP</Text>
+          <Button colorScheme="blue" mr={3}>
+            Go to Donation App
+          </Button>
+        </ModalBody>
+
+        <ModalFooter></ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 };
