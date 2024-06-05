@@ -45,7 +45,7 @@ const HeroSponsorPage = () => {
       bgSize={"cover"}
       bgPos={["0 -90px", "inherit", "inherit"]}
     >
-      <Flex flexDir={"column"} gap={"10rem"}>
+      <Flex flexDir={"column"} gap={"6rem"}>
         <Flex
           flexDir={"column"}
           maxW={"700px"}

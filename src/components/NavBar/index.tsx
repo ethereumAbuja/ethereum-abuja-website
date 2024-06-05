@@ -91,17 +91,6 @@ const NavBar = () => {
 
           <Box display={["none", "none", "flex", "flex"]}>
             {isDonationPage ? (
-              // <Button
-              //   border="1px solid #8140CE"
-              //   borderRadius="8px"
-              //   bg="black"
-              //   color="white"
-              //   _hover={{
-              //     bg: "black",
-              //   }}
-              // >
-              //   Connect Wallet
-              // </Button>
               <>
                 <ConnectButton />
               </>
