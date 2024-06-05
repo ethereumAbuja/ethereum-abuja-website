@@ -32,7 +32,7 @@ const NavBar = () => {
 
   const pathname = usePathname();
 
-  const isDonationPage = pathname === "/donation";
+  const isDonationPage = pathname === "/donation" || "/faucet";
 
   return (
     <Box

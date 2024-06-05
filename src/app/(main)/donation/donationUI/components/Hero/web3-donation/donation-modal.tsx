@@ -61,11 +61,11 @@ export const TransactionModal = ({
   setSponsorDetails,
 }: modalProps) => {
   const currentTransactionType = useAppSelector(
-    (state: RootState) => state.donationTransactionSlice.OngoingTransactionType
+    (state: RootState) => state.donationTransactionSlice.OngoingTransactionType,
   );
 
   const _donationToken = useAppSelector(
-    (state: RootState) => state.donationTokenSlice.tokenAddress
+    (state: RootState) => state.donationTokenSlice.tokenAddress,
   );
 
   const {
@@ -98,10 +98,7 @@ export const TransactionModal = ({
 
   let toast = useToast();
 
-  // console.log(
-  //   "this is the current chain block explorer",
-  //   chain?.blockExplorers,
-  // );
+
 
   const { addSponsor } = useAddSponsor();
 
@@ -140,7 +137,7 @@ export const TransactionModal = ({
         toast,
         `Please Fields "Name" and "Twitter" cannot be empty, kindly fill or donate anonymously😊`,
         3000,
-        "top-right"
+        "top-right",
       );
       return null;
     }
@@ -178,7 +175,7 @@ export const TransactionModal = ({
         `An error occured, try again`,
         //${WriteContractError?.message}
         3000,
-        "top-right"
+        "top-right",
       );
 
     isConfirmed &&
@@ -214,7 +211,7 @@ export const TransactionModal = ({
         toast,
         `${WaitForTransactionReceiptError.name}, ${WaitForTransactionReceiptError.message}`,
         5000,
-        "top-right"
+        "top-right",
       );
   }, [isConfirming, isConfirmed, chainId, isWriteContractError]);
 
@@ -341,6 +338,7 @@ export const TransactionModal = ({
 
         {!hasEnoughAllowances &&
           !confirmApproval &&
+          !isWriteContractError &&
           currentTransactionType !== trxType.DONATION && (
             <Flex flexDir="column" mt="40px">
               <Button
@@ -376,21 +374,38 @@ export const TransactionModal = ({
           )}
 
         {/* ------------------------------------ approval completed. donate tokens ------------------------------------*/}
-        {hasEnoughAllowances && !confirmDonation && (
-          <Button
-            mt="40px"
-            bgColor="black"
-            color="white"
-            _hover={{
-              bgColor: "black",
-            }}
-            onClick={() => {
-              setConfirmeDonation(true);
-              donatefn();
-            }}
-          >
-            Confirm Your Donation
-          </Button>
+        {hasEnoughAllowances && !confirmDonation && !isWriteContractError && (
+          <Flex flexDir="column" mt="40px">
+            <Button
+              mt="40px"
+              bgColor="black"
+              color="white"
+              _hover={{
+                bgColor: "black",
+              }}
+              onClick={() => {
+                setConfirmeDonation(true);
+                donatefn();
+              }}
+            >
+              Confirm Your Donation
+            </Button>
+            <Button
+              mt="10px"
+              onClick={() => {
+                resetDonationState();
+                onClose();
+              }}
+              bgColor="none"
+              border="1px solid"
+              _hover={{
+                bgColor: "black",
+                color: "white",
+              }}
+            >
+              Cancel
+            </Button>
+          </Flex>
         )}
       </Stack>
     </ModalComponent>
