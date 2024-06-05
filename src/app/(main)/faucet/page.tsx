@@ -23,6 +23,7 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  useDisclosure,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import abi from "@/constants/abi/faucetAbi.json";
@@ -31,6 +32,7 @@ import {
   useReadContract,
   useWaitForTransactionReceipt,
   useWriteContract,
+  useSwitchChain,
 } from "wagmi";
 import { baseSepoliaFaucet, sepoliaFaucet } from "@/constants/contract-address";
 import { Address, isAddress } from "viem";
@@ -44,8 +46,12 @@ export default async function Facuet() {
     ChainId.BASE_SEPOLIA,
   );
 
+  const [tabIndex, setTabIndex] = useState(0);
   const { chainId } = useAccount();
-
+  const { chains, switchChain } = useSwitchChain();
+  useEffect(() => {
+    console.log("this is tab index", tabIndex);
+  }, [tabIndex]);
   return (
     <Box py={"5%"}>
       <Box
@@ -129,15 +135,25 @@ export default async function Facuet() {
                 <Box px={["24px", "24px", "24px", "48px"]} py={"24px"}>
                   <Box mb={"2rem"}>
                     <Tabs
+                      onChange={(index) => setTabIndex(index)}
                       align="center"
                       borderRadius={"16px"}
                       border={"1px solid #D6D1F0"}
                       variant="enclosed"
+                      isFitted
                       padding="8px"
                     >
                       <TabList>
-                        <Tab>Sepolia</Tab>
-                        <Tab>Base Sepolia</Tab>
+                        {chains.map((chain) => (
+                          <Tab
+                            key={chain.id}
+                            onClick={() => {
+                              switchChain({ chainId: chain.id });
+                            }}
+                          >
+                            {chain.name}
+                          </Tab>
+                        ))}
                       </TabList>
                       <TabPanels>
                         <TabPanel>
@@ -276,16 +292,30 @@ const FaucetForm = ({ chainId }: { chainId: ChainId }) => {
             {istransactionLoading && <ClipLoader color="#36d7b7" />}
           </Button>
 
-          <SuccessFaucetModal onOpen={onOpen} isOpen={isOpen} />
+          {
+            <SuccessFaucetModal
+              onClose={onClose}
+              onOpen={onOpen}
+              isOpen={isConfirmed}
+            />
+          }
         </VStack>
       )}
     </>
   );
 };
 
-const SuccessFaucetModal = ({ onOpen, isOpen }: { onOpen: () => void; isOpen={isOpen} }) => {
+const SuccessFaucetModal = ({
+  onOpen,
+  isOpen,
+  onClose,
+}: {
+  onOpen: () => void;
+  isOpen: boolean;
+  onClose: () => void;
+}) => {
   return (
-    <Modal closeOnOverlayClick={false} isOpen={isOpen}>
+    <Modal closeOnOverlayClick={false} onClose={onClose} isOpen={isOpen}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Success</ModalHeader>
