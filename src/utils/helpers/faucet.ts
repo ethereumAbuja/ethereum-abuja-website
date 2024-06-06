@@ -26,6 +26,7 @@ export async function dripFaucet(address: string, chainId: ChainId) {
 
   return result;
 }
+
 export const getUserEligibility = async (address: string, chainId: ChainId) => {
   const result = await readContract(appconfig, {
     abi,
