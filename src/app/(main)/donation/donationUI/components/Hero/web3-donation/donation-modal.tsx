@@ -98,8 +98,6 @@ export const TransactionModal = ({
 
   let toast = useToast();
 
-
-
   const { addSponsor } = useAddSponsor();
 
   const { data: allowances, refetch: refetchAllowance } = useTokenAllowance({
@@ -180,7 +178,8 @@ export const TransactionModal = ({
 
     isConfirmed &&
       CustomToast(toast, "Transaction Confirmed", 3000, "top-right");
-    setAmount("");
+
+    isConfirmed && currentTransactionType == trxType.DONATION && setAmount("");
 
     isConfirmed &&
       currentTransactionType == trxType.DONATION &&

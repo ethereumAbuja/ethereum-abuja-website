@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Checkbox,
@@ -20,9 +20,14 @@ import { RootState } from "@/store/store";
 
 const HeroSponsorPage = () => {
   const _donationToken = useAppSelector(
-    (state: RootState) => state.donationTokenSlice.tokenAddress
+    (state: RootState) => state.donationTokenSlice.tokenAddress,
   );
-
+  useEffect(() => {
+    console.log(
+      "this is donation token address at initial load",
+      _donationToken,
+    );
+  }, []);
   const [copyAddress, setCopyAddress] = useState<boolean>(false);
   const [addName, setAddName] = useState<boolean>(false);
 

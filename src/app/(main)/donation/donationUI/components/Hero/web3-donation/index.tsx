@@ -82,8 +82,8 @@ function Web3Donation({ addName, _donationToken }: Props) {
   });
 
   useEffect(() => {
-    address && refetchBalance();
-  }, [address, chainId]);
+    refetchBalance();
+  }, []);
 
   //INPUT BOXES HANDLE EVENTS
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {

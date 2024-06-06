@@ -1,17 +1,6 @@
 "use client";
 
-import {
-  Box,
-  Divider,
-  Flex,
-  Image,
-  Text,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-} from "@chakra-ui/react";
+import { Box, Divider, Flex, Image, Text, useToast } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useAccount, useSwitchChain } from "wagmi";
 import { ChainId } from "@/constants/config/chainId";
@@ -19,13 +8,13 @@ import FaucetForm from "./components/Faucetform";
 
 export default async function Facuet() {
   const [faucetChainId, setFaucetChainId] = useState<ChainId>(
-    ChainId.BASE_SEPOLIA
+    ChainId.BASE_SEPOLIA,
   );
 
   const [tabIndex, setTabIndex] = useState<Number>(0);
   const { chainId } = useAccount();
   const { chains, switchChain } = useSwitchChain();
-
+  const toast = useToast();
   useEffect(() => {
     // console.log("this is tab index", tabIndex);
   }, [tabIndex]);
@@ -112,36 +101,7 @@ export default async function Facuet() {
                 <Divider />
                 <Box px={["24px", "24px", "24px", "48px"]} py={"24px"}>
                   <Box mb={"2rem"}>
-                    <Tabs
-                      onChange={(index) => setTabIndex(index)}
-                      align="center"
-                      borderRadius={"16px"}
-                      border={"1px solid #D6D1F0"}
-                      variant="enclosed"
-                      isFitted
-                      padding="8px"
-                    >
-                      <TabList>
-                        {chains.map((chain) => (
-                          <Tab
-                            key={chain.id}
-                            onClick={() => {
-                              switchChain({ chainId: chain.id });
-                            }}
-                          >
-                            {chain.name}
-                          </Tab>
-                        ))}
-                      </TabList>
-                      <TabPanels>
-                        <TabPanel>
-                          <FaucetForm chainId={faucetChainId as ChainId} />
-                        </TabPanel>
-                        <TabPanel>
-                          <FaucetForm chainId={faucetChainId as ChainId} />
-                        </TabPanel>
-                      </TabPanels>
-                    </Tabs>
+                    <FaucetForm chainId={chainId as ChainId} />
                   </Box>
                 </Box>
               </Box>

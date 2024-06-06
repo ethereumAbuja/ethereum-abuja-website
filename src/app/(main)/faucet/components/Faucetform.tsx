@@ -8,6 +8,7 @@ import {
   Button,
   VStack,
   useDisclosure,
+  Flex,
 } from "@chakra-ui/react";
 import { ChainId } from "@/constants/config/chainId";
 import {
@@ -22,6 +23,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import SuccessFaucetModal from "./SuccessFaucetModal";
 import ConnectButton from "@/components/wagmi/connectButton";
 import { getUserEligibility, dripFaucet } from "@/utils/helpers/faucet";
+import NetoworKSelector from "@/components/wagmi/network-selector";
 
 enum addressEligibilityStatus {
   UNKNOWN,
@@ -33,7 +35,8 @@ enum addressEligibilityStatus {
 const FaucetForm = ({ chainId }: { chainId: ChainId }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { address, isConnected } = useAccount();
-  const [faucetCollector, setFaucetCollector] = useState<string>("");
+  const [warning, setWarning] = useState(false); // for invalid address formate
+  const [faucetCollector, setFaucetCollector] = useState<string>(""); //address to send test tokens to
   const [isAddressElligible, setAddressEligible] =
     useState<addressEligibilityStatus>();
 
@@ -58,16 +61,19 @@ const FaucetForm = ({ chainId }: { chainId: ChainId }) => {
   }, [actualAddressToQuery]);
 
   const handleAddressInput = async (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     //get input from handler
     const input = event.target.value;
     setFaucetCollector(input);
     if (isAddress(input)) {
+      setWarning(false);
+
       // setAddressEligible(addressEligibilityStatus.LOADING_STATUS);
       // await refetch();
       // data && console.log("this is data from read eligibility", data);
     } else {
+      setWarning(true);
       setAddressEligible(addressEligibilityStatus.NOTELIGIBLE);
     }
   };
@@ -105,39 +111,73 @@ const FaucetForm = ({ chainId }: { chainId: ChainId }) => {
   const istransactionLoading = isPending || isConfirming;
   const cannotRequestTokens =
     isAddressElligible == addressEligibilityStatus.NOTELIGIBLE ||
-    isAddressElligible == addressEligibilityStatus.LOADING_STATUS;
+    isAddressElligible == addressEligibilityStatus.LOADING_STATUS ||
+    warning;
   return (
     <>
       {!isConnected ? (
         <ConnectButton />
       ) : (
         <VStack alignItems="flex-start" gap="8px">
+          {warning && (
+            <Flex
+              width="100%"
+              flexDirection="column"
+              backgroundColor="orange"
+              textColor="white"
+              padding="8px"
+            >
+              <Text>Enter a valid EVM address</Text>
+              <Flex width="100%" justifyItems="end">
+                <Button onClick={() => setWarning(false)}>Close</Button>
+              </Flex>
+            </Flex>
+          )}
           {isAddressElligible == addressEligibilityStatus.NOTELIGIBLE && (
-            <Box backgroundColor="red" textColor="white" padding="8px">
+            <Flex
+              width="100%"
+              flexDirection="column"
+              backgroundColor="red"
+              textColor="white"
+              padding="8px"
+            >
               <Text>
                 This wallet has enough test tokens for the app testing, try a
                 diffrent one.
               </Text>
-              <Button>Close</Button>
-            </Box>
+              <Flex width="100%" justifyItems="end">
+                <Button onClick={() => setFaucetCollector("")}>Close</Button>
+              </Flex>
+            </Flex>
           )}
-          <Input
-            border={"1px solid #E2E8F0"}
-            placeholder="Enter Your Wallet Address (0x...)"
-            // type="number"
-            _focus={{
-              boxShadow: "none",
-            }}
-            value={faucetCollector}
-            onChange={handleAddressInput}
-          />
+          <Flex
+            width="100%"
+            gap="12px"
+            justifyContent="space-between"
+            alignItems="center"
+            flexDirection={["column", "column", "row"]}
+          >
+            <Input
+              border={"1px solid #E2E8F0"}
+              placeholder="Enter Your Wallet Address (0x...)"
+              padding="5px 10px"
+              height={"3.2rem"}
+              // type="number"
+              _focus={{
+                boxShadow: "none",
+              }}
+              value={faucetCollector}
+              onChange={handleAddressInput}
+            />
+            <NetoworKSelector />
+          </Flex>
 
           <Button
             disabled={cannotRequestTokens}
             width="100%"
             onClick={() => dripit()}
             border={"1px solid #8140CE"}
-            bg={"#907EF4"}
+            bg={cannotRequestTokens ? "#666699" : "#907EF4"}
             _hover={{ bg: "#907EF4" }}
             color={"#FDFDFD"}
             fontSize={"14px"}
