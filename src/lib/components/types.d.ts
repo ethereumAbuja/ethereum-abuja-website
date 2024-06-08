@@ -10,7 +10,6 @@ export interface StoreTabsProps {
   name: string;
   link: string;
 }
-
 export interface PopoverComponentProps extends Partial<PopoverProps> {
   label: string;
   children: ReactNode;
