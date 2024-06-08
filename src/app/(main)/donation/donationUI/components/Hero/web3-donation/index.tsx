@@ -94,7 +94,7 @@ function Web3Donation({ addName, _donationToken }: Props) {
   };
 
   const handleSponsorNameChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setSponsorDetails((prevState) => ({
       ...prevState,
@@ -126,6 +126,7 @@ function Web3Donation({ addName, _donationToken }: Props) {
             </Text>
             <Box border={"1px solid #E2E8F0"} p={"5px"} borderRadius={"md"}>
               <Input
+                name={sponsorDetails.name}
                 py="10px"
                 px="10px"
                 _focus={{
@@ -150,6 +151,7 @@ function Web3Donation({ addName, _donationToken }: Props) {
             </Text>
             <Box border={"1px solid #E2E8F0"} p={"5px"} borderRadius={"md"}>
               <Input
+                name={sponsorDetails.twitter}
                 py="10px"
                 px="10px"
                 _focus={{

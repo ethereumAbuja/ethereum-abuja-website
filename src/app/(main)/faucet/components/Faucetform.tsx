@@ -35,7 +35,7 @@ enum addressEligibilityStatus {
 const FaucetForm = ({ chainId }: { chainId: ChainId }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { address, isConnected } = useAccount();
-  const [warning, setWarning] = useState(false); // for invalid address formate
+  const [warning, setWarning] = useState<boolean>(false); // for invalid address formate
   const [faucetCollector, setFaucetCollector] = useState<string>(""); //address to send test tokens to
   const [isAddressElligible, setAddressEligible] =
     useState<addressEligibilityStatus>();
@@ -56,21 +56,28 @@ const FaucetForm = ({ chainId }: { chainId: ChainId }) => {
     }
   };
 
+  //**check if the wallet is connected */
+  useEffect(() => {
+    if (isConnected && address) {
+      setFaucetCollector(address);
+    } else {
+      setFaucetCollector("");
+    }
+  }, [isConnected, address]);
+
+  //**check eligibility */
   useEffect(() => {
     handleEligibilityCheck();
   }, [actualAddressToQuery]);
 
   const handleAddressInput = async (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     //get input from handler
     const input = event.target.value;
     setFaucetCollector(input);
     if (isAddress(input)) {
       setWarning(false);
-
-      // setAddressEligible(addressEligibilityStatus.LOADING_STATUS);
-      // await refetch();
       // data && console.log("this is data from read eligibility", data);
     } else {
       setWarning(true);
@@ -109,10 +116,12 @@ const FaucetForm = ({ chainId }: { chainId: ChainId }) => {
   };
 
   const istransactionLoading = isPending || isConfirming;
+
   const cannotRequestTokens =
     isAddressElligible == addressEligibilityStatus.NOTELIGIBLE ||
     isAddressElligible == addressEligibilityStatus.LOADING_STATUS ||
     warning;
+
   return (
     <>
       {!isConnected ? (
@@ -129,7 +138,18 @@ const FaucetForm = ({ chainId }: { chainId: ChainId }) => {
             >
               <Text>Enter a valid EVM address</Text>
               <Flex width="100%" justifyItems="end">
-                <Button onClick={() => setWarning(false)}>Close</Button>
+                <Button
+                  onClick={() => setWarning(false)}
+                  mt="10px"
+                  bg="white"
+                  h="30px"
+                  _hover={{
+                    bg: "white",
+                    color: "black",
+                  }}
+                >
+                  Close
+                </Button>
               </Flex>
             </Flex>
           )}
@@ -142,11 +162,22 @@ const FaucetForm = ({ chainId }: { chainId: ChainId }) => {
               padding="8px"
             >
               <Text>
-                This wallet has enough test tokens for the app testing, try a
-                diffrent one.
+                This wallet has enough test tokens for testing the dApp, try a
+                different one.
               </Text>
               <Flex width="100%" justifyItems="end">
-                <Button onClick={() => setFaucetCollector("")}>Close</Button>
+                <Button
+                  mt="10px"
+                  bg="white"
+                  h="30px"
+                  onClick={() => setFaucetCollector("")}
+                  _hover={{
+                    bg: "white",
+                    color: "black",
+                  }}
+                >
+                  Close
+                </Button>
               </Flex>
             </Flex>
           )}
@@ -163,6 +194,7 @@ const FaucetForm = ({ chainId }: { chainId: ChainId }) => {
               padding="5px 10px"
               height={"3.2rem"}
               // type="number"
+              fontSize="12px"
               _focus={{
                 boxShadow: "none",
               }}

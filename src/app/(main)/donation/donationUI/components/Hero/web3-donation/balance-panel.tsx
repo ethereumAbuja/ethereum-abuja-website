@@ -1,9 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Address, erc20Abi, formatUnits } from "viem";
-import { useAccount, useReadContract } from "wagmi";
+import React from "react";
+import { formatUnits } from "viem";
 import { Skeleton } from "@chakra-ui/react";
-import { useAppSelector } from "@/hooks/rtkHooks";
-import { RootState } from "@/store/store";
 import { useIsMounted } from "@/hooks/useIsMounted";
 
 function BalancePanel({

@@ -94,7 +94,6 @@ const WallHeros = () => {
         <Box
           bgImage={"url('image/Wall-of-sponsor.png')"}
           textAlign="center"
-          // border="1px solid red"
           py="5rem"
           bgSize="cover"
         >

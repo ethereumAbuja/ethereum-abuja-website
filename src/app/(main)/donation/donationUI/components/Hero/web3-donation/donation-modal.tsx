@@ -61,11 +61,11 @@ export const TransactionModal = ({
   setSponsorDetails,
 }: modalProps) => {
   const currentTransactionType = useAppSelector(
-    (state: RootState) => state.donationTransactionSlice.OngoingTransactionType,
+    (state: RootState) => state.donationTransactionSlice.OngoingTransactionType
   );
 
   const _donationToken = useAppSelector(
-    (state: RootState) => state.donationTokenSlice.tokenAddress,
+    (state: RootState) => state.donationTokenSlice.tokenAddress
   );
 
   const {
@@ -135,7 +135,7 @@ export const TransactionModal = ({
         toast,
         `Please Fields "Name" and "Twitter" cannot be empty, kindly fill or donate anonymously😊`,
         3000,
-        "top-right",
+        "top-right"
       );
       return null;
     }
@@ -153,6 +153,7 @@ export const TransactionModal = ({
     setConfirmApproval(false);
     setConfirmeDonation(false);
     reset();
+    setSponsorDetails({ name: "", twitter: "" });
     setAmount("");
     dispatch(setOngoingTrxType(trxType.UNKNOWN));
   };
@@ -173,7 +174,7 @@ export const TransactionModal = ({
         `An error occured, try again`,
         //${WriteContractError?.message}
         3000,
-        "top-right",
+        "top-right"
       );
 
     isConfirmed &&
@@ -210,7 +211,7 @@ export const TransactionModal = ({
         toast,
         `${WaitForTransactionReceiptError.name}, ${WaitForTransactionReceiptError.message}`,
         5000,
-        "top-right",
+        "top-right"
       );
   }, [isConfirming, isConfirmed, chainId, isWriteContractError]);
 

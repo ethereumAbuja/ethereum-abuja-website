@@ -6,7 +6,10 @@ import {
   Checkbox,
   Divider,
   Flex,
+  HStack,
   Image,
+  Tag,
+  TagLabel,
   Text,
   Tooltip,
 } from "@chakra-ui/react";
@@ -17,15 +20,16 @@ import Web3Donation from "./web3-donation";
 import ManualDonation from "./manual-donation";
 import { useAppSelector } from "@/hooks/rtkHooks";
 import { RootState } from "@/store/store";
+import Link from "next/link";
 
 const HeroSponsorPage = () => {
   const _donationToken = useAppSelector(
-    (state: RootState) => state.donationTokenSlice.tokenAddress,
+    (state: RootState) => state.donationTokenSlice.tokenAddress
   );
   useEffect(() => {
     console.log(
       "this is donation token address at initial load",
-      _donationToken,
+      _donationToken
     );
   }, []);
   const [copyAddress, setCopyAddress] = useState<boolean>(false);
@@ -59,6 +63,11 @@ const HeroSponsorPage = () => {
           gap={"12px"}
           px={".5rem"}
         >
+          <HStack>
+            <Tag size="lg" colorScheme="red" borderRadius="full">
+              <TagLabel>Beta</TagLabel>
+            </Tag>
+          </HStack>
           <Text
             color={"#060606"}
             textAlign="center"
@@ -77,6 +86,25 @@ const HeroSponsorPage = () => {
             The people behind ETHAbuja are passionate individual building
             solutions for the growth of their communities. You can show your
             support by contributing to our collective.
+          </Text>
+
+          <Text
+            mt="20px"
+            textAlign="center"
+            fontWeight={"500"}
+            fontSize={"16px"}
+            lineHeight={"23.1px"}
+          >
+            Claim your{" "}
+            <Text
+              textDecoration="underline"
+              fontWeight={700}
+              as={Link}
+              href="/faucet"
+            >
+              Faucet
+            </Text>{" "}
+            here to participate and test
           </Text>
         </Flex>
 

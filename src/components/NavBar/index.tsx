@@ -15,9 +15,8 @@ import { ETHABJ_SVG } from "@/assets/svg/index";
 import { Link } from "@chakra-ui/next-js";
 import { usePathname } from "next/navigation";
 import { COLORS } from "@/constants/theme/lightDarkTheme";
-import { TabsProps } from "@/lib/components/types";
-import { For, block } from "million/react";
-import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
+import { For } from "million/react";
+import { AiOutlineClose } from "react-icons/ai";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { useState } from "react";
 import { nanoid } from "@reduxjs/toolkit";
@@ -28,11 +27,9 @@ import ConnectButton from "../wagmi/connectButton";
 const NavBar = () => {
   const [mobileNav, setMobileNav] = useState<boolean>(false);
   const { appTheme } = useAppSelector((state) => state.themeReducer);
-  const dispatch = useAppDispatch();
-
   const pathname = usePathname();
 
-  const isDonationPage = pathname === "/donation" || "/faucet";
+  const isDonationPage = pathname === "/donation" || pathname === "/faucet";
 
   return (
     <Box
@@ -231,35 +228,41 @@ const NavBar = () => {
               {/* </For> */}
             </Flex>
             <Box display={["flex", "flex", "none", "none"]}>
-              <Link
-                as="a"
-                href={JOIN_COM_URL}
-                target="_blank"
-                display={"flex"}
-                w={["300px", "", "350px"]}
-                py={"12px"}
-                px={"0"}
-                justifyContent={"center"}
-                alignItems={"center"}
-                gap={"10px"}
-                borderRadius={"8px"}
-                border={"1px solid #000"}
-                bg={COLORS.joinComColorBTN}
-                _hover={{
-                  bg: COLORS.joinComColorBTN,
-                  borderColor: "1px solid black",
-                }}
-                style={{ textDecoration: "none" }}
-              >
-                <Text
-                  color={"#FDFDFF"}
-                  fontSize={"16px"}
-                  fontWeight={"500"}
-                  lineHeight={"26.4px"}
+              {isDonationPage ? (
+                <>
+                  <ConnectButton />
+                </>
+              ) : (
+                <Link
+                  as="a"
+                  href={JOIN_COM_URL}
+                  target="_blank"
+                  display={"flex"}
+                  w={["300px", "", "350px"]}
+                  py={"12px"}
+                  px={"0"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                  gap={"10px"}
+                  borderRadius={"8px"}
+                  border={"1px solid #000"}
+                  bg={COLORS.joinComColorBTN}
+                  _hover={{
+                    bg: COLORS.joinComColorBTN,
+                    borderColor: "1px solid black",
+                  }}
+                  style={{ textDecoration: "none" }}
                 >
-                  Join Community
-                </Text>
-              </Link>
+                  <Text
+                    color={"#FDFDFF"}
+                    fontSize={"16px"}
+                    fontWeight={"500"}
+                    lineHeight={"26.4px"}
+                  >
+                    Join Community
+                  </Text>
+                </Link>
+              )}
             </Box>
           </Flex>
         </Flex>
